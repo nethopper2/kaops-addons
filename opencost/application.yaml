@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+    abc: "def"
+    namespace: {{ variables.namespace }}
+    spec:
+    destination:
+        namespace: {{ variables.destination.namespace }}
+        server: ''
+source:
+    path: ''
+    repoURL: 'https://opencost.github.io/opencost-helm-chart'
+    targetRevision: '' (versioning provided by git tagging for agent/BE compatibility)
+    chart: opencost
+    helm: null
+    project: nethopper-feature
+    syncPolicy:
+        automated:
+        prune: true
+        selfHeal: true
+        syncOptions:
+        - RespectIgnoreDifferences=true
