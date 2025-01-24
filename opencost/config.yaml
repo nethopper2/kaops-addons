@@ -2,7 +2,7 @@ forms:
   - name: "myform"
     description: "Form for namespace"
     type: standard
-  - name: "myform"
+  - name: "secrets"
     type: secret
   
 variables:

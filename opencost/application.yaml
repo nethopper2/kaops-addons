@@ -1,20 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ system.hubCluster.name }}-opencost
-  namespace: {{ system.hubCluster.namespace }}
+  name: "{{ system.hubCluster.name }}-opencost"
+  namespace: "{{ system.hubCluster.namespace }}"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: {{ system.cluster.namespace }}
-    server: {{ system.cluster.url}}
+    namespace: "{{ system.cluster.namespace }}"
+    server: "{{ system.cluster.url }}"
   source:
-    path: ''
-    repoURL: 'https://opencost.github.io/opencost-helm-chart'
-    targetRevision: 1.43.2
-    chart: opencost
-  project: nethopper-feature #TODO: create a new project for kaops blueprints
+    repoURL: "https://opencost.github.io/opencost-helm-chart"
+    targetRevision: "1.43.2"
+    chart: "opencost"
+  project: "nethopper-feature" 
   syncPolicy:
     automated:
       prune: true
@@ -25,6 +24,6 @@ spec:
     retry:
       limit: 2
       backoff:
-        duration: 5s
+        duration: "5s"
         factor: 2
-        maxDuration: 3m0s
+        maxDuration: "3m0s"
