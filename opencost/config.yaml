@@ -19,3 +19,10 @@ variables:
     type: "secret"
     label: "Pear Secret"
     required: true
+
+dependencies:
+    features:
+      - name: 'grafana'
+        required: false
+      - name: 'sealed-secrets'
+        required: true
