@@ -6,16 +6,22 @@ forms:
     type: secret
   
 variables:
-  - name: "metadata.namespace"
-    description: "Namespace where the application will be deployed"
+  - name: "eksRoleArn"
+    description: "Role ARN for EKS"
     form: "myform"
-    formKitSchema: ""
     type: "text"
-    label: "Namespace"
+    label: "EKS Role ARN"
     required: true
-  - name: "pearSecret"
-    description: "Secret for pear"
-    form: "secrets"
-    type: "secret"
-    label: "Pear Secret"
-    required: true
+  # - name: "metadata.namespace"
+  #   description: "Namespace where the application will be deployed"
+  #   form: "myform"
+  #   formKitSchema: ""
+  #   type: "text"
+  #   label: "Namespace"
+  #   required: true
+  # - name: "pearSecret"
+  #   description: "Secret for pear"
+  #   form: "secrets"
+  #   type: "secret"
+  #   label: "Pear Secret"
+  #   required: true

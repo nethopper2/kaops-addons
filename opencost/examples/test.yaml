@@ -1,0 +1,18 @@
+global:
+  variables:
+    enabled: true
+    eksRoleArn: "arn:aws:iam::123456789012:role/eksRole"
+  values-overrides:
+    opencost:
+      cloudCost:
+        enabled: false
+      metrics:
+        serviceMonitor:
+          enabled: false
+cluster1:
+  values-overrides:
+    opencost:
+      enabled: true
+cluster2:
+  variables:
+    enabled: false

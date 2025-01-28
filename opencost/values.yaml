@@ -1,0 +1,12 @@
+opencost:
+  cloudCost:
+    enabled: true
+  metrics:
+    serviceMonitor:
+      enabled: true
+  prometheus:
+    external:
+      url: {{ system.cluster.prometheus.url }}
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: {{ variables.eksRoleArn }}

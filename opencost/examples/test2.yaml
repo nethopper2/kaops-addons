@@ -1,0 +1,9 @@
+
+  eksRoleArn: "arn:aws:iam::123456789012:role/eksRole"
+
+  opencost:
+    cloudCost:
+      enabled: false
+    metrics:
+      serviceMonitor:
+        enabled: false
