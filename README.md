@@ -20,8 +20,7 @@ helm repo update
 
 ## Available Charts
 
-- `log-bundle`
-- `example`
+- `opencost`
 
 ## Chart Installation
 
