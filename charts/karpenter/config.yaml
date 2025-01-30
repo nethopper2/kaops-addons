@@ -1,0 +1,40 @@
+metadata:
+  displayName: "OpenCost"
+  logoURL: "https://opencost.github.io/opencost-helm-chart/images/logo.png"
+  description: "OpenCost is a cost management tool for Kubernetes."
+  infoUrl: "https://opencost.github.io/opencost-helm-chart"
+  
+forms: 
+  - name: "myform"
+    description: "Form for namespace"
+    type: standard
+  - name: "secrets"
+    type: secret
+  
+variables:
+  - name: "networkPolicy"
+    description: "Namespace where the application will be deployed"
+    form: "myform"
+    formKitSchema: ""
+    type: "text"
+    label: "Namespace"
+    required: true
+  - name: "pearSecret"
+    description: "Secret for pear"
+    form: "secrets"
+    type: "secret"
+    label: "Pear Secret"
+    required: true
+  - location: "preinstall.secrets.enabled"
+    description: "Secret for pear"
+    form: "secrets"
+    type: "secret"
+    label: "Pear Secret"
+    required: true
+
+dependencies:
+    features:
+      - name: 'grafana'
+        required: false
+      - name: 'sealed-secrets'
+        required: true
