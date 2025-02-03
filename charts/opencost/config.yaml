@@ -29,6 +29,7 @@ variables:
     path: "cloudIntegrationSecret."
     description: "Name of existing secret for cloud integration"
     type: "text"
+    label: "Secret spec"
     required: false
 
 dependencies:
