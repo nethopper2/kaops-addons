@@ -17,6 +17,7 @@ variables:
     path: "cloudIntegrationSecret.existingSecret"
     description: "Name of existing secret for cloud integration"
     type: "text"
+    label: "Existing Secret"
     required: false
   - name: "sealedSecretMetadata"
     path: "cloudIntegrationSecret."
