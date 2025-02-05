@@ -4,14 +4,9 @@ metadata:
   description: "OpenCost is a cost management tool for Kubernetes."
   logoUrl: "https://opencost.github.io/opencost-helm-chart/images/logo.png"
   infoUrl: "https://opencost.github.io/opencost-helm-chart"
-  # Mateusz: Clean me up :) Looking to be able to show messaging on the FE after an Addon is added
-  #          from the marketplace. Or could be used for enforcement if needed. Better way to describe this?
   installTargets:
-    # This would mean it CAN be installed on the hub (would this ever be false?)
     hub: true
-    # This would mean the agent immediately automatically installs on the hub when the Addon is added to the Network.
     hubRequired: true
-    # This would mean the user should be allowed to choose to install on chosen edges when true.
     edge: false
   
 forms: 
