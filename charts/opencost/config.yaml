@@ -1,9 +1,13 @@
 metadata:
   slug: "opencost"
-  displayName: "OpenCost"
-  logoURL: "https://opencost.github.io/opencost-helm-chart/images/logo.png"
+  name: "OpenCost"
   description: "OpenCost is a cost management tool for Kubernetes."
+  logoUrl: "https://opencost.github.io/opencost-helm-chart/images/logo.png"
   infoUrl: "https://opencost.github.io/opencost-helm-chart"
+  installTargets:
+    hub: true
+    hubRequired: true
+    edge: false
   
 forms: 
   - name: "myform"
