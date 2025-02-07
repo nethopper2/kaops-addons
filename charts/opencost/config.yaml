@@ -23,7 +23,16 @@ forms:
         - 'name'
         - 'bar'
         - 'nh_tags' # does this work to indicate nethopper tags (and ordering)?
-        
+      - slug: 'step2'
+      # How might we handle steps rendering differently based on a select in a previous step like
+      # we have in the unreleased velero network config?
+        conditions:
+          - if: '$get(provider).value == AWS', # this is just pseudocode
+            # normal step props...
+            label: 'AWS'
+            vars:
+            - 'varOne'
+  
   # - slug: tags
   #   schemaKey: tags
   #   label: 'Tag Only'
@@ -62,7 +71,14 @@ variables:
     label: 'Existing Secret'
     required: false
     form: 'default'
-  
+  - name: 'provider'
+    type: 'select'
+    options:
+    - label: 'AWS'
+      value: 'AWS'
+    - label: 'AZURE'
+      value: 'AZURE'
+    validation: 'required'
   # - name: 'sealedSecretMetadata'
   #   path: 'cloudIntegrationSecret.'
   #   description: 'Name of existing secret for cloud integration'
@@ -77,10 +93,10 @@ variables:
   #   required: false
 
 dependencies:
-    features:
-      - slug: 'grafana'
-        name: 'Grafana'
-        required: false
-      - slug: 'sealed-secrets'
-        name: 'SealedSecrets'
-        required: true
+  features:
+    - slug: 'grafana'
+      name: 'Grafana'
+      required: false
+    - slug: 'sealed-secrets'
+      name: 'SealedSecrets'
+      required: true
