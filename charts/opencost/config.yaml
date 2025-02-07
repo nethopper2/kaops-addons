@@ -1,44 +1,86 @@
 metadata:
-  slug: "opencost"
-  name: "OpenCost"
-  description: "OpenCost is a cost management tool for Kubernetes."
-  logoUrl: "https://opencost.github.io/opencost-helm-chart/images/logo.png"
-  infoUrl: "https://opencost.github.io/opencost-helm-chart"
+  slug: 'opencost'
+  name: 'OpenCost'
+  description: 'OpenCost is a cost management tool for Kubernetes.'
+  logoUrl: 'https://opencost.github.io/opencost-helm-chart/images/logo.png'
+  infoUrl: 'https://opencost.github.io/opencost-helm-chart'
   installTargets:
     hub: true
     hubRequired: true
     edge: false
   
 forms: 
-  - name: "myform"
-    description: "Form for namespace"
-    type: standard
-  - name: "secrets"
-    type: secret
+  - slug: default
+    label: 'Standard form'
+    description: 'Something cool to say about it, maybe'
+    # type: standard
+    steps:
+      - slug: 'step1'
+        label: 'Step 1'
+        # tags: true
+        # tagsAfter: name
+        vars:
+        - 'name'
+        - 'bar'
+        - 'nh_tags' # does this work to indicate nethopper tags (and ordering)?
+        
+  # - slug: tags
+  #   schemaKey: tags
+  #   label: 'Tag Only'
+  #   type: tags
+  # - slug: secret
+  #   type: secret
+
+# steps:
+#   - slug: step1
+#     name: 'Step 1"
   
 variables:
-  - name: "existingSecret"
-    path: "cloudIntegrationSecret.existingSecret"
-    description: "Name of existing secret for cloud integration"
-    type: "text"
-    label: "Existing Secret"
+  - name: 'name'
+    path: 'foo.bar.name'
+    slug: 'name' # need this for FE for the name prop in a formkit input? or is the name above safe to use?
+    # think about naming here, but this would allow matching to a field function in the FE
+    # lookup is optional, or possibly the only thing needed, depending on the case
+    feFieldKey: 'fieldSchemaName'
+    # below would either be full formkit schema props or overrides given to the function referenced by lookup
+    modelValue: '$fields.name'
+    label: 'Name'
+    validation: 'required:trim'
+    type: 'text'
+    placeholder: ''
+    help: ''
+    form: 'default'
+    # meta: # possibly want non-formkit stuff under meta?
+  - name: 'existingSecret'
+    path: 'cloudIntegrationSecret.existingSecret'
+    description: 'Name of existing secret for cloud integration'
+    feFieldKey: 'fieldSchemaSecret' # This or type?? WHich works best with formkit needs?
+    type: 'secret'
+    requiredSecretKeys:
+    - 'foo'
+    - 'bar'
+    label: 'Existing Secret'
     required: false
-  - name: "sealedSecretMetadata"
-    path: "cloudIntegrationSecret."
-    description: "Name of existing secret for cloud integration"
-    type: "text"
-    label: "Namespace"
-    required: false
-  - name: "sealedSecretSpec"
-    path: "cloudIntegrationSecret."
-    description: "Name of existing secret for cloud integration"
-    type: "text"
-    label: "Secret spec"
-    required: false
+    form: 'default'
+  
+  # - name: 'sealedSecretMetadata'
+  #   path: 'cloudIntegrationSecret.'
+  #   description: 'Name of existing secret for cloud integration'
+  #   type: 'text'
+  #   label: 'Namespace'
+  #   required: false
+  # - name: 'sealedSecretSpec'
+  #   path: 'cloudIntegrationSecret.'
+  #   description: 'Name of existing secret for cloud integration'
+  #   type: 'text'
+  #   label: 'Secret spec'
+  #   required: false
 
 dependencies:
     features:
-      - name: 'grafana'
+      - slug: 'grafana'
+        name: 'Grafana'
         required: false
-      - name: 'sealed-secrets'
+      - slug: 'sealed-secrets'
+        name: 'SealedSecrets'
         required: true
