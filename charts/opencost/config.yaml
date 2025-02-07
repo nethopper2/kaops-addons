@@ -8,7 +8,9 @@ metadata:
     hub: true
     hubRequired: true
     edge: false
-  
+
+# forms could be used with the Form Options choser you see in the Dialog now 
+# (only as needed, if needed..otherwise only default is used)
 forms: 
   - slug: default
     label: 'Standard form'
