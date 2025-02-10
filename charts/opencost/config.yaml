@@ -2,8 +2,10 @@ metadata:
   slug: 'opencost'
   name: 'OpenCost'
   description: 'OpenCost is a cost management tool for Kubernetes.'
-  logoUrl: 'https://opencost.github.io/opencost-helm-chart/images/logo.png'
-  infoUrl: 'https://opencost.github.io/opencost-helm-chart'
+  logoUrlDark: 'http://localhost:8080/logos/addons/opencost-small.svg' # TODO
+  logoUrlLight: 'http://localhost:8080/logos/addons/opencost-small.svg' # TODO
+  detailUrl: 'TODO' # our internal iframeable page
+  externalUrl: 'https://opencost.github.io/opencost-helm-chart'
   installTargets:
     hub: true
     hubRequired: true
