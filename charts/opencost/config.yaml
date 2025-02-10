@@ -26,8 +26,8 @@ forms:
         - 'bar'
         - 'nh_tags' # does this work to indicate nethopper tags (and ordering)?
       - slug: 'step2'
-        # How might we handle steps rendering differently based on a select in a previous step like
-        # we have in the unreleased velero network config?
+      # How might we handle steps rendering differently based on a select in a previous step like
+      # we have in the unreleased velero network config?
         conditions:
           - if: '$get(provider).value == AWS' # this is just pseudocode
             # normal step props...
