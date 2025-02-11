@@ -23,20 +23,14 @@ forms:
         label: 'Step 1'
         # tags: true
         # tagsAfter: name
-        vars:
-        - 'name'
-        - 'bar'
-        - 'nh_tags' # does this work to indicate nethopper tags (and ordering)?
+        variableSlugs:
+        - 'foo'
+        # - 'nh_tags' # does this work to indicate nethopper tags (and ordering)?
       - slug: 'step2'
-      # How might we handle steps rendering differently based on a select in a previous step like
-      # we have in the unreleased velero network config?
-        conditions:
-          - if: '$get(provider).value == AWS' # this is just pseudocode
-            # normal step props...
-            label: 'AWS'
-            vars:
-            - 'varOne'
-  
+        label: 'Step 2'
+        variableSlugs:
+        - 'bar'
+        
   # - slug: tags
   #   schemaKey: tags
   #   label: 'Tag Only'
@@ -49,40 +43,43 @@ forms:
 #     name: 'Step 1"
   
 variables:
-  - name: 'name'
-    path: 'foo.bar.name'
-    slug: 'name' # need this for FE for the name prop in a formkit input? or is the name above safe to use?
-    # think about naming here, but this would allow matching to a field function in the FE
-    # lookup is optional, or possibly the only thing needed, depending on the case
-    feFieldKey: 'fieldSchemaName'
-    # below would either be full formkit schema props or overrides given to the function referenced by lookup
-    modelValue: '$fields.name'
-    label: 'Name'
-    validation: 'required:trim'
-    type: 'text'
-    placeholder: ''
-    help: ''
-    form: 'default'
-    # meta: # possibly want non-formkit stuff under meta?
-  - name: 'existingSecret'
-    path: 'cloudIntegrationSecret.existingSecret'
-    description: 'Name of existing secret for cloud integration'
-    feFieldKey: 'fieldSchemaSecret' # This or type?? WHich works best with formkit needs?
-    type: 'secret'
-    requiredSecretKeys:
-    - 'foo'
-    - 'bar'
-    label: 'Existing Secret'
-    required: false
-    form: 'default'
-  - name: 'provider'
-    type: 'select'
-    options:
-    - label: 'AWS'
-      value: 'AWS'
-    - label: 'AZURE'
-      value: 'AZURE'
-    validation: 'required'
+  - slug: 'foo'
+    name: 'foo'
+    path: 'foo.path'
+    forms: ['default']
+    ui:
+      modelValue: '$fields.foo'
+      label: 'Foo'
+      validation: 'required:trim'
+      type: 'text'
+      placeholder: 'Foo placeholder'
+      help: 'Foo help'
+  - slug: 'bar'
+    name: 'bar'
+    path: 'bar.path'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Bar'
+  # - name: 'existingSecret'
+  #   path: 'cloudIntegrationSecret.existingSecret'
+  #   description: 'Name of existing secret for cloud integration'
+  #   feFieldKey: 'fieldSchemaSecret' # This or type?? WHich works best with formkit needs?
+  #   type: 'secret'
+  #   requiredSecretKeys:
+  #   - 'foo'
+  #   - 'bar'
+  #   label: 'Existing Secret'
+  #   required: false
+  #   form: 'default'
+  # - name: 'provider'
+  #   type: 'select'
+  #   options:
+  #   - label: 'AWS'
+  #     value: 'AWS'
+  #   - label: 'AZURE'
+  #     value: 'AZURE'
+  #   validation: 'required'
   # - name: 'sealedSecretMetadata'
   #   path: 'cloudIntegrationSecret.'
   #   description: 'Name of existing secret for cloud integration'
@@ -97,7 +94,7 @@ variables:
   #   required: false
 
 dependencies:
-  features:
+  networkFeatures:
     - slug: 'grafana'
       name: 'Grafana'
       required: false
