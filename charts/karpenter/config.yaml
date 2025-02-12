@@ -1,4 +1,5 @@
 metadata:
+  slug: 'karpenter'
   displayName: "OpenCost"
   logoURL: "https://opencost.github.io/opencost-helm-chart/images/logo.png"
   description: "OpenCost is a cost management tool for Kubernetes."
