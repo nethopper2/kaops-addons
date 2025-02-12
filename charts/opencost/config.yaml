@@ -1,44 +1,103 @@
 metadata:
-  slug: "opencost"
-  name: "OpenCost"
-  description: "OpenCost is a cost management tool for Kubernetes."
-  logoUrl: "https://opencost.github.io/opencost-helm-chart/images/logo.png"
-  infoUrl: "https://opencost.github.io/opencost-helm-chart"
+  slug: 'opencost'
+  name: 'OpenCost'
+  description: 'OpenCost is a cost management tool for Kubernetes.'
+  logoUrlDark: 'http://localhost:8080/logos/addons/opencost-small.svg' # TODO
+  logoUrlLight: 'http://localhost:8080/logos/addons/opencost-small.svg' # TODO
+  detailUrl: 'TODO' # our internal iframeable page
+  externalUrl: 'https://opencost.github.io/opencost-helm-chart'
   installTargets:
     hub: true
     hubRequired: true
     edge: false
-  
+
+# forms could be used with the Form Options choser you see in the Dialog now 
+# (only as needed, if needed..otherwise only default is used)
 forms: 
-  - name: "myform"
-    description: "Form for namespace"
-    type: standard
-  - name: "secrets"
-    type: secret
+  - slug: default
+    label: 'Standard form'
+    description: 'Something cool to say about it, maybe'
+    # type: standard
+    steps:
+      - slug: 'step1'
+        label: 'Step 1'
+        # tags: true
+        # tagsAfter: name
+        variableSlugs:
+        - 'foo'
+        # - 'nh_tags' # does this work to indicate nethopper tags (and ordering)?
+      - slug: 'step2'
+        label: 'Step 2'
+        variableSlugs:
+        - 'bar'
+        
+  # - slug: tags
+  #   schemaKey: tags
+  #   label: 'Tag Only'
+  #   type: tags
+  # - slug: secret
+  #   type: secret
+
+# steps:
+#   - slug: step1
+#     name: 'Step 1"
   
 variables:
-  - name: "existingSecret"
-    path: "cloudIntegrationSecret.existingSecret"
-    description: "Name of existing secret for cloud integration"
-    type: "text"
-    label: "Existing Secret"
-    required: false
-  - name: "sealedSecretMetadata"
-    path: "cloudIntegrationSecret."
-    description: "Name of existing secret for cloud integration"
-    type: "text"
-    label: "Namespace"
-    required: false
-  - name: "sealedSecretSpec"
-    path: "cloudIntegrationSecret."
-    description: "Name of existing secret for cloud integration"
-    type: "text"
-    label: "Secret spec"
-    required: false
+  - slug: 'foo'
+    name: 'foo'
+    path: 'foo.path'
+    forms: ['default']
+    ui:
+      modelValue: '$fields.foo'
+      label: 'Foo'
+      validation: 'required:trim'
+      type: 'text'
+      placeholder: 'Foo placeholder'
+      help: 'Foo help'
+  - slug: 'bar'
+    name: 'bar'
+    path: 'bar.path'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Bar'
+  # - name: 'existingSecret'
+  #   path: 'cloudIntegrationSecret.existingSecret'
+  #   description: 'Name of existing secret for cloud integration'
+  #   feFieldKey: 'fieldSchemaSecret' # This or type?? WHich works best with formkit needs?
+  #   type: 'secret'
+  #   requiredSecretKeys:
+  #   - 'foo'
+  #   - 'bar'
+  #   label: 'Existing Secret'
+  #   required: false
+  #   form: 'default'
+  # - name: 'provider'
+  #   type: 'select'
+  #   options:
+  #   - label: 'AWS'
+  #     value: 'AWS'
+  #   - label: 'AZURE'
+  #     value: 'AZURE'
+  #   validation: 'required'
+  # - name: 'sealedSecretMetadata'
+  #   path: 'cloudIntegrationSecret.'
+  #   description: 'Name of existing secret for cloud integration'
+  #   type: 'text'
+  #   label: 'Namespace'
+  #   required: false
+  # - name: 'sealedSecretSpec'
+  #   path: 'cloudIntegrationSecret.'
+  #   description: 'Name of existing secret for cloud integration'
+  #   type: 'text'
+  #   label: 'Secret spec'
+  #   required: false
 
 dependencies:
-    features:
-      - name: 'grafana'
-        required: false
-      - name: 'sealed-secrets'
-        required: true
+  networkFeatures:
+    - slug: 'grafana'
+      name: 'Grafana'
+      required: false
+    - slug: 'sealed-secrets'
+      name: 'SealedSecrets'
+      required: true
