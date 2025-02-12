@@ -14,7 +14,7 @@ metadata:
 # forms could be used with the Form Options choser you see in the Dialog now 
 # (only as needed, if needed..otherwise only default is used)
 forms: 
-  - slug: default
+  - slug: defaultOld
     label: 'Standard form'
     description: 'Something cool to say about it, maybe'
     # type: standard
@@ -32,6 +32,9 @@ forms:
         - 'bar'
         ui:
           label: 'Step 2'
+  - slug: default
+    label: 'Standard form'
+    description: 'Something cool to say about it, maybe'
         
   # - slug: tags
   #   schemaKey: tags
@@ -63,6 +66,13 @@ variables:
     ui:
       type: 'text'
       label: 'Bar'
+  - slug: 'baz'
+    name: 'baz'
+    path: 'baz.path'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Baz'
   # - name: 'existingSecret'
   #   path: 'cloudIntegrationSecret.existingSecret'
   #   description: 'Name of existing secret for cloud integration'
