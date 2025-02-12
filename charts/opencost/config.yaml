@@ -20,16 +20,18 @@ forms:
     # type: standard
     steps:
       - slug: 'step1'
-        label: 'Step 1'
         # tags: true
         # tagsAfter: name
         variableSlugs:
         - 'foo'
+        ui:
+          label: 'Step 1'  
         # - 'nh_tags' # does this work to indicate nethopper tags (and ordering)?
       - slug: 'step2'
-        label: 'Step 2'
         variableSlugs:
         - 'bar'
+        ui:
+          label: 'Step 2'
         
   # - slug: tags
   #   schemaKey: tags
