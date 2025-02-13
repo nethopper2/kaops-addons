@@ -4,7 +4,7 @@ metadata:
   description: 'OpenCost is a cost management tool for Kubernetes.'
   logoUrlDark: 'http://localhost:8080/logos/addons/opencost-small.svg' # TODO
   logoUrlLight: 'http://localhost:8080/logos/addons/opencost-small.svg' # TODO
-  detailUrl: 'TODO' # our internal iframeable page
+  detailUrl: https://nh-addons.netlify.app/opencost
   externalUrl: 'https://opencost.github.io/opencost-helm-chart'
   installTargets:
     hub: true
