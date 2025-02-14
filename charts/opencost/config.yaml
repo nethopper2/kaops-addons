@@ -55,13 +55,14 @@ variables:
       placeholder: 'Choose an existing Secret'
       # help: ''
       validation: 'required'
-  # - slug: 'test1'
-  #   name: 'test1'
-  #   path: 'route.spout' # leave off last variable name portion
-  #   forms: ['default']
-  #   ui:
-  #     label: 'Test 1'
-  #     type: 'text'
+  - slug: 'test1'
+    name: 'test1'
+    path: 'route.spout' # leave off last variable name portion
+    forms: ['default']
+    isCreateOnly: true
+    ui:
+      label: 'Test 1'
+      type: 'text'
   # - slug: 'test2'
   #   name: 'test2'
   #   path: 'route.spout' # leave off last variable name portion
