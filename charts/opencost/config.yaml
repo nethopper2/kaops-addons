@@ -54,6 +54,7 @@ variables:
       # label: 'Foo'
       placeholder: 'Choose an existing Secret'
       # help: ''
+      validation: 'required'
   # - slug: 'bar'
   #   name: 'bar'
   #   path: 'bar.path'
