@@ -48,11 +48,12 @@ variables:
     name: 'existingSecret'
     path: 'cloudIntegrationSecret.existingSecret'
     forms: ['default']
-    schemaLookupKey: 'secret'
+    # schemaLookupKey: 'secret'
     #requiredSecretKeys:
      #- 'foo'
      #- 'bar'
     ui:
+      type: 'secret'
       # modelValue: '$fields.foo'
       # label: 'Foo'
       placeholder: 'Choose an existing Secret'
