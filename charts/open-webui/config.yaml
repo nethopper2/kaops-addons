@@ -1,0 +1,48 @@
+metadata:
+  slug: 'open-webui'
+  name: 'Open WebUI'
+  description: 'Open WebUI is a web user interface for managing Kubernetes.'
+  logoUrlDark: 'http://localhost:8080/logos/addons/open-webui-small.svg' # TODO
+  logoUrlLight: 'http://localhost:8080/logos/addons/open-webui-small.svg' # TODO
+  detailUrl: https://nh-addons.netlify.app/open-webui
+  externalUrl: 'https://helm.openwebui.com/'
+  installTargets:
+    hub: true
+    hubRequired: true
+    edge: false
+
+forms: 
+  - slug: defaultOLD
+    label: 'Standard form'
+    description: 'Something cool to say about it, maybe'
+    steps:
+      - slug: 'step1'
+        variableSlugs:
+        - 'foo'
+        ui:
+          label: 'Step 1'  
+      - slug: 'step2'
+        variableSlugs:
+        - 'bar'
+        ui:
+          label: 'Step 2'
+  - slug: default
+    label: 'Standard form'
+    description: 'Something cool to say about it, maybe'
+variables:
+  - slug: 'existingSecret'
+    name: 'existingSecret'
+    path: 'cloudIntegrationSecret.existingSecret'
+    forms: ['default']
+    ui:
+      type: 'secret'
+      placeholder: 'Choose an existing Secret'
+      validation: 'required'
+dependencies:
+  networkFeatures:
+    - slug: 'grafana'
+      name: 'Grafana'
+      required: false
+    - slug: 'sealed-secrets'
+      name: 'SealedSecrets'
+      required: true
