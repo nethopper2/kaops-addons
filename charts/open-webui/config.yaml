@@ -19,6 +19,7 @@ forms:
       - slug: 'models'
         variableSlugs:
         - 'modelsToPull'
+        - 'gpuEnabled'
         ui:
           label: 'Models'  
 variables:
@@ -31,6 +32,13 @@ variables:
       type: 'text'
       placeholder: 'Models to pull from: https://ollama.com/search'
       validation: 'required'
+  - slug: 'gpuEnabled'
+    name: 'GPU Enabled'
+    path: 'open-webui.ollama.ollama.gpu'
+    forms: ['default']
+    ui:
+      type: 'boolean'
+      placeholder: 'Use GPU'
 system:
   - path: 'open-webui.ingress.host'
     value: 'chat.${system.hubCluster.ingressHostname}'

@@ -1,12 +1,12 @@
 open-webui:
   ollama:
     ollama:
+      gpu:
+        enabled: false
       models:
         pull: []
     service:
       type: ClusterIP
-    gpu:
-      enabled: false
   ingress:
     enabled: true
     annotations:
