@@ -2,9 +2,9 @@ metadata:
   slug: 'opencost'
   name: 'OpenCost'
   description: 'OpenCost is a cost management tool for Kubernetes.'
-  logoUrlDark: 'http://localhost:8080/logos/addons/opencost-small.svg' # TODO
-  logoUrlLight: 'http://localhost:8080/logos/addons/opencost-small.svg' # TODO
-  detailUrl: https://nh-addons.netlify.app/opencost
+  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/opencost/logo-signature-dark.png'
+  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/opencost/logo-signature-light.png'
+  detailUrl: 'https://addons.kaops.net/opencost'
   externalUrl: 'https://opencost.github.io/opencost-helm-chart'
   installTargets:
     hub: true
