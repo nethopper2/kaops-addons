@@ -30,6 +30,7 @@ variables:
     ui:
       # TODO: change text to list
       type: 'select'
+      options: ['deepseek-r1:1.5b', 'deepseek-r1:7b', 'deepseek-r1:8b', 'deepseek-r1:14b', 'gemma:2b', 'gemma:7b', 'llama3.2:1b', 'llama3.2:3b']
       multiple: true
       label: 'LLM Models to Pull'
       placeholder: "llama3.3"
