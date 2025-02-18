@@ -38,7 +38,7 @@ variables:
       validation: 'required'
   - slug: 'gpuEnabled'
     name: 'gpu'
-    path: 'open-webui.ollama.ollama.gpu'
+    path: 'open-webui.ollama.ollama.gpu.enabled'
     forms: ['default']
     ui:
       type: 'toggle'
