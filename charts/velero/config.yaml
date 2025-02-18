@@ -1,0 +1,21 @@
+metadata:
+  slug: 'velero'
+  name: 'Velero'
+  description: 'Backup and migrate Kubernetes resources and persistent volumes.'
+  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/velero/logo.png' # TODO
+  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/velero/logo.png' # TODO
+  detailUrl: 'https://addons.kaops.net/velero/'
+  externalUrl: 'https://velero.io/'
+  installTargets:
+    hub: true
+    hubRequired: true
+    edge: false
+
+forms: 
+  - slug: default
+    label: 'Velero configuration'
+    description: 'An open source tool to safely backup and restore, perform disaster recovery, and migrate Kubernetes cluster resources and persistent volumes.'
+variables:
+system:
+
+    
