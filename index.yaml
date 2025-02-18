@@ -18,6 +18,20 @@ entries:
   open-webui:
   - apiVersion: v2
     appVersion: 5.13.0
+    created: "2025-02-18T08:22:51.925267165Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.13.0
+    description: KAOPS addon to install open-webui
+    digest: 84367500305282e595cfef5c5d58ebe2b695276563a3832eca3f3bf43f2373fb
+    name: open-webui
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/open-webui-0.1.1/open-webui-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 5.13.0
     created: "2025-02-17T16:12:41.620669061Z"
     dependencies:
     - name: open-webui
@@ -59,4 +73,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/opencost-0.1.0/opencost-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-17T16:12:41.824491766Z"
+generated: "2025-02-18T08:22:51.925278126Z"
