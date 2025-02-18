@@ -38,7 +38,7 @@ variables:
       help: 'Models to pull from: https://ollama.com/search'
       validation: 'required'
   - slug: 'gpuEnabled'
-    name: 'gpu'
+    name: 'enabled'
     path: 'open-webui.ollama.ollama.gpu.enabled'
     forms: ['default']
     ui:
