@@ -37,7 +37,7 @@ variables:
     path: 'open-webui.ollama.ollama.gpu'
     forms: ['default']
     ui:
-      type: 'boolean'
+      type: 'toggle'
       placeholder: 'Use GPU'
 system:
   - path: 'open-webui.ingress.host'
