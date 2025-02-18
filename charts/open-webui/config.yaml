@@ -12,7 +12,7 @@ metadata:
     edge: false
 
 forms: 
-  - slug: defaultO
+  - slug: default
     label: 'Open WebUI configuration'
     description: 'Something cool to say about it, maybe'
     steps:
