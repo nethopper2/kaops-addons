@@ -12,37 +12,26 @@ metadata:
     edge: false
 
 forms: 
-  - slug: defaultOLD
-    label: 'Standard form'
+  - slug: defaultO
+    label: 'Open WebUI configuration'
     description: 'Something cool to say about it, maybe'
     steps:
-      - slug: 'step1'
+      - slug: 'models'
         variableSlugs:
-        - 'foo'
+        - 'modelsToPull'
         ui:
-          label: 'Step 1'  
-      - slug: 'step2'
-        variableSlugs:
-        - 'bar'
-        ui:
-          label: 'Step 2'
-  - slug: default
-    label: 'Standard form'
-    description: 'Something cool to say about it, maybe'
+          label: 'Models'  
 variables:
-  - slug: 'existingSecret'
-    name: 'existingSecret'
-    path: 'cloudIntegrationSecret.existingSecret'
+  - slug: 'modelsToPull'
+    name: 'LLM Models to Pull'
+    path: 'open-webui.ollama.ollama.models.pull'
     forms: ['default']
     ui:
-      type: 'secret'
-      placeholder: 'Choose an existing Secret'
+      # TODO: change text to list
+      type: 'text'
+      placeholder: 'Models to pull from: https://ollama.com/search'
       validation: 'required'
-dependencies:
-  networkFeatures:
-    - slug: 'grafana'
-      name: 'Grafana'
-      required: false
-    - slug: 'sealed-secrets'
-      name: 'SealedSecrets'
-      required: true
+system:
+  - path: 'open-webui.ingress.host'
+    value: 'chat.${system.hubCluster.ingressHostname}'
+    

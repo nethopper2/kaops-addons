@@ -2,8 +2,7 @@ open-webui:
   ollama:
     ollama:
       models:
-        pull:
-          - llama3.2:1b
+        pull: []
     service:
       type: ClusterIP
     gpu:
