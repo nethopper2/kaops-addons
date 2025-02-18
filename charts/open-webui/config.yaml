@@ -24,21 +24,23 @@ forms:
           label: 'Models'  
 variables:
   - slug: 'modelsToPull'
-    name: 'LLM Models to Pull'
+    name: 'pull'
     path: 'open-webui.ollama.ollama.models.pull'
     forms: ['default']
     ui:
       # TODO: change text to list
       type: 'text'
-      placeholder: 'Models to pull from: https://ollama.com/search'
+      label: 'LLM Models to Pull'
+      placeholder: "llama3.3"
+      help: 'Models to pull from: https://ollama.com/search'
       validation: 'required'
   - slug: 'gpuEnabled'
-    name: 'GPU Enabled'
+    name: 'gpu'
     path: 'open-webui.ollama.ollama.gpu'
     forms: ['default']
     ui:
       type: 'toggle'
-      placeholder: 'Use GPU'
+      label: 'Use GPU'
 system:
   - path: 'open-webui.ingress.host'
     value: 'chat.${system.hubCluster.ingressHostname}'
