@@ -1,7 +1,7 @@
 metadata:
   slug: 'open-webui'
   name: 'Open WebUI'
-  description: 'Open WebUI is a web user interface for managing Kubernetes.'
+  description: 'Open WebUI is a self-hosted, offline AI platform supporting LLM runners like Ollama and OpenAI-compatible APIs, with a built-in RAG inference engine for powerful AI deployment.'
   logoUrlDark: 'http://localhost:8080/logos/addons/open-webui-small.svg' # TODO
   logoUrlLight: 'http://localhost:8080/logos/addons/open-webui-small.svg' # TODO
   detailUrl: https://nh-addons.netlify.app/open-webui
