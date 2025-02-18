@@ -2,9 +2,9 @@ metadata:
   slug: 'open-webui'
   name: 'Open WebUI'
   description: 'Open WebUI is a self-hosted, offline AI platform supporting LLM runners like Ollama.'
-  logoUrlDark: 'https://avatars.githubusercontent.com/u/158137808?s=200&v=4' # TODO
-  logoUrlLight: 'https://avatars.githubusercontent.com/u/158137808?s=200&v=4' # TODO
-  detailUrl: 'https://openwebui.com/'
+  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo-dark.png' # TODO
+  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo.png' # TODO
+  detailUrl: 'https://addons.kaops.net/openwebui/'
   externalUrl: 'https://openwebui.com/'
   installTargets:
     hub: true
