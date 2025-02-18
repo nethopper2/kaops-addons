@@ -1,11 +1,11 @@
 metadata:
   slug: 'open-webui'
   name: 'Open WebUI'
-  description: 'Open WebUI is a self-hosted, offline AI platform supporting LLM runners like Ollama and OpenAI-compatible APIs, with a built-in RAG inference engine for powerful AI deployment.'
-  logoUrlDark: 'http://localhost:8080/logos/addons/open-webui-small.svg' # TODO
-  logoUrlLight: 'http://localhost:8080/logos/addons/open-webui-small.svg' # TODO
-  detailUrl: https://nh-addons.netlify.app/open-webui
-  externalUrl: 'https://helm.openwebui.com/'
+  description: 'Open WebUI is a self-hosted, offline AI platform supporting LLM runners like Ollama.'
+  logoUrlDark: 'https://avatars.githubusercontent.com/u/158137808?s=200&v=4' # TODO
+  logoUrlLight: 'https://avatars.githubusercontent.com/u/158137808?s=200&v=4' # TODO
+  detailUrl: 'https://openwebui.com/'
+  externalUrl: 'https://openwebui.com/'
   installTargets:
     hub: true
     hubRequired: true
