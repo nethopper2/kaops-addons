@@ -1,7 +1,7 @@
 metadata:
   slug: 'karpenter'
   displayName: 'Karpenter'
-  description: 'OpenCost is a cost management tool for Kubernetes.'
+  description: 'Simplify Kubernetes infrastructure with the right nodes at the right time.'
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/karpenter/logo.png'
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/karpenter/logo.png'
   detailUrl: 'https://addons.kaops.net/karpenter'
