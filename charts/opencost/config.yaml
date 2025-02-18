@@ -2,8 +2,8 @@ metadata:
   slug: 'opencost'
   name: 'OpenCost'
   description: 'OpenCost is a cost management tool for Kubernetes.'
-  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/opencost/logo-signature-dark.png'
-  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/opencost/logo-signature-light.png'
+  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/opencost/logo-dark.png'
+  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/opencost/logo.png'
   detailUrl: 'https://addons.kaops.net/opencost'
   externalUrl: 'https://opencost.github.io/opencost-helm-chart'
   installTargets:
