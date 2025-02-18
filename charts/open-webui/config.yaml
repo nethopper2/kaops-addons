@@ -20,6 +20,7 @@ forms:
         variableSlugs:
         - 'modelsToPull'
         - 'gpuEnabled'
+        - 'host'
         ui:
           label: 'Models'  
 variables:
@@ -43,6 +44,13 @@ variables:
     ui:
       type: 'toggle'
       label: 'Use GPU'
+  - slug: 'host'
+    name: 'host'
+    path: 'open-webui.ingress.host'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Ingress host'
 system:
   - path: 'open-webui.ingress.host'
     value: 'chat.${system.hubCluster.ingressHostname}'
