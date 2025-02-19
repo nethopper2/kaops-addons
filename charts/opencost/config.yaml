@@ -45,7 +45,7 @@ forms:
   
 variables:
   - slug: 'existingSecret'
-    name: 'existingSecret'
+    # name: 'existingSecret'
     path: 'cloudIntegrationSecret.existingSecret'
     forms: ['default']
     # schemaLookupKey: 'secret'
@@ -60,7 +60,6 @@ variables:
       # help: ''
       validation: 'required'
   # - slug: 'test1'
-  #   name: 'test1'
   #   path: 'route.spout.test1'
   #   forms: ['default']
   #   isCreateOnly: true
@@ -68,46 +67,23 @@ variables:
   #     label: 'Test 1'
   #     type: 'text'
   # - slug: 'test2'
-  #   name: 'test2'
   #   path: 'route.spout.test2'
   #   forms: ['default']
   #   ui:
   #     label: 'Test 2'
   #     type: 'text'
   # - slug: 'bar'
-  #   name: 'bar'
   #   path: 'path.bar'
   #   forms: ['default']
   #   ui:
   #     type: 'text'
   #     label: 'Bar'
   # - slug: 'baz'
-  #   name: 'baz'
   #   path: 'path.baz'
   #   forms: ['default']
   #   ui:
   #     type: 'text'
   #     label: 'Baz'
-  # - name: 'provider'
-  #   type: 'select'
-  #   options:
-  #   - label: 'AWS'
-  #     value: 'AWS'
-  #   - label: 'AZURE'
-  #     value: 'AZURE'
-  #   validation: 'required'
-  # - name: 'sealedSecretMetadata'
-  #   path: 'cloudIntegrationSecret.'
-  #   description: 'Name of existing secret for cloud integration'
-  #   type: 'text'
-  #   label: 'Namespace'
-  #   required: false
-  # - name: 'sealedSecretSpec'
-  #   path: 'cloudIntegrationSecret.'
-  #   description: 'Name of existing secret for cloud integration'
-  #   type: 'text'
-  #   label: 'Secret spec'
-  #   required: false
 
 dependencies:
   networkFeatures:
