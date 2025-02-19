@@ -185,4 +185,19 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/opencost-0.1.0/opencost-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-18T16:22:33.121049231Z"
+  prefect-server:
+  - apiVersion: v2
+    appVersion: 3.2.5
+    created: "2025-02-19T15:21:13.4737706Z"
+    dependencies:
+    - name: prefect-server
+      repository: https://prefecthq.github.io/prefect-helm
+      version: 2025.2.19032435
+    description: A Prefect Server Helm chart for Kubernetes
+    digest: 714546ae15864485112c5366b16fc0e708ab6f9ef6c3e0a6799c761394beda62
+    name: prefect-server
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/prefect-server-0.1.0/prefect-server-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-02-19T15:21:13.473791228Z"
