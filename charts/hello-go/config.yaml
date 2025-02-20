@@ -11,8 +11,23 @@ metadata:
     hubRequired: true
     edge: false
 
+
 forms: 
   - slug: default
-    label: 'Hello worl app configuration'
+    label: 'Hello worl app '
     description: 'Something cool to say about it, maybe'
-   
+    steps:
+      - slug: 'hello'
+        variableSlugs:
+        - 'name'
+        ui:
+          label: 'Hello'  
+variables:
+  - slug: 'hello'
+    name: 'hello'
+    path: 'hello'
+    forms: ['hello']
+    ui:
+      type: 'text'
+      label: 'Hello'
+    
