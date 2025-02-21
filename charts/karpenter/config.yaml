@@ -6,6 +6,7 @@ metadata:
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/karpenter/logo.png'
   detailUrl: 'https://addons.kaops.net/karpenter'
   externalUrl: 'https://opencost.github.io/opencost-helm-chart'
+  inProduction: false
   installTargets:
     hub: true
     hubRequired: true
