@@ -17,12 +17,12 @@ forms:
   - slug: default
     label: 'Hello worl app '
     description: 'Something cool to say about it, maybe'
-    steps:
-      - slug: 'hello'
-        variableSlugs:
-        - 'name'
-        ui:
-          label: 'Hello'  
+    # steps:
+    #   - slug: 'hello'
+    #     variableSlugs:
+    #     - 'name'
+    #     ui:
+    #       label: 'Hello'  
 variables:
   - slug: 'hello'
     name: 'hello'
