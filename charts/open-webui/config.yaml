@@ -53,5 +53,5 @@ variables:
       label: 'Ingress host'
 system:
   - path: 'open-webui.ingress.host'
-    value: 'chat.${system.hubCluster.ingressHostname}.${system.hubCluster.namespace}'
+    value: 'chat.${system.hubCluster.ingressHostname}'
     
