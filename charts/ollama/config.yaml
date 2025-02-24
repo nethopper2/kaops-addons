@@ -6,7 +6,7 @@ metadata:
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/ollama/logo.png' # TODO
   detailUrl: 'https://addons.kaops.net/ollama/'
   externalUrl: 'https://ollama.com/'
-  inProduction: false
+  isProduction: false
   installTargets:
     hub: true
     hubRequired: true
