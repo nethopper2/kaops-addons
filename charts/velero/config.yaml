@@ -6,7 +6,7 @@ metadata:
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/velero/logo.png' # TODO
   detailUrl: 'https://addons.kaops.net/velero/'
   externalUrl: 'https://velero.io/'
-  inProduction: false
+  isProduction: false
   installTargets:
     hub: true
     hubRequired: true
