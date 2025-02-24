@@ -6,7 +6,6 @@ metadata:
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/hello-go/logo.png'
   detailUrl: 'https://addons.kaops.net/hello-go/'
   externalUrl: 'https://github.com/golang-samples/gopher-vector?tab=readme-ov-file'
-  inProduction: false
   installTargets:
     hub: true
     hubRequired: true
