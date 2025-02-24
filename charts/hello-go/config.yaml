@@ -10,7 +10,7 @@ metadata:
     hub: true
     hubRequired: true
     edge: false
-
+    clusterRestrictions: 'Must be installed on clusters configured for Ingress.'
 
 forms: 
   - slug: default
