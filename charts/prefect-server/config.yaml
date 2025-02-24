@@ -15,12 +15,12 @@ forms:
   - slug: default
     label: 'Prefect server configuration'
     description: 'Something cool to say about it, maybe'
-    steps:
-      - slug: 'models'
-        variableSlugs:
-        - 'hostname'
-        ui:
-          label: 'Models'  
+    # steps:
+    #   - slug: 'models'
+    #     variableSlugs:
+    #     - 'hostname'
+    #     ui:
+    #       label: 'Models'  
 variables:
   - slug: 'hostname'
     name: 'hostname'
