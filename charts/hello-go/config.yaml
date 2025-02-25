@@ -11,7 +11,7 @@ metadata:
     hubRequired: true
     edge: false
     clusterMessage: Enter cluster restrictions and requirements here. Must be installed on clusters configured for Ingress.
-    infoMesage: Info message
+    infoMessage: Info message
     warningMessage: The Frontend UX displays this text as an warning message in the cluster Addon config dialog.
 
 forms: 
