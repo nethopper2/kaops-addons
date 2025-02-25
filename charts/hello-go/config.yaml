@@ -10,7 +10,8 @@ metadata:
     hub: true
     hubRequired: true
     edge: false
-    clusterRestrictions: 'Must be installed on clusters configured for Ingress.  This is an extra-long set of requirements to test the UX.'
+    clusterMessage: Enter cluster restrictions and requirements here. Must be installed on clusters configured for Ingress.
+    warningMessage: The Frontend UX displays this text as an warning message in the cluster Addon config dialog.
 
 forms: 
   - slug: default
