@@ -10,7 +10,8 @@ metadata:
     hub: true
     hubRequired: true
     edge: false
-    clusterRestrictions: Must be installed on clusters configured for Ingress.
+    clusterMessage: The Frontend UX displays this message as help text under the cluster selector.
+    infoMessage: The Frontend UX displays this message in the cluster Addon config dialog.
 
 forms: 
   - slug: default
