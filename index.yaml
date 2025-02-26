@@ -216,6 +216,20 @@ entries:
   opencost:
   - apiVersion: v2
     appVersion: 1.113.0
+    created: "2025-02-26T15:40:26.3807879Z"
+    dependencies:
+    - name: opencost
+      repository: https://opencost.github.io/opencost-helm-chart/
+      version: 1.43.2
+    description: KAOPS addon to install opencost
+    digest: a7b6f29f50e856482dd3ae472208c32b4c353e3ae392dc0b9db8172efb3eaa07
+    name: opencost
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/opencost-0.1.3-alpha.3/opencost-0.1.3-alpha.3.tgz
+    version: 0.1.3-alpha.3
+  - apiVersion: v2
+    appVersion: 1.113.0
     created: "2025-02-26T13:12:31.519609529Z"
     dependencies:
     - name: opencost
@@ -299,4 +313,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/prefect-server-0.1.0/prefect-server-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-26T13:12:31.519669401Z"
+generated: "2025-02-26T15:40:26.380861858Z"
