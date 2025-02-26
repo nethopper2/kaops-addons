@@ -37,7 +37,7 @@ variables:
     forms: ['default']
     ui:
       type: 'secret'
-      placeholder: 'Choose an existing Secret'
+      placeholder: 'Cloud Integration Secret'
       validation: 'required'
   - slug: 'cloudProviderApiKey'
     name: 'cloudProviderApiKey'
@@ -53,13 +53,6 @@ variables:
     ui:
       type: 'text'
       label: 'Default Cluster ID'
-  - slug: 'releaseLabel'
-    name: 'release'
-    path: 'opencost.opencost.metrics.serviceMonitor.additionalLabels.release'
-    forms: ['default']
-    ui:
-      type: 'text'
-      label: 'Release Label'
   - slug: 'prometheusServiceName'
     name: 'serviceName'
     path: 'opencost.opencost.prometheus.internal.serviceName'
@@ -67,11 +60,14 @@ variables:
     ui:
       type: 'text'
       label: 'Prometheus Service Name'
+      help: 'kubectl get svc -l app=kube-prometheus-stack-prometheus -n <agent namespace>'
 system:
   - path: 'opencost.opencost.metrics.serviceMonitor.namespace'
     value: '${system.cluster.namespace}'
   - path: 'opencost.opencost.prometheus.internal.namespaceName'
     value: '${system.cluster.namespace}'
+  - path: 'opencost.opencost.metrics.serviceMonitor.additionalLabels.release'
+    value: '${system.observabilityInfo.releaseName}'
 
 
 dependencies:
