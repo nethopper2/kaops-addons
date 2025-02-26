@@ -50,14 +50,13 @@ variables:
       # placeholder: "llama3.3"
       # help: 'Models to pull from: https://ollama.com/search'
       # validation: 'required'
-  # - slug: 'host'
-  #   name: 'host'
-  #   path: 'open-webui.ingress.host'
-  #   forms: ['default']
-  #   ui:
-  #     type: 'text'
-  #     label: 'Ingress host'
 system:
   - path: 'open-webui.ingress.host'
     value: 'chat.${system.hubCluster.ingressHostname}'
     
+output:
+  - name: Open Web UI URL
+    description: 'The URL to access Open WebUI'
+    value: 'chat.${system.hubCluster.ingressHostname}'
+    type: 'url'
+    isIframe: true
