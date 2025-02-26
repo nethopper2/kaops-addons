@@ -25,12 +25,19 @@ forms:
     #     ui:
     #       label: 'Models'  
 variables:
+  - slug: 'gpuEnabled'
+    path: 'open-webui.ollama.ollama.gpu.enabled'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Use GPU'
   - slug: 'modelsToPull'
     path: 'open-webui.ollama.ollama.models.pull'
     forms: ['default']
     ui:
       type: 'transferlist'
-      label: 'LLM Models to Pull'
+      label: 'Select LLM Models to Pull'
+      sourceLabel: 'LLM Models'
       options: ['deepseek-r1:1.5b', 'deepseek-r1:14b', 'gemma:2b', 'llama3.2:3b']
       help: 'Models to pull from: https://ollama.com/search'
       validation: 'required'
@@ -42,12 +49,6 @@ variables:
       # placeholder: "llama3.3"
       # help: 'Models to pull from: https://ollama.com/search'
       # validation: 'required'
-  - slug: 'gpuEnabled'
-    path: 'open-webui.ollama.ollama.gpu.enabled'
-    forms: ['default']
-    ui:
-      type: 'toggle'
-      label: 'Use GPU'
   # - slug: 'host'
   #   name: 'host'
   #   path: 'open-webui.ingress.host'
