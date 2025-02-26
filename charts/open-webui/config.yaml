@@ -59,4 +59,5 @@ output:
     description: 'The URL to access Open WebUI'
     value: 'chat.${system.hubCluster.ingressHostname}'
     type: 'url'
+    slug: default
     isIframe: true
