@@ -29,7 +29,7 @@ variables:
     path: 'open-webui.ollama.ollama.models.pull'
     forms: ['default']
     ui:
-      type; 'transferlist'
+      type: 'transferlist'
       label: 'LLM Models to Pull'
       options: ['deepseek-r1:1.5b', 'deepseek-r1:14b', 'gemma:2b', 'llama3.2:3b']
       help: 'Models to pull from: https://ollama.com/search'
