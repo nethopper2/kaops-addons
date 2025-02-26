@@ -10,81 +10,69 @@ metadata:
   installTargets:
     hub: true
     hubRequired: true
-    edge: false
+    edge: true
 
 # forms could be used with the Form Options choser you see in the Dialog now 
 # (only as needed, if needed..otherwise only default is used)
 forms: 
-  - slug: defaultOLD
-    label: 'Standard form'
-    description: 'Something cool to say about it, maybe'
-    # type: standard
-    steps:
-      - slug: 'step1'
-        # tags: true
-        # tagsAfter: name
-        variableSlugs:
-        - 'foo'
-        ui:
-          label: 'Step 1'  
-        # - 'nh_tags' # does this work to indicate nethopper tags (and ordering)?
-      - slug: 'step2'
-        variableSlugs:
-        - 'bar'
-        ui:
-          label: 'Step 2'
   - slug: default
-    label: 'Standard form'
-    description: 'Something cool to say about it, maybe'
+    label: 'OpenCost configuration'
+    description: 'Open source cost monitoring for cloud native environments'
+    steps:
+      - slug: 'opencost'
+        variableSlugs:
+        - 'cloudIntegrationSecret'
+        - 'cloudProviderApiKey'
+        - 'defaultClusterId'
+        - 'releaseLabel'
+        - 'prometheusServiceName'
+        ui:
+          label: 'OpenCost' 
         
-  # - slug: tags
-  #   schemaKey: tags
-  #   label: 'Tag Only'
-  #   type: tags
-  # - slug: secret
-  #   type: secret
   
 variables:
-  - slug: 'existingSecret'
-    # name: 'existingSecret'
-    path: 'cloudIntegrationSecret.existingSecret'
+  - slug: 'cloudIntegrationSecret'
+    name: 'cloudIntegrationSecret'
+    path: 'opencost.opencost.cloudIntegrationSecret'
     forms: ['default']
-    # schemaLookupKey: 'secret'
-    #requiredSecretKeys:
-     #- 'foo'
-     #- 'bar'
     ui:
       type: 'secret'
-      # modelValue: '$fields.foo'
-      # label: 'Foo'
       placeholder: 'Choose an existing Secret'
-      # help: ''
       validation: 'required'
-  # - slug: 'test1'
-  #   path: 'route.spout.test1'
-  #   forms: ['default']
-  #   isCreateOnly: true
-  #   ui:
-  #     label: 'Test 1'
-  #     type: 'text'
-  # - slug: 'test2'
-  #   path: 'route.spout.test2'
-  #   forms: ['default']
-  #   ui:
-  #     label: 'Test 2'
-  #     type: 'text'
-  # - slug: 'bar'
-  #   path: 'path.bar'
-  #   forms: ['default']
-  #   ui:
-  #     type: 'text'
-  #     label: 'Bar'
-  # - slug: 'baz'
-  #   path: 'path.baz'
-  #   forms: ['default']
-  #   ui:
-  #     type: 'text'
-  #     label: 'Baz'
+  - slug: 'cloudProviderApiKey'
+    name: 'cloudProviderApiKey'
+    path: 'opencost.opencost.exporter.cloudProviderApiKey'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Cloud Provider API Key'
+  - slug: 'defaultClusterId'
+    name: 'defaultClusterId'
+    path: 'opencost.opencost.exporter.defaultClusterId'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Default Cluster ID'
+  - slug: 'releaseLabel'
+    name: 'release'
+    path: 'opencost.opencost.metrics.serviceMonitor.additionalLabels.release'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Release Label'
+  - slug: 'prometheusServiceName'
+    name: 'serviceName'
+    path: 'opencost.opencost.prometheus.internal.serviceName'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Prometheus Service Name'
+system:
+  - path: 'opencost.opencost.metrics.serviceMonitor.namespace'
+    value: '${system.cluster.namespace}'
+  - path: 'opencost.opencost.prometheus.internal.namespaceName'
+    value: '${system.cluster.namespace}'
+
 
 dependencies:
   networkFeatures:

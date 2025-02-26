@@ -1,2 +1,18 @@
 cloudIntegrationSecret: {}
-  # existingSecret: 
+opencost:
+  opencost:
+    cloudIntegrationSecret: # user input - secret selector
+    exporter:
+      cloudProviderApiKey: # user input
+      defaultClusterId: # user input
+    metrics:
+      serviceMonitor:
+        additionalLabels:
+          release: # user input
+        enabled: true
+        namespace: # system input
+    prometheus:
+      internal:
+        namespaceName: # system input
+        port: 9090
+        serviceName: # system input
