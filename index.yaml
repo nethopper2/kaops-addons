@@ -33,6 +33,20 @@ entries:
   open-webui:
   - apiVersion: v2
     appVersion: 5.13.0
+    created: "2025-02-26T11:31:26.749516121Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.13.0
+    description: KAOPS addon to install open-webui
+    digest: 2f7218c4d4abafb8e9eb26e0eb8c6ba88ba27213a8357dfdb55ae2bf1ab431c8
+    name: open-webui
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/open-webui-0.1.12/open-webui-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
+    appVersion: 5.13.0
     created: "2025-02-24T13:39:48.383697625Z"
     dependencies:
     - name: open-webui
@@ -257,4 +271,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/prefect-server-0.1.0/prefect-server-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-25T15:24:16.901747289Z"
+generated: "2025-02-26T11:31:26.749601298Z"
