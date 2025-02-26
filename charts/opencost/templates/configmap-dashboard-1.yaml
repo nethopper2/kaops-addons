@@ -1,0 +1,11 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opencost-overview-dashboard
+  labels:
+    app: opencost
+    grafana_dashboard: "1"
+data:
+  dashboard1.json: |-
+{{ .Files.Get "dashboards/22208_rev2.json" | indent 4}}
