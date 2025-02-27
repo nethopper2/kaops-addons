@@ -62,7 +62,7 @@ output:
     slug: default
     isIframe: true
   - name: Network Name
-    description: 'The name of the network'
+    description: 'The name of the network ${system.network.id} ${system.network.name}'
     value: 'chat.${system.network.name}${system.network.id}${system.cluster.namespace}'
     type: 'text'
     slug: default
