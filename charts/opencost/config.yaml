@@ -53,14 +53,6 @@ variables:
     ui:
       type: 'text'
       label: 'Default Cluster ID'
-  - slug: 'prometheusServiceName'
-    name: 'serviceName'
-    path: 'opencost.opencost.prometheus.internal.serviceName'
-    forms: ['default']
-    ui:
-      type: 'text'
-      label: 'Prometheus Service Name'
-      help: 'kubectl get svc -l app=kube-prometheus-stack-prometheus -n <agent namespace>'
 system:
   - path: 'opencost.opencost.metrics.serviceMonitor.namespace'
     value: '${system.cluster.namespace}'
@@ -68,7 +60,17 @@ system:
     value: '${system.cluster.namespace}'
   - path: 'opencost.opencost.metrics.serviceMonitor.additionalLabels.release'
     value: '${system.observabilityInfo.releaseName}'
+  - path: 'opencost.opencost.prometheus.internal.serviceName'
+    value: '${system.observabilityInfo.prometheusServiceName}'
+  - path: 'cluster.type'
+    value: '${system.cluster.clusterRole}'
 
+output:
+  - name: OpenCost Dashboard
+    description: 'Grafana dashboard title for OpenCost'
+    value: 'OpenCost / Overview'
+    type: 'text'
+    slug: default
 
 dependencies:
   networkFeatures:

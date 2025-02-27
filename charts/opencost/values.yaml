@@ -1,4 +1,6 @@
 cloudIntegrationSecret: {}
+cluster:
+  type: # system input
 opencost:
   opencost:
     cloudIntegrationSecret: # user input - secret selector
