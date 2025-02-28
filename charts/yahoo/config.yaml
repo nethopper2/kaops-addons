@@ -1,6 +1,6 @@
 metadata:
-  slug: 'customize-open-webui'
-  name: 'Customized WebUI'
+  slug: 'yahoo-webui'
+  name: 'Yahoo WebUI'
   description: 'Sandbox addon that tests the customization of Open WebUI'
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo-dark.png' # TODO
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo.png' # TODO
