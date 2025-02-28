@@ -58,12 +58,7 @@ system:
 output:
   - name: Open Web UI URL
     description: 'The URL to access Open WebUI'
-    value: 'chat.${system.hubCluster.ingressHostname}'
+    value: 'https://chat.${system.hubCluster.ingressHostname}'
     type: 'url'
     slug: default
     isIframe: true
-  - name: Network Name
-    description: 'The name of the network ${system.network.id} ${system.network.name}'
-    value: 'chat.${system.network.name}${system.network.id}${system.cluster.namespace}'
-    type: 'text'
-    slug: default
