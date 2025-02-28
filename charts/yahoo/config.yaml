@@ -1,0 +1,64 @@
+metadata:
+  slug: 'open-webui'
+  name: 'Open WebUI'
+  description: 'Open WebUI is a self-hosted, offline AI platform supporting LLM runners like Ollama.'
+  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo-dark.png' # TODO
+  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo.png' # TODO
+  detailUrl: 'https://addons.kaops.net/openwebui/'
+  externalUrl: 'https://openwebui.com/'
+  isProduction: true
+  installTargets:
+    hub: true
+    hubRequired: true
+    edge: false
+    clusterMessage: Must be installed on clusters configured for Ingress.
+
+forms: 
+  - slug: default
+    label: 'Open WebUI configuration'
+    description: 'Something cool to say about it, maybe'
+    # steps:
+    #   - slug: 'models'
+    #     variableSlugs:
+    #     - 'modelsToPull'
+    #     - 'gpuEnabled'
+    #     - 'host'
+    #     ui:
+    #       label: 'Models'  
+variables:
+  - slug: 'gpuEnabled'
+    path: 'open-webui.ollama.ollama.gpu.enabled'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Use GPU'
+  - slug: 'modelsToPull'
+    path: 'open-webui.ollama.ollama.models.pull'
+    forms: ['default']
+    ui:
+      type: 'transferlist'
+      label: 'Select LLM Models to Pull'
+      sourceLabel: 'LLM Models'
+      options: ['deepseek-r1:1.5b', 'deepseek-r1:14b', 'gemma:2b', 'llama3.2:3b']
+      help: 'Models to pull from: https://ollama.com/search'
+      searchable: true
+      validation: 'required'
+      # TODO: change text to list
+      # type: 'select'
+      # options: ['deepseek-r1:1.5b', 'deepseek-r1:14b', 'gemma:2b', 'llama3.2:3b']
+      # multiple: true
+      # label: 'LLM Models to Pull'
+      # placeholder: "llama3.3"
+      # help: 'Models to pull from: https://ollama.com/search'
+      # validation: 'required'
+system:
+  - path: 'open-webui.ingress.host'
+    value: 'chat.${system.hubCluster.ingressHostname}'
+    
+output:
+  - name: Open Web UI URL
+    description: 'The URL to access Open WebUI'
+    value: 'https://chat.${system.hubCluster.ingressHostname}'
+    type: 'url'
+    slug: default
+    isIframe: true
