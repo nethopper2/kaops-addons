@@ -33,6 +33,20 @@ entries:
   open-webui:
   - apiVersion: v2
     appVersion: 5.13.0
+    created: "2025-02-28T09:22:38.830640511Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.13.0
+    description: KAOPS addon to install open-webui
+    digest: 420868149fc1f39ebe149908177967763463a3aa39c17e0d7cf16bb05e8ebc3e
+    name: open-webui
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/open-webui-0.1.18/open-webui-0.1.18.tgz
+    version: 0.1.18
+  - apiVersion: v2
+    appVersion: 5.13.0
     created: "2025-02-27T14:12:50.085506185Z"
     dependencies:
     - name: open-webui
@@ -314,6 +328,20 @@ entries:
     version: 0.1.3-alpha.5
   - apiVersion: v2
     appVersion: 1.113.0
+    created: "2025-02-28T09:22:38.996089369Z"
+    dependencies:
+    - name: opencost
+      repository: https://opencost.github.io/opencost-helm-chart/
+      version: 1.43.2
+    description: KAOPS addon to install opencost
+    digest: 9ae6175e54bb50856fbb6535259e5e4372b9f10094c7a32252293cc66207a581
+    name: opencost
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/opencost-0.1.3-alpha.5/opencost-0.1.3-alpha.5.tgz
+    version: 0.1.3-alpha.5
+  - apiVersion: v2
+    appVersion: 1.113.0
     created: "2025-02-26T15:57:19.864944108Z"
     dependencies:
     - name: opencost
@@ -425,4 +453,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/prefect-server-0.1.0/prefect-server-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-27T23:44:08.661483802Z"
+generated: "2025-02-28T09:22:38.996251882Z"
