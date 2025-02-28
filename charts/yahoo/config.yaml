@@ -1,5 +1,5 @@
 metadata:
-  slug: 'open-webui'
+  slug: 'customize-open-webui'
   name: 'Customized WebUI'
   description: 'Sandbox addon that tests the customization of Open WebUI'
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo-dark.png' # TODO
@@ -10,7 +10,7 @@ metadata:
     hub: true
     hubRequired: true
     edge: false
-    clusterMessage: '*** Must be installed on clusters configured for Ingress.'
+    clusterMessage: '*** MUST be installed on clusters configured for Ingress.'
 
 forms: 
   - slug: default
