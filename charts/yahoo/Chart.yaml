@@ -1,5 +1,5 @@
 apiVersion: v2
-name: open-webui
+name: yahoo-webui
 description: KAOPS addon to install open-webui
 
 # A chart can be either an 'application' or a 'library' chart.
