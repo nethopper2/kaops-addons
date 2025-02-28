@@ -453,4 +453,19 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/prefect-server-0.1.0/prefect-server-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-28T09:22:38.996251882Z"
+  yahoo-webui:
+  - apiVersion: v2
+    appVersion: 5.13.0
+    created: "2025-02-28T20:12:17.317081276Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.13.0
+    description: KAOPS addon to install open-webui
+    digest: b894e0e20e451196bec75d71aa9faca8fe9d0a6d3a3aae74ca5a0d1060530cda
+    name: yahoo-webui
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
+    version: 0.1.18
+generated: "2025-02-28T20:12:17.317171073Z"
