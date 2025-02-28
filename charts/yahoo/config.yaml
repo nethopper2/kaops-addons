@@ -6,7 +6,6 @@ metadata:
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo.png' # TODO
   detailUrl: 'https://addons.kaops.net/openwebui/'
   externalUrl: 'https://openwebui.com/'
-  isProduction: true
   installTargets:
     hub: true
     hubRequired: true
