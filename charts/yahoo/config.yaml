@@ -1,7 +1,7 @@
 metadata:
   slug: 'open-webui'
-  name: 'Open WebUI'
-  description: 'Open WebUI is a self-hosted, offline AI platform supporting LLM runners like Ollama.'
+  name: 'Customized WebUI'
+  description: 'Sandbox addon that tests the customization of Open WebUI'
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo-dark.png' # TODO
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/openwebui/logo.png' # TODO
   detailUrl: 'https://addons.kaops.net/openwebui/'
