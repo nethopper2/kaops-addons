@@ -42,6 +42,7 @@ variables:
           value: true
         - label: No
           value: false
+      value: true
   - slug: 'item2'
     path: 'item2'
     forms: ['default']
