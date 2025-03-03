@@ -47,6 +47,7 @@ variables:
     path: 'item2'
     forms: ['default']
     ui:
+    if: 'get(item1).value'
       type: 'text'
       label: 'Item 2'
     
