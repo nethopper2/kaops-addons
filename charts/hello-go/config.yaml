@@ -16,7 +16,7 @@ metadata:
 
 forms: 
   - slug: default
-    label: 'Hello worl app '
+    label: 'Hello world app'
     description: 'Something cool to say about it, maybe'
     # steps:
     #   - slug: 'hello'
@@ -26,10 +26,26 @@ forms:
     #       label: 'Hello'  
 variables:
   - slug: 'hello'
-    name: 'hello'
     path: 'hello'
-    forms: ['hello']
+    forms: ['default']
     ui:
       type: 'text'
       label: 'Hello'
+  - slug: 'item1'
+    path: 'item1'
+    forms: ['default']
+    ui:
+      type: 'radio'
+      label: 'Show item 2?'
+      options:
+        - label: Yes
+          value: true
+        - label: No
+          value: false
+  - slug: 'item2'
+    path: 'item2'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Item 2'
     
