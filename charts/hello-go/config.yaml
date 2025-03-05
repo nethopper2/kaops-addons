@@ -17,13 +17,6 @@ metadata:
 forms: 
   - slug: default
     label: 'Hello world app'
-    description: 'Something cool to say about it, maybe'
-    # steps:
-    #   - slug: 'hello'
-    #     variableSlugs:
-    #     - 'name'
-    #     ui:
-    #       label: 'Hello'  
 variables:
   - slug: 'hello'
     path: 'hello'
