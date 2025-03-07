@@ -1,0 +1,8 @@
+ingress-nginx:
+  controller:
+    extraArgs:
+      enable-ssl-passthrough: true
+cert-manager:
+  crds:
+    enabled: true
+    keep: false
