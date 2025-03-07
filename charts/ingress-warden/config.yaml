@@ -10,3 +10,10 @@ metadata:
     hub: true
     hubRequired: false
     edge: false
+
+forms: 
+  - slug: default
+    label: 'Ingress Warden configuration'
+    description: 'NGINX Ingress Controller and Cert-Manager configuration'
+variables:
+system:
