@@ -16,4 +16,9 @@ forms:
     label: 'Ingress Warden configuration'
     description: 'NGINX Ingress Controller and Cert-Manager configuration'
 variables:
-system:
+  - slug: 'keepCRDs'
+    path: 'cert-manager.crds.keep'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Keep CRDs for Cert-Manager on uninstall'
