@@ -1,6 +1,7 @@
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
+    tag: latest
   ollama:
     ollama:
       gpu:
