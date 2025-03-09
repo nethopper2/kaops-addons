@@ -1,7 +1,7 @@
 metadata:
   slug: 'private-ai'
   name: 'Private AI'
-  description: 'Private AI is a self-hosted Open WebUI based, offline AI platform supporting LLM runners like Ollama.'
+  description: 'Deploy generative AI while safeguarding corporate data and scaling into your own infrastructure.'
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png' # TODO
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png' # TODO
   detailUrl: 'https://addons.kaops.net/openwebui/'
