@@ -23,3 +23,6 @@ open-webui:
     host:
     tls: true
     existingSecret: "webui-tls"
+  extraEnvVars:
+    - name: WEBUI_NAME
+      value: 'Private AI'
