@@ -26,3 +26,5 @@ open-webui:
   extraEnvVars:
     - name: WEBUI_NAME
       value: 'Private AI'
+    - name: DISABLE_CODE_INTERPRETER
+      value: true
