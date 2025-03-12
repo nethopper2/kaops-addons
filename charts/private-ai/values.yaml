@@ -27,7 +27,7 @@ open-webui:
   extraEnvVars:
     - name: WEBUI_NAME
       value: 'Private AI'
-    - name: DISABLE_CODE_INTERPRETER
+    - name: ENABLE_CODE_EXECUTION
       value: 'true'
     - name: ENABLE_GOOGLE_DRIVE_INTEGRATION
       value: 'true'
