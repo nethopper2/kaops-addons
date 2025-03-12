@@ -2,6 +2,7 @@ open-webui:
   image:
     repository: nethopper/kaops-open-webui
     tag: latest
+    pullPolicy: Always
   ollama:
     ollama:
       gpu:
