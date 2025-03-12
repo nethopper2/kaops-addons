@@ -29,6 +29,8 @@ open-webui:
       value: 'Private AI'
     - name: ENABLE_CODE_EXECUTION
       value: 'false'
+    - name: ENABLE_CODE_INTERPRETER
+      value: 'false'      
     - name: ENABLE_GOOGLE_DRIVE_INTEGRATION
       value: 'true'
     - name: ENABLE_ONEDRIVE_INTEGRATION
