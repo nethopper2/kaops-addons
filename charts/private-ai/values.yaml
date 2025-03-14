@@ -1,7 +1,7 @@
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: v1.0.0
+    tag: git-ab43b44
     pullPolicy: Always
   ollama:
     ollama:
