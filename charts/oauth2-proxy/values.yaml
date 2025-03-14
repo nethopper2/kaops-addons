@@ -9,7 +9,9 @@ oauth2-proxy:
       nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
       nginx.ingress.kubernetes.io/ssl-redirect: 'true'
       nginx.ingress.kubernetes.io/tls-acme: 'true'
-    host:
+    hosts:
+      - oauth.gcp.sobczyk.dev
     tls:
-    - hosts:
-      secretName: oauth-tls
+      - hosts:
+          - oauth.gcp.sobczyk.dev
+        secretName: oauth-tls

@@ -25,11 +25,6 @@ variables:
       type: 'toggle'
       label: 'Use GPU'
     
-system:
-  - path: 'oauth2-proxy.ingress.host'
-    value: 'oauth.${system.hubCluster.ingressHostname}'
-  - path: 'oauth2-proxy.ingress.tls.hosts'
-    value: 'oauth.${system.hubCluster.ingressHostname}'
 
 output:
   - name: Test
