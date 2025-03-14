@@ -25,6 +25,10 @@ variables:
       type: 'toggle'
       label: 'Use GPU'
     
+system:
+  - path: 'open-webui.ingress.host'
+    value: 'oauth.${system.hubCluster.ingressHostname}'
+
 output:
   - name: Test
     description: 'test'
