@@ -10,5 +10,6 @@ oauth2-proxy:
       nginx.ingress.kubernetes.io/ssl-redirect: 'true'
       nginx.ingress.kubernetes.io/tls-acme: 'true'
     host:
-    tls: true
-    existingSecret: "oauth-tls"
+    tls:
+    - hosts:
+      secretName: oauth-tls
