@@ -117,6 +117,20 @@ entries:
   oauth2-proxy:
   - apiVersion: v2
     appVersion: 0.5.16
+    created: "2025-03-14T11:29:05.555970727Z"
+    dependencies:
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.6
+    description: A Helm chart for Kubernetes
+    digest: dce80dde0a2d69208c6762ace76c0e0650ccb92ec72f27dac780cb05cc0b8ece
+    name: oauth2-proxy
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/oauth2-proxy-0.1.3/oauth2-proxy-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v2
+    appVersion: 0.5.16
     created: "2025-03-14T11:18:54.423315412Z"
     dependencies:
     - name: oauth2-proxy
@@ -694,4 +708,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-03-14T11:18:54.423408366Z"
+generated: "2025-03-14T11:29:05.556096442Z"
