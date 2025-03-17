@@ -1,6 +1,6 @@
 apiVersion: v2
-name: private-ai
-description: KAOPS addon to install private-ai
+name: private-ai-oidc
+description: KAOPS addon to install private-ai-oidc
 
 # A chart can be either an 'application' or a 'library' chart.
 #
