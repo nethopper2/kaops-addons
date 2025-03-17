@@ -35,3 +35,5 @@ open-webui:
       value: 'true'
     - name: ENABLE_ONEDRIVE_INTEGRATION
       value: 'true'
+    - name: BYPASS_EMBEDDING_AND_RETRIEVAL
+      value: 'true'
