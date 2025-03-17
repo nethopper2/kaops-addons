@@ -2,8 +2,9 @@ metadata:
   slug: 'private-ai'
   name: 'Private AI'
   description: 'Deploy generative AI while safeguarding corporate data and scaling into your own infrastructure.'
-  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png' # TODO
-  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png' # TODO
+  categories: ['AI']
+  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png'
+  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png'
   detailUrl: 'https://addons.kaops.net/openwebui/'
   externalUrl: 'https://openwebui.com/'
   isProduction: false
@@ -43,14 +44,6 @@ variables:
       help: 'Models to pull from: https://ollama.com/search'
       searchable: true
       validation: 'required'
-      # TODO: change text to list
-      # type: 'select'
-      # options: ['deepseek-r1:1.5b', 'deepseek-r1:14b', 'gemma:2b', 'llama3.2:3b']
-      # multiple: true
-      # label: 'LLM Models to Pull'
-      # placeholder: "llama3.3"
-      # help: 'Models to pull from: https://ollama.com/search'
-      # validation: 'required'
 system:
   - path: 'open-webui.ingress.host'
     value: 'chat.${system.hubCluster.ingressHostname}'
