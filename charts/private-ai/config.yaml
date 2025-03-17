@@ -40,7 +40,7 @@ variables:
       type: 'transferlist'
       label: 'Select LLM Models to Pull'
       sourceLabel: 'LLM Models'
-      options: ['deepseek-r1:1.5b', 'deepseek-r1:14b', 'gemma:2b', 'llama3.2:3b']
+      options: ['gemma2:9b','gemma3:1b','gemma3:4b','lamma3.1:8b','lamma3.2:3b']
       help: 'Models to pull from: https://ollama.com/search'
       searchable: true
       validation: 'required'
