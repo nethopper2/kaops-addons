@@ -4,6 +4,8 @@ open-webui:
     tag: git-d3fb5d3
     pullPolicy: Always
   ollama:
+    persistentVolume:
+      enabled: true
     ollama:
       gpu:
         enabled: false
