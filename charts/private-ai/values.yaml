@@ -1,7 +1,7 @@
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: git-ab43b44
+    tag: git-d3fb5d3
     pullPolicy: Always
   ollama:
     ollama:
@@ -34,4 +34,6 @@ open-webui:
     - name: ENABLE_GOOGLE_DRIVE_INTEGRATION
       value: 'true'
     - name: ENABLE_ONEDRIVE_INTEGRATION
+      value: 'true'
+    - name: BYPASS_EMBEDDING_AND_RETRIEVAL
       value: 'true'
