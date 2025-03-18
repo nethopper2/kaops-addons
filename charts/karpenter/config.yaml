@@ -1,6 +1,6 @@
 metadata:
   slug: 'karpenter'
-  name: 'Karpenter'
+  name: 'Autoscaling'
   description: 'Simplify Kubernetes infrastructure with the right nodes at the right time.'
   categories: ['Infrastructure']
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/karpenter/logo.png'

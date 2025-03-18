@@ -1,6 +1,6 @@
 metadata:
   slug: 'velero'
-  name: 'Velero'
+  name: 'Backup & Restore'
   description: 'Backup and migrate Kubernetes resources and persistent volumes.'
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/velero/logo.png' # TODO
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/velero/logo.png' # TODO

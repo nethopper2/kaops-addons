@@ -1,6 +1,6 @@
 metadata:
   slug: 'opencost'
-  name: 'OpenCost'
+  name: 'Cost Monitoring'
   description: 'OpenCost is a cost management tool for Kubernetes.'
   categories: ['Cost Management']
   # releaseDate: 
