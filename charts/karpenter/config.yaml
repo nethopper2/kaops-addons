@@ -2,6 +2,7 @@ metadata:
   slug: 'karpenter'
   name: 'Karpenter'
   description: 'Simplify Kubernetes infrastructure with the right nodes at the right time.'
+  categories: ['Infrastructure']
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/karpenter/logo.png'
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/karpenter/logo.png'
   detailUrl: 'https://addons.kaops.net/karpenter'
