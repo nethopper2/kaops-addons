@@ -12,4 +12,4 @@ oauth2-proxy:
     hosts:
     tls:
       - hosts:
-        secretName: oauth-tls
+        secretName:
