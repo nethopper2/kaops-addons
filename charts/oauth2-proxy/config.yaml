@@ -1,34 +1,33 @@
 metadata:
-  slug: 'oauth2-proxy'
-  name: 'oAuth2 Proxy'
-  description: 'oAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.'
-  logoUrlDark: 'https://avatars.githubusercontent.com/u/62798169?s=200&v=4'
-  logoUrlLight: 'https://avatars.githubusercontent.com/u/62798169?s=200&v=4'
-  detailUrl: 'https://addons.kaops.net/oauth2-proxy/'
-  externalUrl: 'https://oauth2-proxy.github.io/oauth2-proxy/'
+  slug: "oauth2-proxy"
+  name: "oAuth2 Proxy"
+  description: "oAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group."
+  logoUrlDark: "https://avatars.githubusercontent.com/u/62798169?s=200&v=4"
+  logoUrlLight: "https://avatars.githubusercontent.com/u/62798169?s=200&v=4"
+  detailUrl: "https://addons.kaops.net/oauth2-proxy/"
+  externalUrl: "https://oauth2-proxy.github.io/oauth2-proxy/"
   isProduction: false
   installTargets:
     hub: true
     hubRequired: false
     edge: false
 
-forms: 
+forms:
   - slug: default
-    label: 'oAuth2 Proxy configuration'
-    description: 'Something cool to say about it, maybe'
+    label: "oAuth2 Proxy configuration"
+    description: "Something cool to say about it, maybe"
 
 variables:
-  - slug: 'test'
-    path: 'open-webui.ollama.ollama.gpu.enabled'
-    forms: ['default']
+  - slug: "test"
+    path: "open-webui.ollama.ollama.gpu.enabled"
+    forms: ["default"]
     ui:
-      type: 'toggle'
-      label: 'Use GPU'
-    
+      type: "toggle"
+      label: "Use GPU"
 
 output:
   - name: Test
-    description: 'test'
-    value: '${system.hubCluster.ingressHostname}'
-    type: 'url'
+    description: "test"
+    value: "https://oauth.${system.hubCluster.ingressHostname}"
+    type: "url"
     slug: default

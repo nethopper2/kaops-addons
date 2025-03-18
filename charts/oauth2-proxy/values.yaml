@@ -4,14 +4,14 @@ oauth2-proxy:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: 'true'
+      kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/backend-protocol: http
-      nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
-      nginx.ingress.kubernetes.io/ssl-redirect: 'true'
-      nginx.ingress.kubernetes.io/tls-acme: 'true'
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/tls-acme: "true"
     hosts:
-      - oauth.gcp.sobczyk.dev
+      - oauth.${system.hubCluster.ingressHostname}
     tls:
       - hosts:
-          - oauth.gcp.sobczyk.dev
+          - oauth.${system.hubCluster.ingressHostname}
         secretName: oauth-tls
