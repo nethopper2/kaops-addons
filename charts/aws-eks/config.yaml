@@ -2,6 +2,7 @@ metadata:
   slug: aws-eks
   name: AWS EKS
   description: Start, run, and scale Kubernetes applications in the AWS cloud and on-premises data centers.
+  categories: ['Infrastructure']
   logoUrlDark: https://nh-addons.s3.us-east-1.amazonaws.com/aws-eks/logo-dark.png
   logoUrlLight: https://nh-addons.s3.us-east-1.amazonaws.com/aws-eks/logo-light.png
   detailUrl: https://addons.kaops.net/aws-eks/
