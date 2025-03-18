@@ -29,6 +29,6 @@ variables:
 output:
   - name: Test
     description: 'test'
-    value: '${system.hubCluster.ingressHostname}'
+    value: 'https://oauth.${system.hubCluster.ingressHostname}'
     type: 'url'
     slug: default
