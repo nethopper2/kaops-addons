@@ -117,6 +117,20 @@ entries:
   oauth2-proxy:
   - apiVersion: v2
     appVersion: 0.5.16
+    created: "2025-03-18T23:49:59.500622076Z"
+    dependencies:
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.6
+    description: A Helm chart for Kubernetes
+    digest: aa544c700e024f810fe55ce1bf000e683acc7d2866808f4d90843caecc88d91d
+    name: oauth2-proxy
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/oauth2-proxy-0.1.9/oauth2-proxy-0.1.9.tgz
+    version: 0.1.9
+  - apiVersion: v2
+    appVersion: 0.5.16
     created: "2025-03-18T12:16:55.285415089Z"
     dependencies:
     - name: oauth2-proxy
@@ -511,13 +525,13 @@ entries:
   opencost:
   - apiVersion: v2
     appVersion: 1.113.0
-    created: "2025-03-18T18:52:16.586823391Z"
+    created: "2025-03-18T17:09:07.867305257Z"
     dependencies:
     - name: opencost
       repository: https://opencost.github.io/opencost-helm-chart/
       version: 1.43.2
     description: KAOPS addon to install opencost
-    digest: 4fe831091b84eefb357f565a2fbd9b928ee3de7b600d94556ad21ac04b8fe38f
+    digest: 7a244a2f28080e71a1eb284dc79485b903399b4cde214e89c85383f278dec94e
     name: opencost
     type: application
     urls:
@@ -525,13 +539,13 @@ entries:
     version: 0.1.3-alpha.5
   - apiVersion: v2
     appVersion: 1.113.0
-    created: "2025-03-18T14:24:42.766086626Z"
+    created: "2025-03-18T23:49:59.618361835Z"
     dependencies:
     - name: opencost
       repository: https://opencost.github.io/opencost-helm-chart/
       version: 1.43.2
     description: KAOPS addon to install opencost
-    digest: 1848e0b6d9a3bd28442d8a6bb667a8fcfa427889021d7bd15a4893860f7b90e9
+    digest: ee2fd6f25f3578c486ec5497bec0fa47fcd0846c515793ab2d4f2ffd4638f8f3
     name: opencost
     type: application
     urls:
@@ -595,13 +609,27 @@ entries:
     version: 0.1.3-alpha.5
   - apiVersion: v2
     appVersion: 1.113.0
-    created: "2025-03-18T17:09:07.867305257Z"
+    created: "2025-03-18T14:24:42.766086626Z"
     dependencies:
     - name: opencost
       repository: https://opencost.github.io/opencost-helm-chart/
       version: 1.43.2
     description: KAOPS addon to install opencost
-    digest: 7a244a2f28080e71a1eb284dc79485b903399b4cde214e89c85383f278dec94e
+    digest: 1848e0b6d9a3bd28442d8a6bb667a8fcfa427889021d7bd15a4893860f7b90e9
+    name: opencost
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/opencost-0.1.3-alpha.5/opencost-0.1.3-alpha.5.tgz
+    version: 0.1.3-alpha.5
+  - apiVersion: v2
+    appVersion: 1.113.0
+    created: "2025-03-18T18:52:16.586823391Z"
+    dependencies:
+    - name: opencost
+      repository: https://opencost.github.io/opencost-helm-chart/
+      version: 1.43.2
+    description: KAOPS addon to install opencost
+    digest: 4fe831091b84eefb357f565a2fbd9b928ee3de7b600d94556ad21ac04b8fe38f
     name: opencost
     type: application
     urls:
@@ -1045,4 +1073,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-03-18T18:52:16.990829421Z"
+generated: "2025-03-18T23:50:00.01286844Z"
