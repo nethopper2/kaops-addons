@@ -10,8 +10,8 @@ oauth2-proxy:
       nginx.ingress.kubernetes.io/ssl-redirect: 'true'
       nginx.ingress.kubernetes.io/tls-acme: 'true'
     hosts:
-      - oauth.gcp.sobczyk.dev
+      - oauth.${system.hubCluster.ingressHostname}
     tls:
       - hosts:
-          - oauth.gcp.sobczyk.dev
+          - oauth.${system.hubCluster.ingressHostname}
         secretName: oauth-tls
