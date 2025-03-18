@@ -2,6 +2,7 @@ metadata:
   slug: 'ollama'
   name: 'Ollama'
   description: 'Deploy and run on Kubernetes clusters to manage LLMs in containerized environments.'
+  categories: ['Artificial Intelligence']
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/ollama/logo-dark.png' # TODO
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/ollama/logo.png' # TODO
   detailUrl: 'https://addons.kaops.net/ollama/'

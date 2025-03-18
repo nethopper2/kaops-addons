@@ -2,6 +2,7 @@ metadata:
   slug: 'ingress-warden'
   name: 'Ingress Warden'
   description: 'NGINX Ingress Controller and Cert-Manager'
+  categories: ['Networking']
   logoUrlDark: 'https://www.svgrepo.com/show/373924/nginx.svg'
   logoUrlLight: 'https://www.svgrepo.com/show/373924/nginx.svg'
   detailUrl: 'https://addons.kaops.net/ingresswarden/'

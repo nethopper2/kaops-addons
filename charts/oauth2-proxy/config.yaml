@@ -2,6 +2,7 @@ metadata:
   slug: "oauth2-proxy"
   name: "oAuth2 Proxy"
   description: "oAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group."
+  categories: ["Security"]
   logoUrlDark: "https://avatars.githubusercontent.com/u/62798169?s=200&v=4"
   logoUrlLight: "https://avatars.githubusercontent.com/u/62798169?s=200&v=4"
   detailUrl: "https://addons.kaops.net/oauth2-proxy/"

@@ -2,6 +2,7 @@ metadata:
   slug: 'prefect-server'
   name: 'Prefect Server'
   description: 'Prefect Server is an open-source backend platform designed to manage, monitor, and execute data workflows efficiently.'
+  categories: ['Data Management']
   logoUrlDark: 'https://www.prefect.io/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2F3ugk85nk%2Fproduction%2Fadfbb1f387c5923c308ead3c652a473fe3a6112e-31x47.svg%3Ffit%3Dmax%26auto%3Dformat&w=1920&q=75' # TODO
   logoUrlLight: 'https://www.prefect.io/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2F3ugk85nk%2Fproduction%2Fadfbb1f387c5923c308ead3c652a473fe3a6112e-31x47.svg%3Ffit%3Dmax%26auto%3Dformat&w=1920&q=75' # TODO
   detailUrl: 'https://addons.kaops.net/perfect-server/'

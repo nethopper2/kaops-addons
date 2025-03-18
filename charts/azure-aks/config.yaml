@@ -1,0 +1,21 @@
+metadata:
+  slug: azure-aks
+  name: Azure AKS
+  description: Deploy and scale containers on managed Kubernetes services in the Azure cloud.
+  categories: ['Infrastructure']
+  logoUrlDark: https://nh-addons.s3.us-east-1.amazonaws.com/azure-aks/logo.png
+  logoUrlLight: https://nh-addons.s3.us-east-1.amazonaws.com/azure-aks/logo.png
+  detailUrl: https://addons.kaops.net/azure-aks
+  externalUrl: https://azure.microsoft.com/en-us/products/kubernetes-service/
+  isProduction: false
+  installTargets:
+    hub: true
+    hubRequired: true
+    edge: false
+
+forms: 
+  - slug: default
+    label: Azure AKS configuration
+    description: Deploy and scale containers on managed Kubernetes services in the Azure cloud.
+variables:
+system:

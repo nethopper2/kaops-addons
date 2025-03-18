@@ -1,7 +1,8 @@
 metadata:
   slug: 'opencost'
-  name: 'OpenCost'
+  name: 'Cost Monitoring'
   description: 'OpenCost is a cost management tool for Kubernetes.'
+  categories: ['Cost Management']
   # releaseDate: 
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/opencost/logo-dark.png'
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/opencost/logo.png'
