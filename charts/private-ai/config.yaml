@@ -44,4 +44,3 @@ output:
     value: 'https://chat.${system.hubCluster.ingressHostname}'
     type: 'url'
     slug: default
-    isIframe: true
