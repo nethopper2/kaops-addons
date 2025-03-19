@@ -17,15 +17,6 @@ metadata:
 forms: 
   - slug: default
     label: 'Open WebUI configuration'
-    description: 'Something cool to say about it, maybe'
-    # steps:
-    #   - slug: 'models'
-    #     variableSlugs:
-    #     - 'modelsToPull'
-    #     - 'gpuEnabled'
-    #     - 'host'
-    #     ui:
-    #       label: 'Models'  
 variables:
   - slug: 'gpuEnabled'
     path: 'open-webui.ollama.ollama.gpu.enabled'
