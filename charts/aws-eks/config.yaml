@@ -26,4 +26,12 @@ variables:
       type: 'text'
       placeholder: 'awsconfig'
       validation: 'required'
+  - slug: 'cluster_name'
+    name: 'cluster_name'
+    path: 'cluster_name'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'EKS Cluster Name'
+      validation: 'required'
 system:
