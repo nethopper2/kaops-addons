@@ -1,0 +1,28 @@
+apiVersion: tf.crossplane.io/v1alpha1
+kind: Workspace
+metadata:
+  name: {{.Values.workspaceName}}
+spec:
+  forProvider:
+    source: Remote
+    module: git::https://github.com/nethopper2/kaops-addons.git//charts/aws-eks/tf/eks-hub-gpu
+  writeConnectionSecretToRef:
+    namespace: default
+    name: private-ai-eks-connection-ref
+  providerConfigRef:
+    name: {{.Values.providerConfigRef}}
+  vars:
+    - key: region
+      value: {{.Values.tf.region}}
+    - key: cluster_name
+      value: {{.Values.tf.cluster_name}}
+    - key: k8s_version
+      value: {{.Values.tf.k8s_version}}
+    - key: instance_type_default
+      value: {{.Values.tf.instance_type_default}}
+    - key: instance_type_gpu
+      value: {{.Values.tf.instance_type_gpu}}
+    - key: vpc_cidr
+      value: {{.Values.tf.vpc_cidr}}
+    - key: ami_type
+      value: {{.Values.tf.ami_type}}
