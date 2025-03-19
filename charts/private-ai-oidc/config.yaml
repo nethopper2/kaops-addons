@@ -33,12 +33,6 @@ variables:
     ui:
       type: "toggle"
       label: "Use GPU"
-  - slug: "authEnabled"
-    path: "open-webui.extraEnvVars[6].value"
-    forms: ["default"]
-    ui:
-      type: "toggle"
-      label: "Enable Default Auth"
   - slug: "modelsToPull"
     path: "open-webui.ollama.ollama.models.pull"
     forms: ["default"]
@@ -46,7 +40,8 @@ variables:
       type: "transferlist"
       label: "Select LLM Models to Pull"
       sourceLabel: "LLM Models"
-      options: ['gemma2','gemma3:1b','gemma3:4b','llama3.1:8b','llama3.2:3b']
+      options:
+        ["gemma2", "gemma3:1b", "gemma3:4b", "llama3.1:8b", "llama3.2:3b"]
       help: "Models to pull from: https://ollama.com/search"
       searchable: true
       validation: "required"
