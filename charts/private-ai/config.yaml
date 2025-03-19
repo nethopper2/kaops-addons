@@ -43,7 +43,6 @@ variables:
       options: ['gemma2','gemma3:1b','gemma3:4b','llama3.1:8b','llama3.2:3b']
       help: 'Models to pull from: https://ollama.com/search'
       searchable: true
-      validation: 'required'
 system:
   - path: 'open-webui.ingress.host'
     value: 'chat.${system.hubCluster.ingressHostname}'
