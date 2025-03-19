@@ -19,12 +19,54 @@ forms:
     description: "Something cool to say about it, maybe"
 
 variables:
-  - slug: "test"
-    path: "open-webui.ollama.ollama.gpu.enabled"
+  - slug: "clientId"
+    path: "oauth2-proxy.config.client_id"
+    forms: ["default"]
+    ui:
+      type: "text"
+      label: "Oauth Client ID"
+  - slug: "clientSecret"
+    path: "oauth2-proxy.config.client_secret"
+    forms: ["default"]
+    ui:
+      type: "password" #TODO: Change to secret
+      label: "Oauth Client Secret"
+  - slug: "redirectURL"
+    path: "oauth2-proxy.config.redirect_url"
+    forms: ["default"]
+    ui:
+      type: "text"
+      label: "Oauth Redirect Url"
+  - slug: "scope"
+    path: "oauth2-proxy.config.scope"
+    forms: ["default"]
+    ui:
+      type: "text"
+      label: "Oauth Claims Scope"
+  - slug: "cookieSecret"
+    path: "oauth2-proxy.config.cookie_secret"
+    forms: ["default"]
+    ui:
+      type: "password" #TODO: Change to secret
+      label: "Oauth Cookie Secret"
+  - slug: "provider"
+    path: "oauth2-proxy.config.provider"
+    forms: ["default"]
+    ui:
+      type: "text"
+      label: "Oauth Provider"
+  - slug: "oidcIssuerUrl"
+    path: "oauth2-proxy.config.oidc_issuer_url"
+    forms: ["default"]
+    ui:
+      type: "text"
+      label: "Oauth OIDC Issuer URl"
+  - slug: "skip_provider_button"
+    path: "oauth2-proxy.config.skip_provider_button"
     forms: ["default"]
     ui:
       type: "toggle"
-      label: "Use GPU"
+      label: "Oauth Skip Provider Button"
 
 system:
   - path: "oauth2-proxy.ingress.hosts[0]"
