@@ -1,18 +1,17 @@
 oauth2-proxy:
   config:
-    client_id: 0oantjiyd6m1P04jT5d7
-    client_secret: NKKL2wx4LIbF6HMHw6EFxu0ypMr8ei1t5etRxfp9a9FCoLhQTe90sl7pBtmsI0m3
-    cookie_secret: +j8qHoNVzvmAwYmJCnmA73EGc16rgz1gFPDucrUyAcY=
-    email_domains: "*"
-    oidc_issuer_url: https://dev-26501363-admin.okta.com
+    client_id:
+    client_secret:
+    cookie_secret:
+    email_domains:
+    oidc_issuer_url:
     pass_access_token: true
-    provider: oidc
-    provider_display_name: okta
-    redirect_url: https://chat.gcp.sobczyk.dev/
-    scope: openid profile email
-    skip_provider_button: true
+    provider:
+    provider_display_name:
+    redirect_url:
+    scope:
+    skip_provider_button:
     upstreams:
-      - https://chat.gcp.sobczyk.dev/
   ingress:
     enabled: true
     annotations:
