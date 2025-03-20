@@ -18,4 +18,20 @@ forms:
     label: AWS EKS configuration
     description: Start, run, and scale Kubernetes applications in the AWS cloud and on-premises data centers.
 variables:
+  - slug: 'providerConfigRef'
+    name: 'providerConfigRef'
+    path: 'providerConfigRef'
+    forms: ['default']
+    ui:
+      type: 'text'
+      placeholder: 'awsconfig'
+      validation: 'required'
+  - slug: 'cluster_name'
+    name: 'cluster_name'
+    path: 'cluster_name'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'EKS Cluster Name'
+      validation: 'required'
 system:
