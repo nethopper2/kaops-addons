@@ -1,16 +1,15 @@
 oauth2-proxy:
   config:
-    client_id:
-    client_secret:
-    cookie_secret:
-    email_domains: "*"
-    oidc_issuer_url:
-    pass_access_token: true
-    provider:
-    provider_display_name:
-    redirect_url:
-    scope:
-    skip_provider_button:
+    clientID:
+    clientSecret:
+    cookieSecret:
+    configFile: |-
+      email_domains = "*"
+      oidc_issuer_url =
+      pass_access_token = true
+      provider =
+      redirect_url =
+      skip_provider_button true
   ingress:
     enabled: true
     annotations:

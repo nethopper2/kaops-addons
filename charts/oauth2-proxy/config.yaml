@@ -20,65 +20,52 @@ forms:
 
 variables:
   - slug: "clientId"
-    path: "oauth2-proxy.config.client_id"
+    path: "oauth2-proxy.config.clientID"
     forms: ["default"]
     ui:
       type: "text"
       label: "Oauth Client ID"
   - slug: "clientSecret"
-    path: "oauth2-proxy.config.client_secret"
+    path: "oauth2-proxy.config.clientSecret"
     forms: ["default"]
     ui:
       type: "password" #TODO: Change to secret
       label: "Oauth Client Secret"
-  - slug: "redirectURL"
-    path: "oauth2-proxy.config.redirect_url"
-    forms: ["default"]
-    ui:
-      type: "text"
-      label: "Oauth Redirect Url"
-  - slug: "scope"
-    path: "oauth2-proxy.config.scope"
-    forms: ["default"]
-    ui:
-      type: "text"
-      label: "Oauth Claims Scope"
   - slug: "cookieSecret"
-    path: "oauth2-proxy.config.cookie_secret"
+    path: "oauth2-proxy.config.cookieSecret"
     forms: ["default"]
     ui:
       type: "password" #TODO: Change to secret
       label: "Oauth Cookie Secret"
+  - slug: "redirectURL"
+    path: "oauth2-proxy.config.configFile.redirect_url"
+    forms: ["default"]
+    ui:
+      type: "text"
+      label: "Oauth Redirect Url"
   - slug: "provider"
-    path: "oauth2-proxy.config.provider"
+    path: "oauth2-proxy.config.configFile.provider"
     forms: ["default"]
     ui:
       type: "text"
       label: "Oauth Provider"
   - slug: "oidcIssuerUrl"
-    path: "oauth2-proxy.config.oidc_issuer_url"
+    path: "oauth2-proxy.config.configFile.oidc_issuer_url"
     forms: ["default"]
     ui:
       type: "text"
       label: "Oauth OIDC Issuer URl"
-  - slug: "skip_provider_button"
-    path: "oauth2-proxy.config.skip_provider_button"
-    forms: ["default"]
-    ui:
-      type: "toggle"
-      label: "Oauth Skip Provider Button"
-
 system:
   - path: "oauth2-proxy.ingress.hosts[0]"
-    value: "chat.${system.hubCluster.ingressHostname}"
+    value: "oauth.${system.hubCluster.ingressHostname}"
   - path: "oauth2-proxy.ingress.tls[0].hosts[0]"
-    value: "chat.${system.hubCluster.ingressHostname}"
+    value: "oauth.${system.hubCluster.ingressHostname}"
   - path: "oauth2-proxy.ingress.tls[0].secretName"
     value: "oauth-tls"
 
 output:
   - name: Test
     description: "test"
-    value: "https://chat.${system.hubCluster.ingressHostname}"
+    value: "https://oauth.${system.hubCluster.ingressHostname}"
     type: "url"
     slug: default
