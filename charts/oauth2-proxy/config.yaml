@@ -70,15 +70,15 @@ variables:
 
 system:
   - path: "oauth2-proxy.ingress.hosts[0]"
-    value: "*.${system.hubCluster.ingressHostname}"
+    value: "chat.${system.hubCluster.ingressHostname}"
   - path: "oauth2-proxy.ingress.tls[0].hosts[0]"
-    value: "*.${system.hubCluster.ingressHostname}"
+    value: "chat.${system.hubCluster.ingressHostname}"
   - path: "oauth2-proxy.ingress.tls[0].secretName"
     value: "oauth-tls"
 
 output:
   - name: Test
     description: "test"
-    value: "https://oauth.${system.hubCluster.ingressHostname}"
+    value: "https://chat.${system.hubCluster.ingressHostname}"
     type: "url"
     slug: default
