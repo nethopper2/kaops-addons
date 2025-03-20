@@ -17,6 +17,12 @@ metadata:
 forms: 
   - slug: default
     label: 'Hello world app'
+  - slug: foo
+    label: Foo Form
+    isFormOption: true
+  - slug: bar
+    label: Bar Form
+    
 variables:
   - slug: 'hello'
     path: 'hello'
