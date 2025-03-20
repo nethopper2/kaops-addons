@@ -37,24 +37,13 @@ variables:
     ui:
       type: "password" #TODO: Change to secret
       label: "Oauth Cookie Secret"
-  - slug: "redirectURL"
-    path: "oauth2-proxy.config.configFile.redirect_url"
+  - slug: "oidcConfig"
+    path: "oauth2-proxy.config.configFile"
     forms: ["default"]
     ui:
       type: "text"
-      label: "Oauth Redirect Url"
-  - slug: "provider"
-    path: "oauth2-proxy.config.configFile.provider"
-    forms: ["default"]
-    ui:
-      type: "text"
-      label: "Oauth Provider"
-  - slug: "oidcIssuerUrl"
-    path: "oauth2-proxy.config.configFile.oidc_issuer_url"
-    forms: ["default"]
-    ui:
-      type: "text"
-      label: "Oauth OIDC Issuer URl"
+      label: "OIDC Configuration"
+
 system:
   - path: "oauth2-proxy.ingress.hosts[0]"
     value: "oauth.${system.hubCluster.ingressHostname}"

@@ -3,13 +3,7 @@ oauth2-proxy:
     clientID:
     clientSecret:
     cookieSecret:
-    configFile: |-
-      email_domains = "*"
-      oidc_issuer_url =
-      pass_access_token = true
-      provider =
-      redirect_url =
-      skip_provider_button true
+    configFile:
   ingress:
     enabled: true
     annotations:
