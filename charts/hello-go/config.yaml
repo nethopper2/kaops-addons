@@ -25,6 +25,7 @@ forms:
     label: Bar Form
   - slug: baz
     label: Baz Form
+    isFormOption: true
     isCreateOnly: true
     
 variables:
