@@ -37,5 +37,11 @@ open-webui:
       value: "true"
     - name: BYPASS_EMBEDDING_AND_RETRIEVAL
       value: "true"
-    - name: WEBUI_AUTH
+    - name: ENABLE_LOGIN_FORM
+      value: "false"
+    - name: ENABLE_OAUTH_SIGNUP
+      value: "true"
+    - name: WEBUI_SESSION_COOKIE_SAME_SITE
+      value: "lax"
+    - name: OAUTH_MERGE_ACCOUNTS_BY_EMAIL
       value: "true"
