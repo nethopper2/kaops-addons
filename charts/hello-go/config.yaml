@@ -30,11 +30,17 @@ forms:
         ui:
           label: Options
       - slug: groups
-        #        variableSlugs:
-        #          - installOptions
+        variableSlugs:
+          - postInstallGroups
         ui:
           if: $u.includes($get(chosenPostInstallOptions).value, 'groups')
           label: Groups
+      - slug: knowledge
+        #        variableSlugs:
+        #          - installOptions
+        ui:
+          if: $u.includes($get(chosenPostInstallOptions).value, 'knowledge')
+          label: Knowledge
 variables:
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
@@ -62,6 +68,32 @@ variables:
           value: groups
         - label: Provide Knowledge Containers
           value: knowledge
+  - slug: postInstallGroups
+    path: postInstall.chosenPostInstallGroups
+    forms: [default]
+    ui:
+      type: transferlist
+      label: Groups
+      sourceLabel: Recommended Groups
+      options:
+        - label: Engineering
+          value:
+            - name: Engineering
+              description: Engineering Department
+        - label: Human Resources
+          value:
+            - name: Human Resources
+              description: HR Department
+        - label: Marketing
+          value:
+            - name: Marketing
+              description: Marketing Department
+        - label: Sales
+          value:
+            - name: Sales
+              description: Sales Department
+      validation: 'required'
+
 system:
   - path: open-webui.ingress.host
     value: 'chat.${system.hubCluster.ingressHostname}'
