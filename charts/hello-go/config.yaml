@@ -99,9 +99,10 @@ variables:
     ui:
       type: repeater
       label: Knowledge Bases
-      addButton: false,
-      upControl: false,
-      downControl: false,
+      addButton: false
+      insertControl: true
+      upControl: false
+      downControl: false
       children:
         - label: What are you working on?
           type: text
