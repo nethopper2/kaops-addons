@@ -25,7 +25,7 @@ forms:
           label: One
       - slug: two
         variableSlugs:
-          - bye
+          - item1
         ui:
           label: Two
         isCreateOnly: true
