@@ -44,13 +44,13 @@ variables:
       type: "text"
       label: "OIDC Configuration"
 
-system:
-  - path: "oauth2-proxy.ingress.hosts[0]"
-    value: "oauth.${system.hubCluster.ingressHostname}"
-  - path: "oauth2-proxy.ingress.tls[0].hosts[0]"
-    value: "oauth.${system.hubCluster.ingressHostname}"
-  - path: "oauth2-proxy.ingress.tls[0].secretName"
-    value: "oauth-tls"
+# system:
+#   - path: "oauth2-proxy.ingress.hosts[0]"
+#     value: "oauth.${system.hubCluster.ingressHostname}"
+#   - path: "oauth2-proxy.ingress.tls[0].hosts[0]"
+#     value: "oauth.${system.hubCluster.ingressHostname}"
+#   - path: "oauth2-proxy.ingress.tls[0].secretName"
+#     value: "oauth-tls"
 
 output:
   - name: Test
