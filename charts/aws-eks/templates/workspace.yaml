@@ -1,16 +1,16 @@
-apiVersion: tf.crossplane.io/v1alpha1
+apiVersion: tf.upbound.io/v1beta1
 kind: Workspace
 metadata:
   name: {{.Values.workspaceName}}
 spec:
   forProvider:
-    # source: Remote
-    # module: git::https://github.com/nethopper2/kaops-addons.git//charts/aws-eks/tf/eks-hub-gpu
-    source: Inline
-    module: |
-{{ range $path, $_ :=  .Files.Glob  "tf/**.tf" }}
-{{ $.Files.Get $path | indent 6 }}
-{{ end }}
+    source: Remote
+    module: git::https://github.com/nethopper2/kaops-addons.git//charts/aws-eks/tf/eks-hub-gpu
+#     source: Inline
+#     module: |
+# {{ range $path, $_ :=  .Files.Glob  "tf/**.tf" }}
+# {{ $.Files.Get $path | indent 6 }}
+# {{ end }}
   writeConnectionSecretToRef:
     namespace: default
     name: private-ai-eks-connection-ref
