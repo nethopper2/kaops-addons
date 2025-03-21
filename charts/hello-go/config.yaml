@@ -98,10 +98,18 @@ variables:
     forms: [default]
     ui:
       type: repeater
-      label: Knowledge
+      label: Knowledge Bases
+      addButton: false,
+      upControl: false,
+      downControl: false,
       children:
-        - label: Name
+        - label: What are you working on?
           type: text
+          help: Name your knowledge base
+          validation: required
+        - label: What are you trying to achieve?
+          type: text
+          help: Describe your knowledge base and objectives
           validation: required
 
 system:
