@@ -36,8 +36,8 @@ forms:
           if: $u.includes($get(chosenPostInstallOptions).value, 'groups')
           label: Groups
       - slug: knowledge
-        #        variableSlugs:
-        #          - installOptions
+        variableSlugs:
+          - postInstallKnowledge
         ui:
           if: $u.includes($get(chosenPostInstallOptions).value, 'knowledge')
           label: Knowledge
@@ -74,7 +74,7 @@ variables:
     ui:
       type: transferlist
       label: Groups
-      sourceLabel: Recommended Groups
+      help: The installation process will automatically create the selected groups. You can change the names anytime inside the application itself.
       options:
         - label: Engineering
           value:
@@ -93,6 +93,16 @@ variables:
             - name: Sales
               description: Sales Department
       validation: 'required'
+  - slug: postInstallKnowledge
+    path: postInstall.postInstallKnowledge
+    forms: [default]
+    ui:
+      type: repeater
+      label: Knowledge
+      children:
+        - label: Name
+          type: text
+          validation: required
 
 system:
   - path: open-webui.ingress.host
