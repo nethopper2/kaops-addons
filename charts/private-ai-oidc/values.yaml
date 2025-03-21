@@ -21,8 +21,8 @@ open-webui:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/tls-acme: "true"
-      nginx.ingress.kubernetes.io/auth-url: "https://oauth2.$host"
-      nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.$host"
+      nginx.ingress.kubernetes.io/auth-url: "https://oauth2.$host/oauth/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.$host/oauth/start"
       nginx.ingress.kubernetes.io/auth-response-headers: "authorization"
     host:
     tls: true
