@@ -33,7 +33,7 @@ forms:
 #        variableSlugs:
 #          - installOptions
         ui:
-          if: $u.includes($get(postInstallOptions).value, 'groups')
+          if: $u.includes($get(chosenPostInstallOptions).value, 'groups')
           label: Groups
 variables:
   - slug: gpuEnabled
@@ -53,7 +53,7 @@ variables:
       help: 'Models to pull from: https://ollama.com/search'
       searchable: true
   - slug: postInstallOptions
-    path: postInstall.chosen
+    path: postInstall.chosenPostInstallOptions
     forms: [default]
     ui:
       type: checkbox
