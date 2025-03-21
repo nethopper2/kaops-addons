@@ -17,6 +17,17 @@ metadata:
 forms: 
   - slug: default
     label: 'Hello world app'
+  - slug: foo
+    label: Foo Form
+    caption: A form caption
+    isFormOption: true
+  - slug: bar
+    label: Bar Form
+  - slug: baz
+    label: Baz Form
+    isFormOption: true
+    isCreateOnly: true
+    
 variables:
   - slug: 'hello'
     path: 'hello'
@@ -24,6 +35,18 @@ variables:
     ui:
       type: 'text'
       label: 'Hello'
+  - slug: 'bye'
+    path: 'bye'
+    forms: ['foo']
+    ui:
+      type: 'text'
+      label: 'Bye Foo'
+  - slug: 'bazzercise'
+    path: 'bazzercise'
+    forms: ['baz']
+    ui:
+      type: 'text'
+      label: 'Baz!'
   - slug: 'item1'
     path: 'item1'
     forms: ['default']
