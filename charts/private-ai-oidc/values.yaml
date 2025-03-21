@@ -21,6 +21,9 @@ open-webui:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "http://$host/oauth2/start?rd=$escaped_request_uri"
+      nginx.ingress.kubernetes.io/auth-response-headers: "authorization"
     host:
     tls: true
     existingSecret: "webui-tls"
