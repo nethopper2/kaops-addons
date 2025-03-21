@@ -17,7 +17,7 @@ spec:
       - key: cluster_name
         value: {{.Values.tf.cluster_name}}
       - key: k8s_version
-        value: {{.Values.tf.k8s_version}}
+        value: "1.31"
       - key: instance_type_default
         value: {{.Values.tf.instance_type_default}}
       - key: instance_type_gpu
