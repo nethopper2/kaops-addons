@@ -3,7 +3,7 @@ providerConfigRef: # user input - provider config selector
 tf:
   region: us-east-1
   cluster_name: privateai3-test
-  k8s_version: 1.31
+  k8s_version: "1.31"
   instance_type_default: t3.medium
   instance_type_gpu: g4dn.2xlarge
   vpc_cidr: 10.0.0.0/16
