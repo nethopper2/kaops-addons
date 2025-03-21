@@ -46,7 +46,7 @@ variables:
 
 system:
   - path: "oauth2-proxy.ingress.hosts[0].host"
-    value: "{system.hubCluster.ingressHostname}"
+    value: "${system.hubCluster.ingressHostname}"
   - path: "oauth2-proxy.ingress.hosts[0].paths[0].path"
     value: "/oauth"
   - path: "oauth2-proxy.ingress.hosts[0].paths[0].pathType"
