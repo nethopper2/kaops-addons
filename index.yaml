@@ -104,6 +104,20 @@ entries:
   hello-go:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-03-21T22:19:25.301276914Z"
+    dependencies:
+    - name: hello
+      repository: https://techo.dev/charts/
+      version: 0.1.2
+    description: A Helm chart for Kubernetes
+    digest: a75d793ff00b58f6c2a58856e346fe4260dfee3b64712d0b4fc13deccaf47ffa
+    name: hello-go
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/hello-go-0.1.12/hello-go-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-03-21T22:12:18.832361018Z"
     dependencies:
     - name: hello
@@ -1566,4 +1580,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-03-21T22:12:18.832597941Z"
+generated: "2025-03-21T22:19:25.301565353Z"
