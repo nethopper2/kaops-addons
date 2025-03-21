@@ -14,9 +14,21 @@ metadata:
     infoMessage: Info message
     warningMessage: The Frontend UX displays this text as an warning message in the cluster Addon config dialog.
 
-forms: 
+forms:
   - slug: default
     label: 'Hello world app'
+    steps:
+      - slug: one
+        variableSlugs:
+          - hello
+        ui:
+          label: One
+      - slug: two
+        variableSlugs:
+          - bye
+        ui:
+          label: Two
+        isCreateOnly: true
   - slug: foo
     label: Foo Form
     caption: A form caption
@@ -27,7 +39,7 @@ forms:
     label: Baz Form
     isFormOption: true
     isCreateOnly: true
-    
+
 variables:
   - slug: 'hello'
     path: 'hello'
@@ -66,4 +78,4 @@ variables:
       if: '$get(item1).value'
       type: 'text'
       label: 'Item 2'
-    
+
