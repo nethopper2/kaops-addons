@@ -47,9 +47,9 @@ forms:
       - slug: knowledge
         isCreateOnly: true
         variableSlugs:
-          - postInstallKnowledge
+          - postInstallKnowledgeBases
         ui:
-          if: "$u.includes($get(chosenPostInstallOptions).value, 'knowledge') && $get(chosenPostInstallGroups).value.length > 0"
+          if: "$u.includes($get(chosenPostInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
           label: Knowledge
 variables:
   - slug: gpuEnabled
@@ -82,7 +82,6 @@ variables:
           value: knowledge
   - slug: postInstallGroups
     path: _postInstall.groups
-    id: chosenPostInstallGroups
     forms: [default]
     ui:
       type: transferlist
@@ -106,9 +105,8 @@ variables:
             name: Sales
             description: Sales Department
       validation: 'required'
-  - slug: postInstallKnowledge
+  - slug: postInstallKnowledgeBases
     path: _postInstall.knowledgeBases
-    id: postInstallKnowledge
     forms: [default]
     ui:
       type: repeater
@@ -132,11 +130,11 @@ variables:
 #        - label: Groups
 #          type: transferlist
 #          name: groups
-#          options: $u.map($get(chosenPostInstallGroups).value, 'name')
+#          options: $u.map($get(postInstallGroups).value, 'name')
         - label: Groups
           type: taglist
           name: groups
-          options: $u.map($get(chosenPostInstallGroups).value, 'name')
+          options: $u.map($get(postInstallGroups).value, 'name')
           disableDragAndDrop: true
           allowNewValues: true
           popover: true
