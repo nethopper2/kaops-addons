@@ -42,7 +42,7 @@ variables:
     forms: ["default"]
     ui:
       type: "textarea"
-      value: "provider: \nissuer_url:"
+      value: "email_domains = \noidc_issuer_url = \npass_access_token = \nskip_provider_button = \nprovider = \nprovider_display_name = \nredirect_url = \nupstreams = \nwhitelist_domains = \ncookie_domains = "
       label: "OIDC Configuration"
 
 system:
