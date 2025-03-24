@@ -41,7 +41,7 @@ variables:
     path: "oauth2-proxy.config.configFile"
     forms: ["default"]
     ui:
-      type: "text"
+      type: "textarea"
       label: "OIDC Configuration"
 
 system:
