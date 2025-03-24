@@ -22,6 +22,13 @@ provider "helm" {
   }
 }
 
+provider "kubectl" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+}
+
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -215,21 +222,21 @@ module "vpc" {
     "kubernetes.io/role/internal-elb" = 1
   }
 }
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
+# module "ebs_csi_driver_irsa" {
+#   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+#   version = "~> 5.20"
 
-  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
+#   role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
 
-  attach_ebs_csi_policy = true
+#   attach_ebs_csi_policy = true
 
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
-}
+#   oidc_providers = {
+#     main = {
+#       provider_arn               = module.eks.oidc_provider_arn
+#       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+#     }
+#   }
+# }
 
 resource "kubectl_manifest" "test" {
     yaml_body = <<YAML
