@@ -25,6 +25,7 @@ forms:
         ui:
           label: Details
       - slug: postInstall
+        isCreateOnly: true
         variableSlugs:
           - postInstallOptions
         ui:
@@ -33,15 +34,18 @@ forms:
 #        variableSlugs:
 #          - TODO
         ui:
+          # TODO: This step must show in update mode if oidc was configured
           if: $u.includes($get(chosenPostInstallOptions).value, 'oidc')
           label: OIDC
       - slug: groups
+        isCreateOnly: true
         variableSlugs:
           - postInstallGroups
         ui:
           if: $u.includes($get(chosenPostInstallOptions).value, 'groups')
           label: Groups
       - slug: knowledge
+        isCreateOnly: true
         variableSlugs:
           - postInstallKnowledge
         ui:
@@ -77,7 +81,8 @@ variables:
         - label: Provide Knowledge Containers
           value: knowledge
   - slug: postInstallGroups
-    path: _postInstall.chosenPostInstallGroups
+    path: _postInstall.groups
+    id: chosenPostInstallGroups
     forms: [default]
     ui:
       type: transferlist
@@ -102,7 +107,8 @@ variables:
             description: Sales Department
       validation: 'required'
   - slug: postInstallKnowledge
-    path: _postInstall.postInstallKnowledge
+    path: _postInstall.knowledgeBases
+    id: postInstallKnowledge
     forms: [default]
     ui:
       type: repeater
