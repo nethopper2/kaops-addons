@@ -11,8 +11,6 @@ open-webui:
         pull: []
     service:
       type: ClusterIP
-  ingress:
-    enabled: true
   extraEnvVars:
     - name: WEBUI_NAME
       value: "Private AI"
@@ -28,3 +26,6 @@ open-webui:
       value: "true"
     - name: WEBUI_AUTH
       value: "false"
+
+ingress:
+  enabled: true
