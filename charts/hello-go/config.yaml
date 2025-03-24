@@ -133,6 +133,9 @@ variables:
           options: $u.map($get(chosenPostInstallGroups).value, 'name')
           disableDragAndDrop: true
           allowNewValues: true
+          popover: true
+          openOnClick: true
+          closeOnSelect: false
           help: Select groups with write access to this knowledge base
       value:
         - name: Best Practices for Code Reviews
