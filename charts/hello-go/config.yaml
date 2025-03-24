@@ -29,6 +29,11 @@ forms:
           - postInstallOptions
         ui:
           label: Options
+      - slug: oidc
+#        variableSlugs:
+#          -
+        ui:
+          label: OIDC
       - slug: groups
         variableSlugs:
           - postInstallGroups
@@ -64,10 +69,14 @@ variables:
     ui:
       type: checkbox
       options:
+        - label: Use OpenID Connect
+        - value: oidc
         - label: Select Suggested Groups
           value: groups
         - label: Provide Knowledge Containers
           value: knowledge
+          attrs:
+            disabled: $u.includes($get(chosenPostInstallOptions).value, 'groups') != true
   - slug: postInstallGroups
     path: _postInstall.chosenPostInstallGroups
     forms: [default]
@@ -113,6 +122,7 @@ variables:
           help: Describe your knowledge base and objectives
           validation: required
         - label: Groups
+          if: $get(chosenPostInstallOptions).value.length > 0
           type: transferlist
           options: $u.map($get(chosenPostInstallGroups).value, 'name')
 #        - el: 'div'
