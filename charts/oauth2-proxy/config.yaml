@@ -42,6 +42,7 @@ variables:
     forms: ["default"]
     ui:
       type: "textarea"
+      value: "provider: \nissuer_url:"
       label: "OIDC Configuration"
 
 system:
