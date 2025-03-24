@@ -1,6 +1,6 @@
 provider "aws" {
   region = var.region
-  shared_credentials_file = "aws-creds.ini"
+  shared_credentials_files = ["aws-creds.ini"]
 }
 
 provider "kubernetes" {
