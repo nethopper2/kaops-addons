@@ -11,6 +11,22 @@ open-webui:
         pull: []
     service:
       type: ClusterIP
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: http
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/auth-signin: https://oauth2.{{ .Values.ingress.host }}/oauth2/start?rd=$escaped_request_uri
+      nginx.ingress.kubernetes.io/auth-url: https://oauth2.{{ .Values.ingress.host }}/oauth2/auth
+      nginx.ingress.kubernetes.io/auth-response-headers: "authorization"
+    host:
+    tls: true
+    existingSecret: "webui-tls"
   extraEnvVars:
     - name: WEBUI_NAME
       value: "Private AI"
@@ -26,6 +42,3 @@ open-webui:
       value: "true"
     - name: WEBUI_AUTH
       value: "false"
-
-ingress:
-  enabled: true
