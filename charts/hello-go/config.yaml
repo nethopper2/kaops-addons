@@ -70,7 +70,7 @@ variables:
       type: checkbox
       options:
         - label: Use OpenID Connect
-        - value: oidc
+          value: oidc
         - label: Select Suggested Groups
           value: groups
         - label: Provide Knowledge Containers
