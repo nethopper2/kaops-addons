@@ -1,8 +1,8 @@
 metadata:
-  slug: 'private-ai'
-  name: 'Private AI'
-  description: 'Deploy generative AI while safeguarding corporate data and scaling into your own infrastructure.'
-  categories: ['Artificial Intelligence']
+  slug: private-ai
+  name: Private AI
+  description: Deploy generative AI while safeguarding corporate data and scaling into your own infrastructure.
+  categories: [Artificial Intelligence]
   logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png'
   logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png'
   detailUrl: 'https://addons.kaops.net/openwebui/'
@@ -14,33 +14,61 @@ metadata:
     edge: false
     clusterMessage: Must be installed on clusters configured for Ingress.
 
-forms: 
+forms:
   - slug: default
-    label: 'Open WebUI configuration'
+    label: Configuration
+    steps:
+      - slug: details
+        variableSlugs:
+          - gpuEnabled
+          - modelsToPull
+        ui:
+          label: Details
+      - slug: postInstall
+        variableSlugs:
+          - postInstallOptions
+        ui:
+          label: Options
+      - slug: groups
+#        variableSlugs:
+#          - installOptions
+        ui:
+          if: $u.includes($get(chosenPostInstallOptions).value, 'groups')
+          label: Groups
 variables:
-  - slug: 'gpuEnabled'
-    path: 'open-webui.ollama.ollama.gpu.enabled'
-    forms: ['default']
+  - slug: gpuEnabled
+    path: open-webui.ollama.ollama.gpu.enabled
+    forms: [default]
     ui:
-      type: 'toggle'
-      label: 'Use GPU'
-  - slug: 'modelsToPull'
-    path: 'open-webui.ollama.ollama.models.pull'
-    forms: ['default']
+      type: toggle
+      label: Use GPU
+  - slug: modelsToPull
+    path: open-webui.ollama.ollama.models.pull
+    forms: [default]
     ui:
-      type: 'transferlist'
-      label: 'Select LLM Models to Pull'
-      sourceLabel: 'LLM Models'
-      options: ['gemma2','gemma3:1b','gemma3:4b','llama3.1:8b','llama3.2:3b']
+      type: transferlist
+      label: Select LLM Models to Pull
+      sourceLabel: LLM Models
+      options: [gemma2, gemma3:1b, gemma3:4b, llama3.1:8b, llama3.2:3b]
       help: 'Models to pull from: https://ollama.com/search'
       searchable: true
+  - slug: postInstallOptions
+    path: postInstall.chosenPostInstallOptions
+    forms: [default]
+    ui:
+      type: checkbox
+      options:
+        - label: Select Suggested Groups
+          value: groups
+        - label: Provide Knowledge Containers
+          value: knowledge
 system:
-  - path: 'open-webui.ingress.host'
+  - path: open-webui.ingress.host
     value: 'chat.${system.hubCluster.ingressHostname}'
-    
+
 output:
   - name: Open Web UI URL
-    description: 'The URL to access Open WebUI'
+    description: The URL to access Open WebUI
     value: 'https://chat.${system.hubCluster.ingressHostname}'
-    type: 'url'
+    type: url
     slug: default

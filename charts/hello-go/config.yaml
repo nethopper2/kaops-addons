@@ -14,56 +14,179 @@ metadata:
     infoMessage: Info message
     warningMessage: The Frontend UX displays this text as an warning message in the cluster Addon config dialog.
 
-forms: 
+forms:
   - slug: default
-    label: 'Hello world app'
-  - slug: foo
-    label: Foo Form
-    caption: A form caption
-    isFormOption: true
-  - slug: bar
-    label: Bar Form
-  - slug: baz
-    label: Baz Form
-    isFormOption: true
-    isCreateOnly: true
-    
+    label: Configuration
+    steps:
+      - slug: details
+        variableSlugs:
+          - gpuEnabled
+          - modelsToPull
+        ui:
+          label: Details
+      - slug: postInstall
+        variableSlugs:
+          - postInstallOptions
+        ui:
+          label: Options
+      - slug: groups
+        variableSlugs:
+          - postInstallGroups
+        ui:
+          if: $u.includes($get(chosenPostInstallOptions).value, 'groups')
+          label: Groups
+      - slug: knowledge
+        variableSlugs:
+          - postInstallKnowledge
+        ui:
+          if: $u.includes($get(chosenPostInstallOptions).value, 'knowledge')
+          label: Knowledge
 variables:
-  - slug: 'hello'
-    path: 'hello'
-    forms: ['default']
+  - slug: gpuEnabled
+    path: open-webui.ollama.ollama.gpu.enabled
+    forms: [default]
     ui:
-      type: 'text'
-      label: 'Hello'
-  - slug: 'bye'
-    path: 'bye'
-    forms: ['foo']
+      type: toggle
+      label: Use GPU
+  - slug: modelsToPull
+    path: open-webui.ollama.ollama.models.pull
+    forms: [default]
     ui:
-      type: 'text'
-      label: 'Bye Foo'
-  - slug: 'bazzercise'
-    path: 'bazzercise'
-    forms: ['baz']
+      type: transferlist
+      label: Select LLM Models to Pull
+      sourceLabel: LLM Models
+      options: [gemma2, gemma3:1b, gemma3:4b, llama3.1:8b, llama3.2:3b]
+      help: 'Models to pull from: https://ollama.com/search'
+      searchable: true
+  - slug: postInstallOptions
+    path: postInstall.chosenPostInstallOptions
+    forms: [default]
     ui:
-      type: 'text'
-      label: 'Baz!'
-  - slug: 'item1'
-    path: 'item1'
-    forms: ['default']
-    ui:
-      type: 'radio'
-      label: 'Show item 2?'
+      type: checkbox
       options:
-        - label: Yes
-          value: true
-        - label: No
-          value: false
-      value: true
-  - slug: 'item2'
-    path: 'item2'
-    forms: ['default']
+        - label: Select Suggested Groups
+          value: groups
+        - label: Provide Knowledge Containers
+          value: knowledge
+  - slug: postInstallGroups
+    path: postInstall.chosenPostInstallGroups
+    forms: [default]
     ui:
-      if: '$get(item1).value'
-      type: 'text'
-      label: 'Item 2'
-    
+      type: transferlist
+      label: Groups
+      help: The installation process will automatically create the selected groups. You can change the names anytime inside the application itself.
+      options:
+        - label: Engineering
+          value:
+            - name: Engineering
+              description: Engineering Department
+        - label: Human Resources
+          value:
+            - name: Human Resources
+              description: HR Department
+        - label: Marketing
+          value:
+            - name: Marketing
+              description: Marketing Department
+        - label: Sales
+          value:
+            - name: Sales
+              description: Sales Department
+      validation: 'required'
+  - slug: postInstallKnowledge
+    path: postInstall.postInstallKnowledge
+    forms: [default]
+    ui:
+      type: repeater
+      label: Knowledge Bases
+      addButton: false
+      insertControl: true
+      upControl: false
+      downControl: false
+      children:
+        - label: What are you working on?
+          type: text
+          help: Name your knowledge base
+          validation: required
+        - label: What are you trying to achieve?
+          type: text
+          help: Describe your knowledge base and objectives
+          validation: required
+
+system:
+  - path: open-webui.ingress.host
+    value: 'chat.${system.hubCluster.ingressHostname}'
+
+output:
+  - name: Open Web UI URL
+    description: The URL to access Open WebUI
+    value: 'https://chat.${system.hubCluster.ingressHostname}'
+    type: url
+    slug: default
+
+# old junk below
+#forms:
+#  - slug: default
+#    label: 'Hello world app'
+#    steps:
+#      - slug: one
+#        variableSlugs:
+#          - hello
+#        ui:
+#          label: One
+#      - slug: two
+#        variableSlugs:
+#          - item1
+#        ui:
+#          label: Two
+#        isCreateOnly: true
+#  - slug: foo
+#    label: Foo Form
+#    caption: A form caption
+#    isFormOption: true
+#  - slug: bar
+#    label: Bar Form
+#  - slug: baz
+#    label: Baz Form
+#    isFormOption: true
+#    isCreateOnly: true
+#
+#variables:
+#  - slug: 'hello'
+#    path: 'hello'
+#    forms: ['default']
+#    ui:
+#      type: 'text'
+#      label: 'Hello'
+#  - slug: 'bye'
+#    path: 'bye'
+#    forms: ['foo']
+#    ui:
+#      type: 'text'
+#      label: 'Bye Foo'
+#  - slug: 'bazzercise'
+#    path: 'bazzercise'
+#    forms: ['baz']
+#    ui:
+#      type: 'text'
+#      label: 'Baz!'
+#  - slug: 'item1'
+#    path: 'item1'
+#    forms: ['default']
+#    ui:
+#      type: 'radio'
+#      label: 'Show item 2?'
+#      options:
+#        - label: Yes
+#          value: true
+#        - label: No
+#          value: false
+#      value: true
+#  - slug: 'item2'
+#    path: 'item2'
+#    forms: ['default']
+#    ui:
+#      if: '$get(item1).value'
+#      type: 'text'
+#      label: 'Item 2'
+
