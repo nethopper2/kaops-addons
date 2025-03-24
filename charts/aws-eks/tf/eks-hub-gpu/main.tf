@@ -3,15 +3,22 @@ provider "aws" {
   shared_credentials_files = ["aws-creds.ini"]
 }
 
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.cluster.token
   }
 }
 
@@ -224,23 +231,23 @@ module "ebs_csi_driver_irsa" {
   }
 }
 
-resource "helm_release" "ebs_csi_driver" {
-  name       = "aws-ebs-csi-driver"
-  namespace  = "kube-system"
-  repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
-  chart      = "aws-ebs-csi-driver"
+# resource "helm_release" "ebs_csi_driver" {
+#   name       = "aws-ebs-csi-driver"
+#   namespace  = "kube-system"
+#   repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
+#   chart      = "aws-ebs-csi-driver"
 
-  set {
-    name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    type  = "string"
-    value = module.ebs_csi_driver_irsa.iam_role_arn
-  }
-  set {
-    name  = "controller.sdkDebugLog"
-    type  = "auto"
-    value = true
-  }
-}
+#   set {
+#     name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+#     type  = "string"
+#     value = module.ebs_csi_driver_irsa.iam_role_arn
+#   }
+#   set {
+#     name  = "controller.sdkDebugLog"
+#     type  = "auto"
+#     value = true
+#   }
+# }
 
 resource "helm_release" "nvidia-device-plugin" {
   name             = "nvidia-device-plugin"
