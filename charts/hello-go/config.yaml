@@ -33,6 +33,7 @@ forms:
 #        variableSlugs:
 #          -
         ui:
+          if: $u.includes($get(chosenPostInstallOptions).value, 'oidc')
           label: OIDC
       - slug: groups
         variableSlugs:
@@ -120,7 +121,7 @@ variables:
           help: Describe your knowledge base and objectives
           validation: required
         - label: Groups
-          if: $get(chosenPostInstallOptions).value.length > 0
+          if: $get(chosenPostInstallGroups).value.length > 0
           type: transferlist
           options: $u.map($get(chosenPostInstallGroups).value, 'name')
 #        - el: 'div'
