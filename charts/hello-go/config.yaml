@@ -112,11 +112,11 @@ variables:
           type: text
           help: Describe your knowledge base and objectives
           validation: required
-        - label: Groups
-          type: transferlist
-          options: $u.map($get(chosenPostInstallGroups).value, 'name')
+#        - label: Groups
+#          type: transferlist
+#          options: $u.map($get(chosenPostInstallGroups).value, 'name')
         - $el: 'div'
-          for: ['item', 'key', '$u.map($get(chosenPostInstallGroups).value, "name")']
+          for: ['item', 'key', "$u.map($get(chosenPostInstallGroups).value, 'name')"]
           children: '$item'
 
 system:
