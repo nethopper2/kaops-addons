@@ -82,7 +82,7 @@ variables:
     ui:
       type: transferlist
       label: Groups
-      help: The installation process will automatically create the selected groups. You can change the names anytime inside the application itself.
+      help: The installation process will automatically create the selected groups. You can change the names & details anytime inside the application itself.
       options:
         - label: Engineering
           value:
@@ -111,6 +111,7 @@ variables:
       insertControl: true
       upControl: false
       downControl: false
+      help: The installation process will automatically create these knowledge bases. You can change the names & details anytime inside the application itself.
       children:
         - label: What are you working on?
           type: text
@@ -122,10 +123,17 @@ variables:
           name: description
           help: Describe your knowledge base and objectives
           validation: required
+#        - label: Groups
+#          type: transferlist
+#          name: groups
+#          options: $u.map($get(chosenPostInstallGroups).value, 'name')
         - label: Groups
-          type: transferlist
+          type: taglist
           name: groups
           options: $u.map($get(chosenPostInstallGroups).value, 'name')
+          disableDragAndDrop: true
+          allowNewValues: true
+          help: Select groups with write access to this knowledge base
       value:
         - name: Best Practices for Code Reviews
           description: This guide outlines the key steps for effective code reviews.
