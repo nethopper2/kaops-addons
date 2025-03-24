@@ -56,6 +56,8 @@ variables:
 system:
   - path: "open-webui.ingress.host"
     value: "chat.${system.hubCluster.ingressHostname}"
+  - path: "open-webui.ingress.tls.host"
+    value: "chat.${system.hubCluster.ingressHostname}"
   - path: "open-webui.ingress.annotations.nginx.ingress.kubernetes.io/auth-signin"
     value: "https://oauth2.chat.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
   - path: "open-webui.ingress.annotations.nginx.ingress.kubernetes.io/auth-url"
