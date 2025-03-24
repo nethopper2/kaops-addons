@@ -59,7 +59,7 @@ variables:
       help: 'Models to pull from: https://ollama.com/search'
       searchable: true
   - slug: postInstallOptions
-    path: postInstall.chosenPostInstallOptions
+    path: _postInstall.chosenPostInstallOptions
     forms: [default]
     ui:
       type: checkbox
@@ -69,7 +69,7 @@ variables:
         - label: Provide Knowledge Containers
           value: knowledge
   - slug: postInstallGroups
-    path: postInstall.chosenPostInstallGroups
+    path: _postInstall.chosenPostInstallGroups
     forms: [default]
     ui:
       type: transferlist
@@ -94,7 +94,7 @@ variables:
               description: Sales Department
       validation: 'required'
   - slug: postInstallKnowledge
-    path: postInstall.postInstallKnowledge
+    path: _postInstall.postInstallKnowledge
     forms: [default]
     ui:
       type: repeater
@@ -112,6 +112,9 @@ variables:
           type: text
           help: Describe your knowledge base and objectives
           validation: required
+        - label: Groups
+          type: transferlist
+          options: $u.map($get(chosenPostInstallGroups).value, 'name')
 
 system:
   - path: open-webui.ingress.host
