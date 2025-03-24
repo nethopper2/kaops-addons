@@ -77,21 +77,21 @@ variables:
       help: The installation process will automatically create the selected groups. You can change the names anytime inside the application itself.
       options:
         - label: Engineering
-          value:
-            - name: Engineering
-              description: Engineering Department
+        - value:
+          name: Engineering
+          description: Engineering Department
         - label: Human Resources
-          value:
-            - name: Human Resources
-              description: HR Department
+        - value:
+          name: Human Resources
+          description: HR Department
         - label: Marketing
-          value:
-            - name: Marketing
-              description: Marketing Department
+        - value:
+          name: Marketing
+          description: Marketing Department
         - label: Sales
-          value:
-            - name: Sales
-              description: Sales Department
+        - value:
+          name: Sales
+          description: Sales Department
       validation: 'required'
   - slug: postInstallKnowledge
     path: _postInstall.postInstallKnowledge
