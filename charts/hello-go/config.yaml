@@ -25,21 +25,31 @@ forms:
         ui:
           label: Details
       - slug: postInstall
+        isCreateOnly: true
         variableSlugs:
           - postInstallOptions
         ui:
           label: Options
+      - slug: oidc
+#        variableSlugs:
+#          - TODO
+        ui:
+          # TODO: This step must show in update mode if oidc was configured
+          if: $u.includes($get(postInstallOptions).value, 'oidc')
+          label: OIDC
       - slug: groups
+        isCreateOnly: true
         variableSlugs:
           - postInstallGroups
         ui:
-          if: $u.includes($get(chosenPostInstallOptions).value, 'groups')
+          if: $u.includes($get(postInstallOptions).value, 'groups')
           label: Groups
       - slug: knowledge
+        isCreateOnly: true
         variableSlugs:
-          - postInstallKnowledge
+          - postInstallKnowledgeBases
         ui:
-          if: $u.includes($get(chosenPostInstallOptions).value, 'knowledge')
+          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
           label: Knowledge
 variables:
   - slug: gpuEnabled
@@ -64,37 +74,39 @@ variables:
     ui:
       type: checkbox
       options:
+        - label: Use OpenID Connect
+          value: oidc
         - label: Select Suggested Groups
           value: groups
         - label: Provide Knowledge Containers
           value: knowledge
   - slug: postInstallGroups
-    path: _postInstall.chosenPostInstallGroups
+    path: _postInstall.groups
     forms: [default]
     ui:
       type: transferlist
       label: Groups
-      help: The installation process will automatically create the selected groups. You can change the names anytime inside the application itself.
+      help: The installation process will automatically create the selected groups. You can change the names & details anytime inside the application itself.
       options:
         - label: Engineering
           value:
-            - name: Engineering
-              description: Engineering Department
+            name: Engineering
+            description: Engineering Department
         - label: Human Resources
           value:
-            - name: Human Resources
-              description: HR Department
+            name: Human Resources
+            description: HR Department
         - label: Marketing
           value:
-            - name: Marketing
-              description: Marketing Department
+            name: Marketing
+            description: Marketing Department
         - label: Sales
           value:
-            - name: Sales
-              description: Sales Department
+            name: Sales
+            description: Sales Department
       validation: 'required'
-  - slug: postInstallKnowledge
-    path: _postInstall.postInstallKnowledge
+  - slug: postInstallKnowledgeBases
+    path: _postInstall.knowledgeBases
     forms: [default]
     ui:
       type: repeater
@@ -103,21 +115,41 @@ variables:
       insertControl: true
       upControl: false
       downControl: false
+      help: The installation process will automatically create these knowledge bases. You can change the names & details anytime inside the application itself.
       children:
         - label: What are you working on?
           type: text
+          name: name
           help: Name your knowledge base
           validation: required
         - label: What are you trying to achieve?
           type: text
+          name: description
           help: Describe your knowledge base and objectives
           validation: required
 #        - label: Groups
 #          type: transferlist
-#          options: $u.map($get(chosenPostInstallGroups).value, 'name')
-        - el: 'div'
-          for: ['item', 'key', "$u.map($get(chosenPostInstallGroups).value, 'name')"]
-          children: '$item'
+#          name: groups
+#          options: $u.map($get(postInstallGroups).value, 'name')
+        - label: Groups
+          type: taglist
+          name: groups
+          options: $u.map($get(postInstallGroups).value, 'name')
+          disableDragAndDrop: true
+          allowNewValues: true
+          popover: true
+          openOnClick: true
+          closeOnSelect: false
+          help: Select groups with write access to this knowledge base
+      value:
+        - name: Best Practices for Code Reviews
+          description: This guide outlines the key steps for effective code reviews.
+        - name: Social Media Strategy For This Year
+          description: An overview of our social media approach for the upcoming year.
+        - name: Agile Project Management Tips
+          description: Key insights for managing agile projects effectively.
+        - name: Handling Difficult Customers
+          description: Techniques and strategies for resolving challenging customer situations.
 
 system:
   - path: open-webui.ingress.host
