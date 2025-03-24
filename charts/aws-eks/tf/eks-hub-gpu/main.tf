@@ -231,6 +231,54 @@ module "ebs_csi_driver_irsa" {
   }
 }
 
+resource "kubectl_manifest" "test" {
+    yaml_body = <<YAML
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-device-plugin-daemonset
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: nvidia-device-plugin-ds
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: nvidia-device-plugin-ds
+    spec:
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gpu"
+        effect: "NoSchedule"
+      # Mark this pod as a critical add-on; when enabled, the critical add-on
+      # scheduler reserves resources for critical add-on pods so that they can
+      # be rescheduled after a failure.
+      # See https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
+      priorityClassName: "system-node-critical"
+      containers:
+      - image: nvcr.io/nvidia/k8s-device-plugin:v0.15.0
+        name: nvidia-device-plugin-ctr
+        env:
+          - name: FAIL_ON_INIT_ERROR
+            value: "false"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        volumeMounts:
+        - name: device-plugin
+          mountPath: /var/lib/kubelet/device-plugins
+      volumes:
+      - name: device-plugin
+        hostPath:
+          path: /var/lib/kubelet/device-plugins
+YAML
+}
+
 # resource "helm_release" "ebs_csi_driver" {
 #   name       = "aws-ebs-csi-driver"
 #   namespace  = "kube-system"
@@ -249,10 +297,10 @@ module "ebs_csi_driver_irsa" {
 #   }
 # }
 
-resource "helm_release" "nvidia-device-plugin" {
-  name             = "nvidia-device-plugin"
-  namespace        = "nvidia-device-plugin"
-  repository       = "https://nvidia.github.io/k8s-device-plugin"
-  chart            = "nvidia-device-plugin"
-  create_namespace = true
-}
+# resource "helm_release" "nvidia-device-plugin" {
+#   name             = "nvidia-device-plugin"
+#   namespace        = "nvidia-device-plugin"
+#   repository       = "https://nvidia.github.io/k8s-device-plugin"
+#   chart            = "nvidia-device-plugin"
+#   create_namespace = true
+# }
