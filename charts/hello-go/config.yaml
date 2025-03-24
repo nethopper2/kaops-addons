@@ -31,7 +31,7 @@ forms:
           label: Options
       - slug: oidc
 #        variableSlugs:
-#          -
+#          - TODO
         ui:
           if: $u.includes($get(chosenPostInstallOptions).value, 'oidc')
           label: OIDC
@@ -45,7 +45,7 @@ forms:
         variableSlugs:
           - postInstallKnowledge
         ui:
-          if: $u.includes($get(chosenPostInstallOptions).value, 'knowledge')
+          if: "$u.includes($get(chosenPostInstallOptions).value, 'knowledge') && $get(chosenPostInstallGroups).value.length > 0"
           label: Knowledge
 variables:
   - slug: gpuEnabled
@@ -114,19 +114,27 @@ variables:
       children:
         - label: What are you working on?
           type: text
+          name: name
           help: Name your knowledge base
           validation: required
         - label: What are you trying to achieve?
           type: text
+          name: description
           help: Describe your knowledge base and objectives
           validation: required
         - label: Groups
-          if: $get(chosenPostInstallGroups).value.length > 0
           type: transferlist
+          name: groups
           options: $u.map($get(chosenPostInstallGroups).value, 'name')
-#        - el: 'div'
-#          for: ['item', 'key', "$u.map($get(chosenPostInstallGroups).value, 'name')"]
-#          children: '$item'
+      value:
+        - name: Best Practices for Code Reviews
+          description: This guide outlines the key steps for effective code reviews.
+        - name: Social Media Strategy For This Year
+          description: An overview of our social media approach for the upcoming year.
+        - name: Agile Project Management Tips
+          description: Key insights for managing agile projects effectively.
+        - name: Handling Difficult Customers
+          description: Techniques and strategies for resolving challenging customer situations.
 
 system:
   - path: open-webui.ingress.host
