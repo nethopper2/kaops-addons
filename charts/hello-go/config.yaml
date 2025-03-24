@@ -35,21 +35,21 @@ forms:
 #          - TODO
         ui:
           # TODO: This step must show in update mode if oidc was configured
-          if: $u.includes($get(chosenPostInstallOptions).value, 'oidc')
+          if: $u.includes($get(postInstallOptions).value, 'oidc')
           label: OIDC
       - slug: groups
         isCreateOnly: true
         variableSlugs:
           - postInstallGroups
         ui:
-          if: $u.includes($get(chosenPostInstallOptions).value, 'groups')
+          if: $u.includes($get(postInstallOptions).value, 'groups')
           label: Groups
       - slug: knowledge
         isCreateOnly: true
         variableSlugs:
           - postInstallKnowledgeBases
         ui:
-          if: "$u.includes($get(chosenPostInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
+          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
           label: Knowledge
 variables:
   - slug: gpuEnabled
