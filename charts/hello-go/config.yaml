@@ -75,8 +75,6 @@ variables:
           value: groups
         - label: Provide Knowledge Containers
           value: knowledge
-          attrs:
-            disabled: $u.includes($get(chosenPostInstallOptions).value, 'groups') != true
   - slug: postInstallGroups
     path: _postInstall.chosenPostInstallGroups
     forms: [default]
