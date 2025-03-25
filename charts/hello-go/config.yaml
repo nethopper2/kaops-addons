@@ -19,6 +19,7 @@ forms:
     label: Configuration
     steps:
       - slug: details
+        isCreateOnly: true
         variableSlugs:
           - gpuEnabled
           - modelsToPull
@@ -30,13 +31,13 @@ forms:
           - postInstallOptions
         ui:
           label: Options
-      - slug: oidc
+      - slug: sso
 #        variableSlugs:
 #          - TODO
         ui:
-          # TODO: This step must show in update mode if oidc was configured
-          if: $u.includes($get(postInstallOptions).value, 'oidc')
-          label: OIDC
+          # TODO: This step must show in update mode if sso was configured
+          if: $u.includes($get(postInstallOptions).value, 'sso')
+          label: SSO
       - slug: groups
         isCreateOnly: true
         variableSlugs:
@@ -74,8 +75,8 @@ variables:
     ui:
       type: checkbox
       options:
-        - label: Use OpenID Connect
-          value: oidc
+        - label: Use Single Sign-On
+          value: sso
         - label: Select Suggested Groups
           value: groups
         - label: Provide Knowledge Containers
@@ -104,6 +105,15 @@ variables:
           value:
             name: Sales
             description: Sales Department
+      value:
+        - name: Engineering
+          description: Engineering Department
+        - name: Human Resources
+          description: HR Department
+        - name: Marketing
+          description: Marketing Department
+        - name: Sales
+          description: Sales Department
       validation: 'required'
   - slug: postInstallKnowledgeBases
     path: _postInstall.knowledgeBases
