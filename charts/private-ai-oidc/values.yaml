@@ -53,5 +53,5 @@ oauth2-proxy:
       - hosts:
         secretName:
   service:
-    port: 80
+    portNumber: 80
     targetPort: 4180
