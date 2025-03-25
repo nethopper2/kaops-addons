@@ -159,16 +159,16 @@ variables:
           help: Select groups with write access to this knowledge base
           # pre-select the related group for each knowledge base (if the group was chosen)
           value:
-            if: "$value.name == 'Best Practices for Code Reviews' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Engineering Team'))"
+            if: "$value.name == 'Best Practices for Code Reviews' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Engineering Team'))"
             then: ['Engineering Team']
             else:
-              if: "$value.name == 'Social Media Strategy For This Year' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Marketing Team'))"
+              if: "$value.name == 'Social Media Strategy For This Year' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Marketing Team'))"
               then: ['Marketing Team']
               else:
-                if: "$value.name == 'Agile Project Management Tips' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Product Management'))"
+                if: "$value.name == 'Agile Project Management Tips' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Product Management'))"
                 then: ['Product Management']
                 else:
-                  if: "$value.name == 'Handling Difficult Customers' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Customer Support'))"
+                  if: "$value.name == 'Handling Difficult Customers' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Customer Support'))"
                   then: ['Customer Support']
                   else: []
       value:
