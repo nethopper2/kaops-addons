@@ -169,6 +169,7 @@ variables:
                 else:
                   if: "$value.name == 'Handling Difficult Customers' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Customer Support'))"
                   then: ['Customer Support']
+                  else: []
       value:
         - name: Best Practices for Code Reviews
           description: This guide outlines the key steps for effective code reviews.
