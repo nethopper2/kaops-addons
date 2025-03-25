@@ -53,6 +53,7 @@ variables:
       # placeholder: "llama3.3"
       # help: 'Models to pull from: https://ollama.com/search'
       # validation: 'required'
+
   - slug: "clientId"
     path: "oauth2-proxy.config.clientID"
     forms: ["default"]
@@ -71,7 +72,7 @@ variables:
     ui:
       type: "password" #TODO: Change to secret
       label: "Oauth Cookie Secret"
-  - slug: "oidcConfiguration"
+  - slug: "oidcConfig"
     path: "oauth2-proxy.config.configFile"
     forms: ["default"]
     ui:
@@ -81,15 +82,17 @@ variables:
 
 system:
   - path: "oauth2-proxy.ingress.hosts[0]"
-    value: "chat.${system.hubCluster.ingressHostname}"
+    value: "oauth.${system.hubCluster.ingressHostname}"
   - path: "oauth2-proxy.ingress.tls[0].hosts[0]"
-    value: "chat.${system.hubCluster.ingressHostname}"
+    value: "oauth.${system.hubCluster.ingressHostname}"
   - path: "oauth2-proxy.ingress.tls[0].secretName"
     value: "oauth-tls"
-  - path: "oauth2-proxy.ingress.annotations['nginx.ingress.kubernetes.io/auth-signin']"
-    value: "https://chat.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
-  - path: "oauth2-proxy.ingress.annotations['nginx.ingress.kubernetes.io/auth-url']"
-    value: "https://chat.${system.hubCluster.ingressHostname}/oauth2/auth"
+  - path: "open-webui.ingress.host"
+    value: "chat.${system.hubCluster.ingressHostname}"
+  - path: "open-webui.ingress.annotations['nginx.ingress.kubernetes.io/auth-signin']"
+    value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
+  - path: "open-webui.ingress.annotations['nginx.ingress.kubernetes.io/auth-url']"
+    value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
 
 output:
   - name: Open Web UI URL
