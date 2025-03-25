@@ -50,7 +50,8 @@ forms:
         variableSlugs:
           - postInstallKnowledgeBases
         ui:
-          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
+#          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
+          if: "$u.includes($get(postInstallOptions).value, 'knowledge')"
           label: Knowledge
 variables:
   - slug: gpuEnabled
@@ -124,7 +125,7 @@ variables:
     ui:
       type: repeater
       label: Knowledge Bases
-      key: '$: "knowledgeBases-" + $get(postInstallGroups).value.length'
+      key: "$: 'knowledgeBases-' + $get(postInstallGroups).value.length"
       addButton: false
       insertControl: true
       upControl: false
