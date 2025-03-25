@@ -151,6 +151,11 @@ variables:
           openOnClick: true
           closeOnSelect: false
           help: Select groups with write access to this knowledge base
+          value:
+            if: '$value.name == "Best Practices for Code Reviews"'
+            then: 'Engineering'
+        - label: '$value.name'
+          type: 'text'
       value:
         - name: Best Practices for Code Reviews
           description: This guide outlines the key steps for effective code reviews.
