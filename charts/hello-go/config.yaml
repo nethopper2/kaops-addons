@@ -81,6 +81,9 @@ variables:
           value: groups
         - label: Provide Knowledge Containers
           value: knowledge
+      value:
+        - groups
+        - knowledge
   - slug: postInstallGroups
     path: _postInstall.groups
     forms: [default]
@@ -151,20 +154,19 @@ variables:
           openOnClick: true
           closeOnSelect: false
           help: Select groups with write access to this knowledge base
+          # pre-select the related group for each knowledge base (if the group was chosen)
           value:
-            if: '$value.name == "Best Practices for Code Reviews"'
+            if: "$value.name == 'Best Practices for Code Reviews' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Engineering Team'))"
             then: ['Engineering Team']
             else:
-              if: '$value.name == "Social Media Strategy For This Year"'
+              if: "$value.name == 'Social Media Strategy For This Year' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Marketing Team'))"
               then: ['Marketing Team']
               else:
-                if: '$value.name == "Agile Project Management Tips"'
+                if: "$value.name == 'Agile Project Management Tips' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Product Management'))"
                 then: ['Product Management']
                 else:
-                  if: '$value.name == "Handling Difficult Customers"'
+                  if: "$value.name == 'Handling Difficult Customers' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Customer Support'))"
                   then: ['Customer Support']
-#        - label: '$value.name'
-#          type: 'text'
       value:
         - name: Best Practices for Code Reviews
           description: This guide outlines the key steps for effective code reviews.
