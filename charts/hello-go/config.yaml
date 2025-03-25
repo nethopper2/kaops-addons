@@ -157,7 +157,8 @@ variables:
           closeOnSelect: false
           help: Select groups with write access to this knowledge base
           # pre-select the related group for each knowledge base (if the group was chosen)
-          value:
+#          value:
+          modelValue:
             if: "$value.name == 'Best Practices for Code Reviews' && $u.find($get(postInstallGroups).value, $matchesProperty('name', 'Engineering Team'))"
             then: ['Engineering Team']
             else:
