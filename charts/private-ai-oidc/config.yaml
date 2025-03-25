@@ -71,7 +71,7 @@ variables:
     ui:
       type: "password" #TODO: Change to secret
       label: "Oauth Cookie Secret"
-  - slug: "oidcConfig"
+  - slug: "oidcConfiguration"
     path: "oauth2-proxy.config.configFile"
     forms: ["default"]
     ui:
