@@ -89,31 +89,31 @@ variables:
       label: Groups
       help: The installation process will automatically create the selected groups. You can change the names & details anytime inside the application itself.
       options:
-        - label: Engineering
+        - label: Engineering Team
           value:
-            name: Engineering
-            description: Engineering Department
-        - label: Human Resources
+            name: Engineering Team
+            description: A group for software engineers
+        - label: Product Management
           value:
-            name: Human Resources
-            description: HR Department
-        - label: Marketing
+            name: Product Management
+            description: A group for product managers
+        - label: Marketing Team
           value:
-            name: Marketing
-            description: Marketing Department
-        - label: Sales
+            name: Marketing Team
+            description: A group for marketing professionals
+        - label: Customer Support
           value:
-            name: Sales
-            description: Sales Department
+            name: Customer Support
+            description: A group for customer support representatives
       value:
-        - name: Engineering
-          description: Engineering Department
-        - name: Human Resources
-          description: HR Department
-        - name: Marketing
-          description: Marketing Department
-        - name: Sales
-          description: Sales Department
+        - name: Engineering Team
+          description: A group for software engineers
+        - name: Product Management
+          description: A group for product managers
+        - name: Marketing Team
+          description: A group for marketing professionals
+        - name: Customer Support
+          description: A group for customer support representatives
       validation: 'required'
   - slug: postInstallKnowledgeBases
     path: _postInstall.knowledgeBases
@@ -152,8 +152,17 @@ variables:
           closeOnSelect: false
           help: Select groups with write access to this knowledge base
           value:
-            if: '$value.name == ["Best Practices for Code Reviews"]'
-            then: 'Engineering'
+            if: '$value.name == "Best Practices for Code Reviews"'
+            then: ['Engineering Team']
+            else:
+              if: '$value.name == "Social Media Strategy For This Year"'
+              then: ['Marketing Team']
+              else:
+                if: '$value.name == "Agile Project Management Tips"'
+                then: ['Product Management']
+                else:
+                  if: '$value.name == "Handling Difficult Customers"'
+                  then: ['Customer Support']
 #        - label: '$value.name'
 #          type: 'text'
       value:
