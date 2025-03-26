@@ -194,6 +194,20 @@ entries:
   hello-go:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-03-26T22:19:29.55883579Z"
+    dependencies:
+    - name: hello
+      repository: https://techo.dev/charts/
+      version: 0.1.2
+    description: A Helm chart for Kubernetes
+    digest: 1e021d73790bcca2b84d44e9fdb07805892b6e92f6ddd2cb33ad742bd3118b5e
+    name: hello-go
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/hello-go-0.1.46/hello-go-0.1.46.tgz
+    version: 0.1.46
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-03-26T19:13:12.176582249Z"
     dependencies:
     - name: hello
@@ -1782,6 +1796,20 @@ entries:
   private-ai:
   - apiVersion: v2
     appVersion: 5.13.0
+    created: "2025-03-26T22:19:29.704256483Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.13.0
+    description: KAOPS addon to install private-ai
+    digest: 1341000aa8ee53d35ef13b32010a8fc93f163b84974543c2e2c3239d4705b59a
+    name: private-ai
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-0.1.22/private-ai-0.1.22.tgz
+    version: 0.1.22
+  - apiVersion: v2
+    appVersion: 5.13.0
     created: "2025-03-21T19:05:22.695228104Z"
     dependencies:
     - name: open-webui
@@ -2494,4 +2522,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-03-26T19:13:12.177016277Z"
+generated: "2025-03-26T22:19:29.704728635Z"
