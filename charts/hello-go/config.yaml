@@ -21,6 +21,7 @@ forms:
       - slug: details
         isCreateOnly: true
         variableSlugs:
+          - ssoEnabled
           - gpuEnabled
           - modelsToPull
         ui:
@@ -31,13 +32,13 @@ forms:
           - postInstallOptions
         ui:
           label: Options
-      - slug: sso
-#        variableSlugs:
-#          - TODO
-        ui:
-          # TODO: This step must show in update mode if sso was configured
-          if: $u.includes($get(postInstallOptions).value, 'sso')
-          label: SSO
+#      - slug: sso
+##        variableSlugs:
+##          - TODO
+#        ui:
+#          # TODO: This step must show in update mode if sso was configured
+#          if: $u.includes($get(postInstallOptions).value, 'sso')
+#          label: SSO
       - slug: groups
         isCreateOnly: true
         variableSlugs:
@@ -54,6 +55,12 @@ forms:
           if: "$u.includes($get(postInstallOptions).value, 'knowledge')"
           label: Knowledge
 variables:
+  - slug: ssoEnabled
+    path: open-webui.oauth2Proxy.enabled
+    forms: [ default ]
+    ui:
+      type: toggle
+      label: Use Single Sign On
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
