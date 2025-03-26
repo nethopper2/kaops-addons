@@ -7,9 +7,6 @@ metadata:
   detailUrl: 'https://addons.kaops.net/hello-go/'
   externalUrl: 'https://github.com/golang-samples/gopher-vector?tab=readme-ov-file'
   installTargets:
-    hub: true
-    hubRequired: true
-    edge: false
     clusterMessage: Enter cluster restrictions and requirements here. Must be installed on clusters configured for Ingress.
     infoMessage: Info message
     warningMessage: The Frontend UX displays this text as an warning message in the cluster Addon config dialog.
@@ -63,12 +60,15 @@ variables:
     ui:
       type: toggle
       label: Use Single Sign On
+      value: false
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
     ui:
       type: toggle
       label: Use GPU
+      help: Install the oAuth2 Proxy Addon to use SSO.
+      value: false
   - slug: modelsToPull
     path: open-webui.ollama.ollama.models.pull
     forms: [default]
