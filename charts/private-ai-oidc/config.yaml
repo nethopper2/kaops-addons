@@ -33,6 +33,12 @@ variables:
     ui:
       type: "toggle"
       label: "Use GPU"
+  - slug: "enableOauth2Proxy"
+    path: "open-webui.ingress.oauth2Proxy.enabled"
+    forms: ["default"]
+    ui:
+      type: "toggle"
+      label: "Enable Oauth2 Proxy"
   - slug: "modelsToPull"
     path: "open-webui.ollama.ollama.models.pull"
     forms: ["default"]
@@ -53,12 +59,6 @@ variables:
       # placeholder: "llama3.3"
       # help: 'Models to pull from: https://ollama.com/search'
       # validation: 'required'
-  - slug: "enableOauth2Proxy"
-    path: "open-webui.ingress.oauth2Proxy.enabled"
-    forms: ["default"]
-    ui:
-      type: "toggle"
-      label: "Enable Oauth2 Proxy"
   # - slug: "clientId"
   #   path: "oauth2-proxy.config.clientID"
   #   forms: ["default"]
@@ -86,10 +86,12 @@ variables:
   #     label: "OIDC Configuration"
 
 system:
-  - path: "open-webui.ingress.host"
+  - path: "open-webui.ingress.hosts[0]"
     value: "chat.${system.hubCluster.ingressHostname}"
-  - path: "open-webui.ingress.path"
-    value: \
+  - path: "open-webui.ingress.tls[0].hosts[0]"
+    value: "chat.${system.hubCluster.ingressHostname}"
+  - path: "open-webui.ingress.tls[0].secretName"
+    value: "webui-tls"
   - path: "open-webui.ingress.oauth2Proxy.signinUrl"
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
   - path: "open-webui.ingress.oauth2Proxy.authUrl"

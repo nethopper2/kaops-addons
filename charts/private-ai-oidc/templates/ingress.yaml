@@ -4,35 +4,34 @@ kind: Ingress
 metadata:
   name: {{ include "open-webui.fullname" . }}
   namespace: {{ .Release.Namespace }}
-  {{- with .Values.ingress.annotations }}
   annotations:
+    {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{- if .Values.ingress.oauth2Proxy.enabled }}
-  annotations:
-    {{- if not .Values.ingress.annotations }}
     {{- end }}
+    {{- if and .Values.ingress.oauth2Proxy.enabled .Values.ingress.oauth2Proxy.authUrl .Values.ingress.oauth2Proxy.authSignin }}
     nginx.ingress.kubernetes.io/auth-url: {{ .Values.ingress.oauth2Proxy.authUrl | quote }}
     nginx.ingress.kubernetes.io/auth-signin: {{ .Values.ingress.oauth2Proxy.authSignin | quote }}
     nginx.ingress.kubernetes.io/auth-response-headers: {{ .Values.ingress.oauth2Proxy.authResponseHeaders | quote }}
-  {{- end }}
+    {{- end }}
 spec:
   {{- if .Values.ingress.ingressClassName }}
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.host | quote }}
+  - host: {{ .Values.ingress.host | quote }}  # <-- Avoid nil error
     http:
       paths:
-      - path: {{ .Values.ingress.path | quote }}
+      - path: {{ .Values.ingress.path | default "/" | quote }}
         pathType: {{ .Values.ingress.pathType | default "Prefix" }}
         backend:
           service:
             name: {{ include "open-webui.fullname" . }}
             port:
               number: {{ .Values.service.port }}
+  {{- if .Values.ingress.tls }}
   tls:
   - hosts:
     - {{ .Values.ingress.host | quote }}
-    secretName: {{ .Values.ingress.tls.secretName }}
+    secretName: {{ .Values.ingress.tls.secretName | default "default-secret" }}  # <-- Avoid nil error
+  {{- end }}
 {{- end }}
