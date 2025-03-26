@@ -19,6 +19,7 @@ forms:
     label: Configuration
     steps:
       - slug: details
+        isCreateOnly: true
         variableSlugs:
           - gpuEnabled
           - modelsToPull
@@ -30,13 +31,13 @@ forms:
           - postInstallOptions
         ui:
           label: Options
-      - slug: oidc
+      - slug: sso
 #        variableSlugs:
 #          - TODO
         ui:
-          # TODO: This step must show in update mode if oidc was configured
-          if: $u.includes($get(postInstallOptions).value, 'oidc')
-          label: OIDC
+          # TODO: This step must show in update mode if sso was configured
+          if: $u.includes($get(postInstallOptions).value, 'sso')
+          label: SSO
       - slug: groups
         isCreateOnly: true
         variableSlugs:
@@ -49,7 +50,8 @@ forms:
         variableSlugs:
           - postInstallKnowledgeBases
         ui:
-          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
+#          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
+          if: "$u.includes($get(postInstallOptions).value, 'knowledge')"
           label: Knowledge
 variables:
   - slug: gpuEnabled
@@ -74,12 +76,15 @@ variables:
     ui:
       type: checkbox
       options:
-        - label: Use OpenID Connect
-          value: oidc
+        - label: Use Single Sign-On
+          value: sso
         - label: Select Suggested Groups
           value: groups
         - label: Provide Knowledge Containers
           value: knowledge
+      value:
+        - groups
+        - knowledge
   - slug: postInstallGroups
     path: _postInstall.groups
     forms: [default]
@@ -88,22 +93,31 @@ variables:
       label: Groups
       help: The installation process will automatically create the selected groups. You can change the names & details anytime inside the application itself.
       options:
-        - label: Engineering
+        - label: Engineering Team
           value:
-            name: Engineering
-            description: Engineering Department
-        - label: Human Resources
+            name: Engineering Team
+            description: A group for software engineers
+        - label: Product Management
           value:
-            name: Human Resources
-            description: HR Department
-        - label: Marketing
+            name: Product Management
+            description: A group for product managers
+        - label: Marketing Team
           value:
-            name: Marketing
-            description: Marketing Department
-        - label: Sales
+            name: Marketing Team
+            description: A group for marketing professionals
+        - label: Customer Support
           value:
-            name: Sales
-            description: Sales Department
+            name: Customer Support
+            description: A group for customer support representatives
+      value:
+        - name: Engineering Team
+          description: A group for software engineers
+        - name: Product Management
+          description: A group for product managers
+        - name: Marketing Team
+          description: A group for marketing professionals
+        - name: Customer Support
+          description: A group for customer support representatives
       validation: 'required'
   - slug: postInstallKnowledgeBases
     path: _postInstall.knowledgeBases
@@ -111,6 +125,7 @@ variables:
     ui:
       type: repeater
       label: Knowledge Bases
+      key: "$: 'knowledgeBases-' + $get(postInstallGroups).value.length"
       addButton: false
       insertControl: true
       upControl: false
@@ -134,6 +149,7 @@ variables:
         - label: Groups
           type: taglist
           name: groups
+          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroups).value.length"
           options: $u.map($get(postInstallGroups).value, 'name')
           disableDragAndDrop: true
           allowNewValues: true
@@ -141,6 +157,20 @@ variables:
           openOnClick: true
           closeOnSelect: false
           help: Select groups with write access to this knowledge base
+          # pre-select the related group for each knowledge base (if the group was chosen)
+          value:
+            if: "$value.name == 'Best Practices for Code Reviews' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Engineering Team'))"
+            then: ['Engineering Team']
+            else:
+              if: "$value.name == 'Social Media Strategy For This Year' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Marketing Team'))"
+              then: ['Marketing Team']
+              else:
+                if: "$value.name == 'Agile Project Management Tips' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Product Management'))"
+                then: ['Product Management']
+                else:
+                  if: "$value.name == 'Handling Difficult Customers' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Customer Support'))"
+                  then: ['Customer Support']
+                  else: []
       value:
         - name: Best Practices for Code Reviews
           description: This guide outlines the key steps for effective code reviews.
