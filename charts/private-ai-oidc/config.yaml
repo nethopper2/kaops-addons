@@ -27,12 +27,12 @@ forms:
     #     ui:
     #       label: 'Models'
 variables:
-  - slug: "gpuEnabled"
-    path: "open-webui.ollama.ollama.gpu.enabled"
-    forms: ["default"]
-    ui:
-      type: "toggle"
-      label: "Use GPU"
+  # - slug: "gpuEnabled"
+  #   path: "open-webui.ollama.ollama.gpu.enabled"
+  #   forms: ["default"]
+  #   ui:
+  #     type: "toggle"
+  #     label: "Use GPU"
   - slug: "enableOauth2Proxy"
     path: "open-webui.ingress.oauth2Proxy.enabled"
     forms: ["default"]
@@ -86,6 +86,8 @@ variables:
   #     label: "OIDC Configuration"
 
 system:
+  - path: "open-webui.ingress.enabled"
+    value: true
   - path: "open-webui.ingress.hosts[0]"
     value: "chat.${system.hubCluster.ingressHostname}"
   - path: "open-webui.ingress.tls[0].hosts[0]"

@@ -18,7 +18,7 @@ spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.host | quote }}  # <-- Avoid nil error
+  - host: {{ .Values.ingress.host | quote }}  
     http:
       paths:
       - path: {{ .Values.ingress.path | default "/" | quote }}
@@ -32,6 +32,6 @@ spec:
   tls:
   - hosts:
     - {{ .Values.ingress.host | quote }}
-    secretName: {{ .Values.ingress.tls.secretName | default "default-secret" }}  # <-- Avoid nil error
+    secretName: {{ .Values.ingress.tls.secretName | default "default-secret" }} 
   {{- end }}
 {{- end }}
