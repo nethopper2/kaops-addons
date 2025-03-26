@@ -85,8 +85,6 @@ variables:
     ui:
       type: checkbox
       options:
-        - label: Use Single Sign-On
-          value: sso
         - label: Select Suggested Groups
           value: groups
         - label: Provide Knowledge Containers
