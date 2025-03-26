@@ -27,18 +27,18 @@ forms:
     #     ui:
     #       label: 'Models'
 variables:
-  # - slug: "gpuEnabled"
-  #   path: "open-webui.ollama.ollama.gpu.enabled"
-  #   forms: ["default"]
-  #   ui:
-  #     type: "toggle"
-  #     label: "Use GPU"
   - slug: "enableOauth2Proxy"
-    path: "open-webui.ingress.oauth2Proxy.enabled"
+    path: "open-webui.oauth2Proxy.enabled"
     forms: ["default"]
     ui:
       type: "toggle"
       label: "Enable Oauth2 Proxy"
+  - slug: "gpuEnabled"
+    path: "open-webui.ollama.ollama.gpu.enabled"
+    forms: ["default"]
+    ui:
+      type: "toggle"
+      label: "Use GPU"
   - slug: "modelsToPull"
     path: "open-webui.ollama.ollama.models.pull"
     forms: ["default"]
@@ -94,9 +94,9 @@ system:
     value: "chat.${system.hubCluster.ingressHostname}"
   - path: "open-webui.ingress.tls[0].secretName"
     value: "webui-tls"
-  - path: "open-webui.ingress.oauth2Proxy.signinUrl"
+  - path: "open-webui.oauth2Proxy.signinUrl"
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
-  - path: "open-webui.ingress.oauth2Proxy.authUrl"
+  - path: "open-webui.oauth2Proxy.authUrl"
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
 
 output:

@@ -11,6 +11,11 @@ open-webui:
         pull: []
     service:
       type: ClusterIP
+  oauth2Proxy:
+    enabled: true
+    authUrl:
+    authSignin:
+    authResponseHeaders: "authorization"
   ingress:
     enabled: true
     annotations:
@@ -26,11 +31,6 @@ open-webui:
     tls:
       - hosts:
         secretName:
-    oauth2Proxy:
-      enabled: true
-      authUrl:
-      authSignin:
-      authResponseHeaders: "authorization"
   extraEnvVars:
     - name: WEBUI_NAME
       value: "Private AI"
