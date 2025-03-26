@@ -1,0 +1,38 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "open-webui.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.ingress.oauth2Proxy.enabled }}
+  annotations:
+    {{- if not .Values.ingress.annotations }}
+    {{- end }}
+    nginx.ingress.kubernetes.io/auth-url: {{ .Values.ingress.oauth2Proxy.authUrl | quote }}
+    nginx.ingress.kubernetes.io/auth-signin: {{ .Values.ingress.oauth2Proxy.authSignin | quote }}
+    nginx.ingress.kubernetes.io/auth-response-headers: {{ .Values.ingress.oauth2Proxy.authResponseHeaders | quote }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.host | quote }}
+    http:
+      paths:
+      - path: {{ .Values.ingress.path | quote }}
+        pathType: {{ .Values.ingress.pathType | default "Prefix" }}
+        backend:
+          service:
+            name: {{ include "open-webui.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host | quote }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+{{- end }}
