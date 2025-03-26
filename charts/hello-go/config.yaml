@@ -54,10 +54,12 @@ forms:
 #          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
           if: "$u.includes($get(postInstallOptions).value, 'knowledge')"
           label: Knowledge
+  - slug: defaultUpdate
+    label: Configuration
 variables:
   - slug: ssoEnabled
     path: open-webui.oauth2Proxy.enabled
-    forms: [ default ]
+    forms: [default, defaultUpdate]
     ui:
       type: toggle
       label: Use Single Sign On
