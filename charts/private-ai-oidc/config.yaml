@@ -35,7 +35,7 @@ variables:
       label: "Use GPU"
       value: false
   - slug: ssoEnabled
-    path: ingress.oauth2-proxy.enabled
+    path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
     ui:
       type: toggle
@@ -65,9 +65,9 @@ variables:
 system:
   - path: "ingress.host"
     value: "chat.${system.hubCluster.ingressHostname}"
-  - path: "ingress.oauth2-proxy.authSignin"
+  - path: "ingress.oauth2Proxy.authSignin"
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
-  - path: "iingress.oauth2-proxy.authUrl"
+  - path: "ingress.oauth2Proxy.authUrl"
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
 
 output:
