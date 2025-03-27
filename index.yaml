@@ -3,6 +3,16 @@ entries:
   aws-eks:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-03-27T19:52:31.423006828Z"
+    description: A Helm chart for EKS cluster
+    digest: b4a5c08c7101ae93679af6ff390f9ba8ac152f3fe0f61cfdcdf99fdbea115163
+    name: aws-eks
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/aws-eks-0.1.22/aws-eks-0.1.22.tgz
+    version: 0.1.22
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-03-27T17:51:44.186900073Z"
     description: A Helm chart for EKS cluster
     digest: 95d54ca23e8fb9a6a9ae5a74fabdad8056d3da7b975a9821cf5adfe0c5dd13da
@@ -2790,4 +2800,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-03-27T19:50:10.350744001Z"
+generated: "2025-03-27T19:52:31.423360417Z"
