@@ -36,14 +36,14 @@ forms:
         variableSlugs:
           - postInstallGroupsCustom
         ui:
-          if: $get(postInstallOptions).value == custom
+          if: "$get(postInstallOptions).value == 'custom'"
           label: Groups
       - slug: knowledge
         isCreateOnly: true
         variableSlugs:
           - postInstallKnowledgeBasesCustom
         ui:
-          if: $get(postInstallOptions).value == custom
+          if: "$get(postInstallOptions).value == 'custom'"
           label: Knowledge
   - slug: defaultUpdate
     label: Configuration
@@ -77,22 +77,75 @@ variables:
     path: postInstall.chosenPostInstallOptions
     forms: [default]
     ui:
-      label: Groups and knowledge bases
-      type: radio
-      options:
-        - label: Suggested
+      el: div
+      children:
+        - label: Groups and Knowledge bases
+          type: radio
+          options:
+            - label: Suggested
+              value: suggested
+            - label: Custom
+              value: custom
+            - label: None
+              value: none
           value: suggested
-        - label: Custom
-          value: custom
-        - label: None
-          value: none
-      value: suggested
-      help: You can change the details anytime inside the application itself.
+          help: You can change the details anytime inside the application itself.
+        - if: "$get(postInstallOptions).value == 'suggested'"
+          el: div
+          children:
+            - cmp: QItem
+              props:
+                dense: true
+              children:
+                cmp: QItemSection
+                children:
+                  - cmp: QItemLabel
+                    children: Engineering Team
+                  - cmp: QItemLabel
+                    props:
+                      caption: true
+                    children: A group for software engineers
+            - cmp: QItem
+              props:
+                dense: true
+              children:
+                cmp: QItemSection
+                children:
+                  - cmp: QItemLabel
+                    children: Product Management
+                  - cmp: QItemLabel
+                    props:
+                      caption: true
+                    children: A group for product managers
+            - cmp: QItem
+              props:
+                dense: true
+              children:
+                cmp: QItemSection
+                children:
+                  - cmp: QItemLabel
+                    children: Marketing Team
+                  - cmp: QItemLabel
+                    props:
+                      caption: true
+                    children: A group for marketing professionals
+            - cmp: QItem
+              props:
+                dense: true
+              children:
+                cmp: QItemSection
+                children:
+                  - cmp: QItemLabel
+                    children: Customer Support
+                  - cmp: QItemLabel
+                    props:
+                      caption: true
+                    children: A group for customer support representatives
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
     ui:
-      if: $get(postInstallOptions).value == suggested
+      if: "$get(postInstallOptions).value == 'suggested'"
       type: list
       children:
         - type: group
@@ -145,7 +198,7 @@ variables:
     path: postInstall.knowledgeBases
     forms: [default]
     ui:
-      if: $get(postInstallOptions).value == suggested
+      if: "$get(postInstallOptions).value == 'suggested'"
       type: list
       children:
         - type: group
