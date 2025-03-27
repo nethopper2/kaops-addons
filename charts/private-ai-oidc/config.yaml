@@ -71,6 +71,10 @@ system:
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
   - path: "ingress.oauth2Proxy.authResponseHeaders"
     value: "authorization"
+  - path: "open-webui.extraEnvVars[6].name"
+    value: WEBUI_AUTH
+  - path: "open-webui.extraEnvVars[6].name"
+    value: "${ingress.oauth2Proxy.enabled}"
 
 output:
   - name: Open Web UI URL
