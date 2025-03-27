@@ -77,11 +77,12 @@ variables:
     path: postInstall.chosenPostInstallOptions
     forms: [default]
     ui:
+      label: Groups and knowledge bases
       type: radio
       options:
-        - label: Use suggested groups and knowledge bases
+        - label: Suggested
           value: suggested
-        - label: Provide Custom groups and knowledge bases
+        - label: Custom
           value: custom
         - label: None
           value: none
@@ -90,21 +91,42 @@ variables:
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
-    # fake a hidden field that submits an array of objects
     ui:
       if: $get(postInstallOptions).value == suggested
-      type: select
-      multiple: true
-      style: 'display: none !important'
-      value:
-        - name: Engineering Team
-          description: A group for software engineers
-        - name: Product Management
-          description: A group for product managers
-        - name: Marketing Team
-          description: A group for marketing professionals
-        - name: Customer Support
-          description: A group for customer support representatives
+      type: list
+      children:
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: Engineering Team
+            - type: hidden
+              name: description
+              value: A group for software engineers
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: Product Management
+            - type: hidden
+              name: description
+              value: A group for product managers
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: Marketing Team
+            - type: hidden
+              name: description
+              value: A group for marketing professionals
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: Customer Support
+            - type: hidden
+              name: description
+              value: A group for customer support representatives
   - slug: postInstallGroupsCustom
     path: postInstall.groups
     forms: [default]
@@ -122,25 +144,62 @@ variables:
   - slug: postInstallKnowledgeBasesSuggested
     path: postInstall.knowledgeBases
     forms: [default]
-    # fake a hidden field that submits an array of objects
     ui:
       if: $get(postInstallOptions).value == suggested
-      type: select
-      multiple: true
-      style: 'display: none !important'
-      value:
-        - name: Best Practices for Code Reviews
-          description: This guide outlines the key steps for effective code reviews.
-          groups: ['Engineering Team']
-        - name: Social Media Strategy For This Year
-          description: An overview of our social media approach for the upcoming year.
-          groups: ['Marketing Team']
-        - name: Agile Project Management Tips
-          description: Key insights for managing agile projects effectively.
-          groups: ['Product Management']
-        - name: Handling Difficult Customers
-          description: Techniques and strategies for resolving challenging customer situations.
-          groups: ['Customer Support']
+      type: list
+      children:
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: Best Practices for Code Reviews
+            - type: hidden
+              name: description
+              value: This guide outlines the key steps for effective code reviews.
+            - type: list
+              name: groups
+              children:
+                - type: hidden
+                  value: Engineering Team
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: Social Media Strategy For This Year
+            - type: hidden
+              name: description
+              value: An overview of our social media approach for the upcoming year.
+            - type: list
+              name: groups
+              children:
+                - type: hidden
+                  value: Marketing Team
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: Agile Project Management Tips
+            - type: hidden
+              name: description
+              value: Key insights for managing agile projects effectively.
+            - type: list
+              name: groups
+              children:
+                - type: hidden
+                  value: Product Management
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: Handling Difficult Customers
+            - type: hidden
+              name: description
+              value: Techniques and strategies for resolving challenging customer situations.
+            - type: list
+              name: groups
+              children:
+                - type: hidden
+                  value: Customer Support
   - slug: postInstallKnowledgeBasesCustom
     path: postInstall.knowledgeBases
     forms: [default]
