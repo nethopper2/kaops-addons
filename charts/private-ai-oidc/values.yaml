@@ -1,3 +1,20 @@
+ingress:
+  enabled: true
+  oauth2-proxy:
+    enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: http
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/tls-acme: "true"
+  host:
+  existingSecret: "webui-tls"
+  tls:
+    - hosts:
+      secretName:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
@@ -11,23 +28,6 @@ open-webui:
         pull: []
     service:
       type: ClusterIP
-  ingress:
-    enabled: true
-    oauth2-proxy:
-      enabled: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-      kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: "true"
-      nginx.ingress.kubernetes.io/backend-protocol: http
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/tls-acme: "true"
-    host:
-    existingSecret: "webui-tls"
-    tls:
-      - hosts:
-        secretName:
   extraEnvVars:
     - name: WEBUI_NAME
       value: "Private AI"
