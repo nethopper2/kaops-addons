@@ -20,9 +20,14 @@ terraform {
     }
   }
   
-  backend "kubernetes" {
-    secret_suffix     = "providerconfig-default"
-    namespace         = "default"
-    in_cluster_config = true
+  # backend "kubernetes" {
+  #   secret_suffix     = "providerconfig-default"
+  #   namespace         = "default"
+  #   in_cluster_config = true
+  # }
+  backend "s3" {
+    bucket = "pov-bedrock-tfstate"
+    region = "us-east-2"
+    key    = "eks-hub-gpu/terraform.tfstate"
   }
 }
