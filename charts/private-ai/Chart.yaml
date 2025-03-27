@@ -21,9 +21,9 @@ version: 0.1.22
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "5.13.0"
+appVersion: "5.25.0"
 
 dependencies:
   - name: open-webui
-    version: 5.13.0
+    version: 5.25.0
     repository: https://helm.openwebui.com/
