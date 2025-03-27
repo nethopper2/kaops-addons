@@ -11,10 +11,9 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/tls-acme: "true"
   host:
-  existingSecret: "webui-tls"
   tls:
     - hosts:
-      secretName:
+      secretName: webui-tls
 open-webui:
   image:
     repository: nethopper/kaops-open-webui

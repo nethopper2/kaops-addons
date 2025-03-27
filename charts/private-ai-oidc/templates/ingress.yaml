@@ -27,11 +27,11 @@ spec:
           service:
             name: open-webui
             port:
-              number: {{ .Values.service.port }}
+              name: http
   {{- if .Values.ingress.tls }}
   tls:
   - hosts:
     - {{ .Values.ingress.host | quote }}
-    secretName: {{ .Values.ingress.tls.secretName | default "default-secret" }} 
+    secretName: {{ .Values.ingress.tls.secretName | default "webui-tls" }} 
   {{- end }}
 {{- end }}
