@@ -19,19 +19,47 @@ forms:
     description: Start, run, and scale Kubernetes applications in the AWS cloud and on-premises data centers.
 variables:
   - slug: 'providerConfigRef'
-    name: 'providerConfigRef'
     path: 'providerConfigRef'
     forms: ['default']
     ui:
       type: 'text'
-      placeholder: 'awsconfig'
+      label: 'Provider Config Name'
       validation: 'required'
   - slug: 'cluster_name'
-    name: 'cluster_name'
-    path: 'cluster_name'
+    path: 'tf.cluster_name'
     forms: ['default']
     ui:
       type: 'text'
       label: 'EKS Cluster Name'
       validation: 'required'
+  - slug: 'region'
+    path: 'tf.region'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'AWS Region'
+  - slug: 'instance_type_default'
+    path: 'tf.instance_type_default'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'AWS Instance Type for a default node group'
+  - slug: 'instance_type_gpu'
+    path: 'tf.instance_type_gpu'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'AWS Instance Type for a GPU node group'
+  - slug: 'ami_type'
+    path: 'tf.ami_type'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'AMI Type for a GPU node group'
+  - slug: 'vpc_cidr'
+    path: 'tf.vpc_cidr'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Value of the VPC CIDR'
 system:

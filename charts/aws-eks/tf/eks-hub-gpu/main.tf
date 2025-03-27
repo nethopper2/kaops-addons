@@ -147,56 +147,6 @@ module "eks_blueprints_addons" {
 }
 
 ################################################################################
-# Storage Classes
-################################################################################
-
-resource "kubernetes_annotations" "gp2" {
-  api_version = "storage.k8s.io/v1"
-  kind        = "StorageClass"
-  # This is true because the resources was already created by the ebs-csi-driver addon
-  force = "true"
-
-  metadata {
-    name = "gp2"
-  }
-
-  annotations = {
-    # Modify annotations to remove gp2 as default storage class still retain the class
-    "storageclass.kubernetes.io/is-default-class" = "false"
-  }
-
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
-}
-
-resource "kubernetes_storage_class_v1" "gp3" {
-  metadata {
-    name = "gp3"
-
-    annotations = {
-      # Annotation to set gp3 as default storage class
-      "storageclass.kubernetes.io/is-default-class" = "true"
-    }
-  }
-
-  storage_provisioner    = "ebs.csi.aws.com"
-  allow_volume_expansion = true
-  reclaim_policy         = "Delete"
-  volume_binding_mode    = "WaitForFirstConsumer"
-
-  parameters = {
-    encrypted = true
-    fsType    = "ext4"
-    type      = "gp3"
-  }
-
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
-}
-
-################################################################################
 # Supporting Resources
 ################################################################################
 
@@ -222,23 +172,8 @@ module "vpc" {
     "kubernetes.io/role/internal-elb" = 1
   }
 }
-# module "ebs_csi_driver_irsa" {
-#   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-#   version = "~> 5.20"
 
-#   role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
-
-#   attach_ebs_csi_policy = true
-
-#   oidc_providers = {
-#     main = {
-#       provider_arn               = module.eks.oidc_provider_arn
-#       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-#     }
-#   }
-# }
-
-resource "kubectl_manifest" "test" {
+resource "kubectl_manifest" "nvidia_device_plugin" {
     yaml_body = <<YAML
 apiVersion: apps/v1
 kind: DaemonSet
@@ -285,29 +220,3 @@ spec:
           path: /var/lib/kubelet/device-plugins
 YAML
 }
-
-# resource "helm_release" "ebs_csi_driver" {
-#   name       = "aws-ebs-csi-driver"
-#   namespace  = "kube-system"
-#   repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
-#   chart      = "aws-ebs-csi-driver"
-
-#   set {
-#     name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-#     type  = "string"
-#     value = module.ebs_csi_driver_irsa.iam_role_arn
-#   }
-#   set {
-#     name  = "controller.sdkDebugLog"
-#     type  = "auto"
-#     value = true
-#   }
-# }
-
-# resource "helm_release" "nvidia-device-plugin" {
-#   name             = "nvidia-device-plugin"
-#   namespace        = "nvidia-device-plugin"
-#   repository       = "https://nvidia.github.io/k8s-device-plugin"
-#   chart            = "nvidia-device-plugin"
-#   create_namespace = true
-# }
