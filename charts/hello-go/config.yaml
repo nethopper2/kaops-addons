@@ -287,17 +287,17 @@ variables:
           name: description
           help: Describe your knowledge base and objectives
           validation: required
-#        - label: Groups
-#          type: taglist
-#          name: groups
-##          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
-#          options: $u.map($get(postInstallGroupsCustom).value, 'name')
-#          disableDragAndDrop: true
-#          allowNewValues: true
-#          popover: true
-#          openOnClick: true
-#          closeOnSelect: false
-#          help: Select groups with write access to this knowledge base
+        - label: Groups
+          type: taglist
+          name: groups
+#          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
+          options: "$u.map($get(postInstallGroupsCustom).value || [], 'name')"
+          disableDragAndDrop: true
+          allowNewValues: true
+          popover: true
+          openOnClick: true
+          closeOnSelect: false
+          help: Select groups with write access to this knowledge base
 
 system:
   - path: open-webui.ingress.host
