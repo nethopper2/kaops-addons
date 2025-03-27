@@ -267,36 +267,46 @@ variables:
     path: postInstall.knowledgeBases
     forms: [default]
     ui:
-      type: repeater
-      label: Knowledge Bases
-#      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
-      addButton: false
-      insertControl: true
-      upControl: false
-      downControl: false
-      min: 1
-      help: The installation process will automatically create these knowledge bases. You can change the names & details anytime inside the application itself.
-      children:
-        - label: What are you working on?
-          type: text
-          name: name
-          help: Name your knowledge base
-          validation: required
-        - label: What are you trying to achieve?
-          type: text
-          name: description
-          help: Describe your knowledge base and objectives
-          validation: required
-        - label: Groups
-          type: taglist
-          name: groups
-#          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
-          options: "$u.map($get(postInstallGroupsCustom).value, 'name')"
-          disableDragAndDrop: true
-          popover: true
-          openOnClick: true
-          closeOnSelect: false
-          help: Select groups with write access to this knowledge base
+      label: Groups
+      type: taglist
+      name: groups
+      #          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
+      options: "$u.map($get(postInstallGroupsCustom).value, 'name')"
+      disableDragAndDrop: true
+      popover: true
+      openOnClick: true
+      closeOnSelect: false
+      help: Select groups with write access to this knowledge base
+#      type: repeater
+#      label: Knowledge Bases
+##      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
+#      addButton: false
+#      insertControl: true
+#      upControl: false
+#      downControl: false
+#      min: 1
+#      help: The installation process will automatically create these knowledge bases. You can change the names & details anytime inside the application itself.
+#      children:
+#        - label: What are you working on?
+#          type: text
+#          name: name
+#          help: Name your knowledge base
+#          validation: required
+#        - label: What are you trying to achieve?
+#          type: text
+#          name: description
+#          help: Describe your knowledge base and objectives
+#          validation: required
+#        - label: Groups
+#          type: taglist
+#          name: groups
+##          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
+#          options: "$u.map($get(postInstallGroupsCustom).value, 'name')"
+#          disableDragAndDrop: true
+#          popover: true
+#          openOnClick: true
+#          closeOnSelect: false
+#          help: Select groups with write access to this knowledge base
 
 system:
   - path: open-webui.ingress.host
