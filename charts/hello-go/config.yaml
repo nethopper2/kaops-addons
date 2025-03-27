@@ -291,8 +291,7 @@ variables:
           type: taglist
           name: groups
 #          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
-#          options: "$u.map($get(postInstallGroupsCustom).value, 'name')"
-          options: []
+          options: "$u.map($get(postInstallGroupsCustom).value, 'name')"
           disableDragAndDrop: true
           popover: true
           openOnClick: true
