@@ -81,6 +81,8 @@ variables:
       children:
         - label: Groups and Knowledge bases
           type: radio
+          id: postInstallOptions
+          name: chosenPostInstallOptions
           options:
             - label: Suggested
               value: suggested
