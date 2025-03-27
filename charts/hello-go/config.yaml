@@ -27,29 +27,23 @@ forms:
         isCreateOnly: true
         variableSlugs:
           - postInstallOptions
+          - postInstallGroupsSuggested
+          - postInstallKnowledgeBasesSuggested
         ui:
           label: Options
-#      - slug: sso
-##        variableSlugs:
-##          - TODO
-#        ui:
-#          # TODO: This step must show in update mode if sso was configured
-#          if: $u.includes($get(postInstallOptions).value, 'sso')
-#          label: SSO
       - slug: groups
         isCreateOnly: true
         variableSlugs:
-          - postInstallGroups
+          - postInstallGroupsCustom
         ui:
-          if: $u.includes($get(postInstallOptions).value, 'groups')
+          if: $get(postInstallOptions).value == custom
           label: Groups
       - slug: knowledge
         isCreateOnly: true
         variableSlugs:
-          - postInstallKnowledgeBases
+          - postInstallKnowledgeBasesCustom
         ui:
-#          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
-          if: "$u.includes($get(postInstallOptions).value, 'knowledge')"
+          if: $get(postInstallOptions).value == custom
           label: Knowledge
   - slug: defaultUpdate
     label: Configuration
@@ -80,42 +74,28 @@ variables:
       help: 'Models to pull from: https://ollama.com/search'
       searchable: true
   - slug: postInstallOptions
-    path: _postInstall.chosenPostInstallOptions
+    path: postInstall.chosenPostInstallOptions
     forms: [default]
     ui:
-      type: checkbox
+      type: radio
       options:
-        - label: Select Suggested Groups
-          value: groups
-        - label: Provide Knowledge Containers
-          value: knowledge
-      value:
-        - groups
-        - knowledge
-  - slug: postInstallGroups
-    path: _postInstall.groups
+        - label: Use suggested groups and knowledge bases
+          value: suggested
+        - label: Provide Custom groups and knowledge bases
+          value: custom
+        - label: None
+          value: none
+      value: suggested
+      help: You can change the details anytime inside the application itself.
+  - slug: postInstallGroupsSuggested
+    path: postInstall.groups
     forms: [default]
+    # fake a hidden field that submits an array of objects
     ui:
-      type: transferlist
-      label: Groups
-      help: The installation process will automatically create the selected groups. You can change the names & details anytime inside the application itself.
-      options:
-        - label: Engineering Team
-          value:
-            name: Engineering Team
-            description: A group for software engineers
-        - label: Product Management
-          value:
-            name: Product Management
-            description: A group for product managers
-        - label: Marketing Team
-          value:
-            name: Marketing Team
-            description: A group for marketing professionals
-        - label: Customer Support
-          value:
-            name: Customer Support
-            description: A group for customer support representatives
+      if: $get(postInstallOptions).value == suggested
+      type: select
+      multiple: true
+      style: 'display: none !important'
       value:
         - name: Engineering Team
           description: A group for software engineers
@@ -125,14 +105,49 @@ variables:
           description: A group for marketing professionals
         - name: Customer Support
           description: A group for customer support representatives
-      validation: 'required'
-  - slug: postInstallKnowledgeBases
-    path: _postInstall.knowledgeBases
+  - slug: postInstallGroupsCustom
+    path: postInstall.groups
+    forms: [default]
+    ui:
+      type: repeater
+      label: Groups
+      help: The installation process will automatically create these groups. You can change the names & details anytime inside the application itself.
+      children:
+        - label: Name
+          type: text
+          validation: 'required'
+        - label: Description
+          type: text
+          validation: 'required'
+  - slug: postInstallKnowledgeBasesSuggested
+    path: postInstall.knowledgeBases
+    forms: [default]
+    # fake a hidden field that submits an array of objects
+    ui:
+      if: $get(postInstallOptions).value == suggested
+      type: select
+      multiple: true
+      style: 'display: none !important'
+      value:
+        - name: Best Practices for Code Reviews
+          description: This guide outlines the key steps for effective code reviews.
+          groups: ['Engineering Team']
+        - name: Social Media Strategy For This Year
+          description: An overview of our social media approach for the upcoming year.
+          groups: ['Marketing Team']
+        - name: Agile Project Management Tips
+          description: Key insights for managing agile projects effectively.
+          groups: ['Product Management']
+        - name: Handling Difficult Customers
+          description: Techniques and strategies for resolving challenging customer situations.
+          groups: ['Customer Support']
+  - slug: postInstallKnowledgeBasesCustom
+    path: postInstall.knowledgeBases
     forms: [default]
     ui:
       type: repeater
       label: Knowledge Bases
-      key: "$: 'knowledgeBases-' + $get(postInstallGroups).value.length"
+      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
       addButton: false
       insertControl: true
       upControl: false
@@ -149,44 +164,17 @@ variables:
           name: description
           help: Describe your knowledge base and objectives
           validation: required
-#        - label: Groups
-#          type: transferlist
-#          name: groups
-#          options: $u.map($get(postInstallGroups).value, 'name')
         - label: Groups
           type: taglist
           name: groups
-          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroups).value.length"
-          options: $u.map($get(postInstallGroups).value, 'name')
+          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
+          options: $u.map($get(postInstallGroupsCustom).value, 'name')
           disableDragAndDrop: true
           allowNewValues: true
           popover: true
           openOnClick: true
           closeOnSelect: false
           help: Select groups with write access to this knowledge base
-          # pre-select the related group for each knowledge base (if the group was chosen)
-          value:
-            if: "$value.name == 'Best Practices for Code Reviews' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Engineering Team'))"
-            then: ['Engineering Team']
-            else:
-              if: "$value.name == 'Social Media Strategy For This Year' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Marketing Team'))"
-              then: ['Marketing Team']
-              else:
-                if: "$value.name == 'Agile Project Management Tips' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Product Management'))"
-                then: ['Product Management']
-                else:
-                  if: "$value.name == 'Handling Difficult Customers' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Customer Support'))"
-                  then: ['Customer Support']
-                  else: []
-      value:
-        - name: Best Practices for Code Reviews
-          description: This guide outlines the key steps for effective code reviews.
-        - name: Social Media Strategy For This Year
-          description: An overview of our social media approach for the upcoming year.
-        - name: Agile Project Management Tips
-          description: Key insights for managing agile projects effectively.
-        - name: Handling Difficult Customers
-          description: Techniques and strategies for resolving challenging customer situations.
 
 system:
   - path: open-webui.ingress.host
