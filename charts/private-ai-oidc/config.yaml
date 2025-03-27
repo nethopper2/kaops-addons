@@ -35,7 +35,7 @@ variables:
       label: "Use GPU"
       value: false
   - slug: ssoEnabled
-    path: open-webui.ingress.oauth2-proxy.enabled
+    path: ingress.oauth2-proxy.enabled
     forms: [default, defaultUpdate]
     ui:
       type: toggle
@@ -63,11 +63,11 @@ variables:
       # validation: 'required'
 
 system:
-  - path: "open-webui.ingress.host"
+  - path: "ingress.host"
     value: "chat.${system.hubCluster.ingressHostname}"
-  - path: "open-webui.ingress.annotations['nginx.ingress.kubernetes.io/auth-signin']"
+  - path: "ingress.oauth2-proxy.authSignin"
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
-  - path: "open-webui.ingress.annotations['nginx.ingress.kubernetes.io/auth-url']"
+  - path: "iingress.oauth2-proxy.authUrl"
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
 
 output:
