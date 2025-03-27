@@ -32,6 +32,6 @@ spec:
   tls:
   - hosts:
     - {{ .Values.ingress.host | quote }}
-    secretName: {{ .Values.ingress.tls.secretName | default "webui-tls" }} 
+    secretName: webui-tls
   {{- end }}
 {{- end }}

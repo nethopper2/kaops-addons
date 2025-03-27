@@ -13,7 +13,6 @@ ingress:
   host:
   tls:
     - hosts:
-      secretName: webui-tls
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
