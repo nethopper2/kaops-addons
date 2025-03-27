@@ -17,6 +17,8 @@ provider "kubernetes" {
 }
 
 provider "helm" {
+  repository_config_path = "${path.module}/.helm/repositories.yaml" 
+  repository_cache       = "${path.module}/.helm"
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
