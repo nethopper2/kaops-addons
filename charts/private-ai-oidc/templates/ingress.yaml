@@ -8,10 +8,10 @@ metadata:
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-    {{- if and .Values.ingress.oauth2Proxy.enabled .Values.ingress.oauth2Proxy.authUrl .Values.ingress.oauth2Proxy.authSignin }}
-    nginx.ingress.kubernetes.io/auth-url: {{ .Values.ingress.oauth2Proxy.authUrl | quote }}
-    nginx.ingress.kubernetes.io/auth-signin: {{ .Values.ingress.oauth2Proxy.authSignin | quote }}
-    nginx.ingress.kubernetes.io/auth-response-headers: {{ .Values.ingress.oauth2Proxy.authResponseHeaders | quote }}
+    {{- if and .Values.ingress.oauth2-proxy.enabled .Values.ingress.oauth2-proxy.authUrl .Values.ingress.oauth2-proxy.authSignin }}
+    nginx.ingress.kubernetes.io/auth-url: {{ .Values.ingress.oauth2-proxy.authUrl | quote }}
+    nginx.ingress.kubernetes.io/auth-signin: {{ .Values.ingress.oauth2-proxy.authSignin | quote }}
+    nginx.ingress.kubernetes.io/auth-response-headers: {{ .Values.ingress.oauth2-proxy.authResponseHeaders | quote }}
     {{- end }}
 spec:
   {{- if .Values.ingress.ingressClassName }}
