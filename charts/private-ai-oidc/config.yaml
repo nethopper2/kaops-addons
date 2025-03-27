@@ -69,6 +69,8 @@ system:
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
   - path: "ingress.oauth2Proxy.authUrl"
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
+  - path: "ingress.oauth2Proxy.authResponseHeaders"
+    value: "authorization"
 
 output:
   - name: Open Web UI URL
