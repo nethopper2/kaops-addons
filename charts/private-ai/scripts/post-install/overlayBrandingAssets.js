@@ -9,7 +9,7 @@
 // Usage: node scripts/post-install/overlayBrandingAssets.js
 //
 // TODO:
-// 1. Uncomment the code for saving the file to the system if needed.
+// 1. Uncomment the code for saving the files to the system in the Docker environment.
 // 2. Run the script using the command mentioned above.
 
 const axios = require('axios');

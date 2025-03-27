@@ -6,11 +6,13 @@
 //
 // Note: This script requires Node.js and the axios library to be installed.
 //
-// TODO: Update the SIGNUP_NAME, SIGNUP_PASSWORD, and SIGNUP_EMAIL constants with
+// TODO: Need to integrate this with SSO and the Docker environment
+// 
+//       Update the SIGNUP_NAME, SIGNUP_PASSWORD, and SIGNUP_EMAIL constants with
 //       the desired user details for signup. The script will create a user with
 //       these details and use the generated token for creating groups, knowledge
 //       entries, and prompts. The script will attempt to delete the user after
-//       creating the assets, but this may fail for the first admin account.
+//       creating the assets, but this will fail for the first admin account.
 //
 //       Update the groupsToCreate, engineeringPrompts, productManagementPrompts,
 //       marketingPrompts, customerSupportPrompts, and knowledgeToCreate arrays
@@ -139,7 +141,7 @@ async function deleteUser(token, userId) {
   }
 }
 
-// Data for groups and knowledge
+// Data for groups, knowledge, and prompts
 const groupsToCreate = [
   {
     name: "Engineering Team",
@@ -300,13 +302,15 @@ async function main() {
 
     console.log('All groups, knowledge entries, and prompts created successfully');
 
-    // Attempt to delete the user (this may fail for the first admin account)
-    try {
-      await deleteUser(token, userId);
-      console.log('Temporary user deleted');
-    } catch (deleteError) {
-      console.log('Unable to delete user. This may be the primary admin account.');
-    }
+    // TODO: Need to integrate this with SSO and the Docker environment
+    //
+    // Attempt to delete the user (this will fail for the first admin account)
+    // try {
+    //   await deleteUser(token, userId);
+    //   console.log('Temporary user deleted');
+    // } catch (deleteError) {
+    //   console.log('Unable to delete user. This may be the primary admin account.');
+    // }
 
   } catch (error) {
     console.error('An error occurred:', error);
