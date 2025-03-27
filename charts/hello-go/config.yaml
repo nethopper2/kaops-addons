@@ -97,50 +97,50 @@ variables:
               props:
                 dense: true
               children:
-                cmp: QItemSection
-                children:
-                  - cmp: QItemLabel
-                    children: Engineering Team
-                  - cmp: QItemLabel
-                    props:
-                      caption: true
-                    children: A group for software engineers
+                - cmp: QItemSection
+                  children:
+                    - cmp: QItemLabel
+                      children: Engineering Team
+                    - cmp: QItemLabel
+                      props:
+                        caption: true
+                      children: A group for software engineers
             - cmp: QItem
               props:
                 dense: true
               children:
-                cmp: QItemSection
-                children:
-                  - cmp: QItemLabel
-                    children: Product Management
-                  - cmp: QItemLabel
-                    props:
-                      caption: true
-                    children: A group for product managers
+                - cmp: QItemSection
+                  children:
+                    - cmp: QItemLabel
+                      children: Product Management
+                    - cmp: QItemLabel
+                      props:
+                        caption: true
+                      children: A group for product managers
             - cmp: QItem
               props:
                 dense: true
               children:
-                cmp: QItemSection
-                children:
-                  - cmp: QItemLabel
-                    children: Marketing Team
-                  - cmp: QItemLabel
-                    props:
-                      caption: true
-                    children: A group for marketing professionals
+                - cmp: QItemSection
+                  children:
+                    - cmp: QItemLabel
+                      children: Marketing Team
+                    - cmp: QItemLabel
+                      props:
+                        caption: true
+                      children: A group for marketing professionals
             - cmp: QItem
               props:
                 dense: true
               children:
-                cmp: QItemSection
-                children:
-                  - cmp: QItemLabel
-                    children: Customer Support
-                  - cmp: QItemLabel
-                    props:
-                      caption: true
-                    children: A group for customer support representatives
+                - cmp: QItemSection
+                  children:
+                    - cmp: QItemLabel
+                      children: Customer Support
+                    - cmp: QItemLabel
+                      props:
+                        caption: true
+                      children: A group for customer support representatives
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
