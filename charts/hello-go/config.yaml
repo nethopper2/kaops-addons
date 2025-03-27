@@ -7,9 +7,6 @@ metadata:
   detailUrl: 'https://addons.kaops.net/hello-go/'
   externalUrl: 'https://github.com/golang-samples/gopher-vector?tab=readme-ov-file'
   installTargets:
-    hub: true
-    hubRequired: true
-    edge: false
     clusterMessage: Enter cluster restrictions and requirements here. Must be installed on clusters configured for Ingress.
     infoMessage: Info message
     warningMessage: The Frontend UX displays this text as an warning message in the cluster Addon config dialog.
@@ -21,6 +18,7 @@ forms:
       - slug: details
         isCreateOnly: true
         variableSlugs:
+          - ssoEnabled
           - gpuEnabled
           - modelsToPull
         ui:
@@ -31,13 +29,13 @@ forms:
           - postInstallOptions
         ui:
           label: Options
-      - slug: sso
-#        variableSlugs:
-#          - TODO
-        ui:
-          # TODO: This step must show in update mode if sso was configured
-          if: $u.includes($get(postInstallOptions).value, 'sso')
-          label: SSO
+#      - slug: sso
+##        variableSlugs:
+##          - TODO
+#        ui:
+#          # TODO: This step must show in update mode if sso was configured
+#          if: $u.includes($get(postInstallOptions).value, 'sso')
+#          label: SSO
       - slug: groups
         isCreateOnly: true
         variableSlugs:
@@ -53,13 +51,24 @@ forms:
 #          if: "$u.includes($get(postInstallOptions).value, 'knowledge') && $get(postInstallGroups).value.length > 0"
           if: "$u.includes($get(postInstallOptions).value, 'knowledge')"
           label: Knowledge
+  - slug: defaultUpdate
+    label: Configuration
 variables:
+  - slug: ssoEnabled
+    path: open-webui.oauth2Proxy.enabled
+    forms: [default, defaultUpdate]
+    ui:
+      type: toggle
+      label: Use Single Sign On
+      value: false
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
     ui:
       type: toggle
       label: Use GPU
+      help: Install the oAuth2 Proxy Addon to use SSO.
+      value: false
   - slug: modelsToPull
     path: open-webui.ollama.ollama.models.pull
     forms: [default]
@@ -76,8 +85,6 @@ variables:
     ui:
       type: checkbox
       options:
-        - label: Use Single Sign-On
-          value: sso
         - label: Select Suggested Groups
           value: groups
         - label: Provide Knowledge Containers
