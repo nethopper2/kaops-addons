@@ -269,7 +269,7 @@ variables:
     ui:
       type: repeater
       label: Knowledge Bases
-      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
+#      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
       addButton: false
       insertControl: true
       upControl: false
@@ -290,7 +290,7 @@ variables:
         - label: Groups
           type: taglist
           name: groups
-          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
+#          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
           options: $u.map($get(postInstallGroupsCustom).value, 'name')
           disableDragAndDrop: true
           allowNewValues: true
