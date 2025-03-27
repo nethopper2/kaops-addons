@@ -267,6 +267,7 @@ variables:
     path: postInstall.knowledgeBases
     forms: [default]
     ui:
+      if: $get(postInstallGroupsCustom).value.length
       label: Groups
       type: taglist
       name: groups
