@@ -35,7 +35,7 @@ variables:
       label: "Use GPU"
       value: false
   - slug: ssoEnabled
-    path: ingress.oauth2Proxy.enabled
+    path: open-webui.extraEnvVars[6].value
     forms: [default, defaultUpdate]
     ui:
       type: toggle
@@ -73,8 +73,6 @@ system:
     value: "authorization"
   - path: "open-webui.extraEnvVars[6].name"
     value: WEBUI_AUTH
-  - path: "open-webui.extraEnvVars[6].name"
-    value: "${ingress.oauth2Proxy.enabled}"
 
 output:
   - name: Open Web UI URL
