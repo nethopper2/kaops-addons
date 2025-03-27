@@ -188,6 +188,11 @@ variables:
     ui:
       type: repeater
       label: Groups
+      id: postInstallGroupsCustom
+      addButton: false
+      insertControl: true
+      upControl: false
+      downControl: false
       help: The installation process will automatically create these groups. You can change the names & details anytime inside the application itself.
       children:
         - label: Name
