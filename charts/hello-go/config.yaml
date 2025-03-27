@@ -193,13 +193,16 @@ variables:
       insertControl: true
       upControl: false
       downControl: false
+      min: 1
       help: The installation process will automatically create these groups. You can change the names & details anytime inside the application itself.
       children:
         - label: Name
           type: text
+          name: name
           validation: 'required'
         - label: Description
           type: text
+          name: description
           validation: 'required'
   - slug: postInstallKnowledgeBasesSuggested
     path: postInstall.knowledgeBases
@@ -271,6 +274,7 @@ variables:
       insertControl: true
       upControl: false
       downControl: false
+      min: 1
       help: The installation process will automatically create these knowledge bases. You can change the names & details anytime inside the application itself.
       children:
         - label: What are you working on?
