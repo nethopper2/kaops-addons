@@ -90,32 +90,39 @@ variables:
             value: none
         value: suggested
         help: You can change the details anytime inside the application itself.
-  - slug: foo
-    if: "$get(postInstallOptions).value == 'suggested'"
+  - slug: postInstallGroupsSuggested
     path: postInstall.groups
+    forms: [default]
     ui:
-      type: checkbox
-      options:
-        - label: Engineering Team
-          value:
-            name: Engineering Team
-            description: A group for software engineers
-          help: A group for software engineers
-        - label: Product Management
-          value:
-            name: Product Management
-            description: A group for product managers
-          help: A group for product managers
-        - label: Marketing Team
-          value:
-            name: Marketing Team
-            description: A group for marketing professionals
-          help: A group for marketing professionals
-        - label: Customer Support
-          value:
-            name: Customer Support
-            description: A group for customer support representatives
-          help: A group for customer support representatives
+      el: div
+      children:
+        - if: "$get(postInstallOptions).value == 'suggested'"
+          type: checkbox
+          name: groups
+          options:
+            - label: Engineering Team
+              value:
+                name: Engineering Team
+                description: A group for software engineers
+              help: A group for software engineers
+            - label: Product Management
+              value:
+                name: Product Management
+                description: A group for product managers
+              help: A group for product managers
+            - label: Marketing Team
+              value:
+                name: Marketing Team
+                description: A group for marketing professionals
+              help: A group for marketing professionals
+            - label: Customer Support
+              value:
+                name: Customer Support
+                description: A group for customer support representatives
+              help: A group for customer support representatives
+        - if: "$get(postInstallOptions).value == 'custom'"
+          el: div
+          children: You prefer to define a few of your own groups and knowledge bases in the following steps.
 
   #          el: div
 #          children:
@@ -167,10 +174,6 @@ variables:
 #                      props:
 #                        caption: true
 #                      children: A group for customer support representatives
-
-        - if: "$get(postInstallOptions).value == 'custom'"
-          el: div
-          children: You prefer to define a few of your own groups and knowledge bases in the following steps.
 
 #  - slug: postInstallGroupsSuggested
 #    path: postInstall.groups
