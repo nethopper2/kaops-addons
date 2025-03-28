@@ -1,11 +1,11 @@
 metadata:
-  slug: 'hello-go'
-  name: 'Hello Go'
-  description: 'A Hello World application written in the Go language. No input parameters.'
-  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/hello-go/logo.png'
-  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/hello-go/logo.png'
-  detailUrl: 'https://addons.kaops.net/hello-go/'
-  externalUrl: 'https://github.com/golang-samples/gopher-vector?tab=readme-ov-file'
+  slug: hello-go
+  name: Hello Go
+  description: A Hello World application written in the Go language. No input parameters.
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/hello-go/logo.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/hello-go/logo.png"
+  detailUrl: "https://addons.kaops.net/hello-go/"
+  externalUrl: "https://github.com/golang-samples/gopher-vector?tab=readme-ov-file"
   installTargets:
     clusterMessage: Enter cluster restrictions and requirements here. Must be installed on clusters configured for Ingress.
     infoMessage: Info message
@@ -49,7 +49,7 @@ forms:
     label: Configuration
 variables:
   - slug: ssoEnabled
-    path: open-webui.oauth2Proxy.enabled
+    path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
     ui:
       type: toggle
@@ -71,7 +71,7 @@ variables:
       label: Select LLM Models to Pull
       sourceLabel: LLM Models
       options: [gemma2, gemma3:1b, gemma3:4b, llama3.1:8b, llama3.2:3b]
-      help: 'Models to pull from: https://ollama.com/search'
+      help: "Models to pull from: https://ollama.com/search"
       searchable: true
   - slug: postInstallOptions
     path: postInstall.chosenPostInstallOptions
@@ -201,13 +201,13 @@ variables:
           type: text
           name: name
           value: ''
-          validation: 'required'
+          validation: required
         - label: Description
           type: text
           name: description
           value: ''
-          validation: 'required'
-#      value: [{ name: '', description: '' }]
+          validation: required
+  #      value: [{ name: '', description: '' }]
   - slug: postInstallKnowledgeBasesSuggested
     path: postInstall.knowledgeBases
     isStatic: true
@@ -274,7 +274,7 @@ variables:
     ui:
       type: repeater
       label: Knowledge Bases
-#      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
+      #      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
       addButton: false
       insertControl: true
       upControl: false
@@ -314,14 +314,14 @@ system:
 output:
   - name: Open Web UI URL
     description: The URL to access Open WebUI
-    value: 'https://chat.${system.hubCluster.ingressHostname}'
+    value: "https://chat.${system.hubCluster.ingressHostname}"
     type: url
     slug: default
 
 # old junk below
 #forms:
 #  - slug: default
-#    label: 'Hello world app'
+#    label: Hello world app
 #    steps:
 #      - slug: one
 #        variableSlugs:
@@ -346,41 +346,41 @@ output:
 #    isCreateOnly: true
 #
 #variables:
-#  - slug: 'hello'
-#    path: 'hello'
-#    forms: ['default']
+#  - slug: hello
+#    path: hello
+#    forms: [default]
 #    ui:
-#      type: 'text'
-#      label: 'Hello'
-#  - slug: 'bye'
-#    path: 'bye'
-#    forms: ['foo']
+#      type: text
+#      label: Hello
+#  - slug: bye
+#    path: bye
+#    forms: [foo]
 #    ui:
-#      type: 'text'
-#      label: 'Bye Foo'
-#  - slug: 'bazzercise'
-#    path: 'bazzercise'
-#    forms: ['baz']
+#      type: text
+#      label: Bye Foo
+#  - slug: bazzercise
+#    path: bazzercise
+#    forms: [baz]
 #    ui:
-#      type: 'text'
-#      label: 'Baz!'
-#  - slug: 'item1'
-#    path: 'item1'
-#    forms: ['default']
+#      type: text
+#      label: Baz!
+#  - slug: item1
+#    path: item1
+#    forms: [default]
 #    ui:
-#      type: 'radio'
-#      label: 'Show item 2?'
+#      type: radio
+#      label: Show item 2?
 #      options:
 #        - label: Yes
 #          value: true
 #        - label: No
 #          value: false
 #      value: true
-#  - slug: 'item2'
-#    path: 'item2'
-#    forms: ['default']
+#  - slug: item2
+#    path: item2
+#    forms: [default]
 #    ui:
-#      if: '$get(item1).value'
-#      type: 'text'
-#      label: 'Item 2'
+#      if: $get(item1).value
+#      type: text
+#      label: Item 2
 
