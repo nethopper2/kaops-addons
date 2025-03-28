@@ -27,17 +27,12 @@ open-webui:
     service:
       type: ClusterIP
   extraEnvVars:
-    - name: WEBUI_NAME
-      value: "Private AI"
-    - name: ENABLE_CODE_EXECUTION
-      value: "false"
-    - name: ENABLE_CODE_INTERPRETER
-      value: "false"
-    - name: ENABLE_GOOGLE_DRIVE_INTEGRATION
-      value: "true"
-    - name: ENABLE_ONEDRIVE_INTEGRATION
-      value: "true"
-    - name: BYPASS_EMBEDDING_AND_RETRIEVAL
-      value: "true"
-    - name: WEBUI_AUTH
-      value: { { $.Values.oauth2Proxy.enabled | toString | quote } }
+    [
+      { "name": "WEBUI_NAME", "value": "Private AI" },
+      { "name": "ENABLE_CODE_EXECUTION", "value": "false" },
+      { "name": "ENABLE_CODE_INTERPRETER", "value": "false" },
+      { "name": "ENABLE_GOOGLE_DRIVE_INTEGRATION", "value": "true" },
+      { "name": "ENABLE_ONEDRIVE_INTEGRATION", "value": "true" },
+      { "name": "BYPASS_EMBEDDING_AND_RETRIEVAL", "value": "true" },
+      { "name": "WEBUI_AUTH", "value": "false" },
+    ]
