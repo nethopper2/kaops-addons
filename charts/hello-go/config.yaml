@@ -145,6 +145,7 @@ variables:
                       children: A group for customer support representatives
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
+    isStatic: true
     forms: [default]
     ui:
       if: "$get(postInstallOptions).value == 'suggested'"
@@ -207,6 +208,7 @@ variables:
       value: [{ name: '', description: '' }]
   - slug: postInstallKnowledgeBasesSuggested
     path: postInstall.knowledgeBases
+    isStatic: true
     forms: [default]
     ui:
       if: "$get(postInstallOptions).value == 'suggested'"
