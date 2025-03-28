@@ -17,8 +17,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  repository_config_path = "${path.module}/.helm/repositories.yaml" 
-  repository_cache       = "${path.module}/.helm"
+  repository_cache       = "/tmp/.helm"
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
@@ -266,11 +265,11 @@ module "ebs_csi_driver_irsa" {
   }
 }
 
-resource "helm_release" "nvidia_device_plugin" {
-  name             = "nvidia-device-plugin"
-  namespace        = "nvidia-device-plugin"
-  repository       = "https://nvidia.github.io/k8s-device-plugin"
-  chart            = "nvidia-device-plugin"
-  version          = "0.17.1"
-  create_namespace = true
-}
+# resource "helm_release" "nvidia_device_plugin" {
+#   name             = "nvidia-device-plugin"
+#   namespace        = "nvidia-device-plugin"
+#   repository       = "https://nvidia.github.io/k8s-device-plugin"
+#   chart            = "nvidia-device-plugin"
+#   version          = "0.17.1"
+#   create_namespace = true
+# }
