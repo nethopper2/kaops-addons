@@ -282,22 +282,22 @@ variables:
       min: 1
       help: The installation process will automatically create these knowledge bases. You can change the names & details anytime inside the application itself.
       children:
-        - label: What are you working on?
+        - label: Name
           type: text
           name: name
-          help: Name your knowledge base
+          help: What are you working on?
           value: ''
           validation: required
-        - label: What are you trying to achieve?
+        - label: Description
           type: text
           name: description
-          help: Describe your knowledge base and objectives
+          help: What are you trying to achieve?
           value: ''
           validation: required
         - label: Groups
           type: taglist
           name: groups
-#          key: "$: 'knowledgeBaseGroups-' + $get(postInstallGroupsCustom).value.length"
+          key: "$: 'knowledgeBaseGroups-' $index + '-' + $get(postInstallGroupsCustom).value.length"
           options: "$u.map($get(postInstallGroupsCustom).value, 'name')"
           disableDragAndDrop: true
           popover: true
