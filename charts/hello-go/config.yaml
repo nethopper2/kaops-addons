@@ -200,12 +200,14 @@ variables:
         - label: Name
           type: text
           name: name
+          value: ''
           validation: 'required'
         - label: Description
           type: text
           name: description
+          value: ''
           validation: 'required'
-      value: [{ name: '', description: '' }]
+#      value: [{ name: '', description: '' }]
   - slug: postInstallKnowledgeBasesSuggested
     path: postInstall.knowledgeBases
     isStatic: true
@@ -284,11 +286,13 @@ variables:
           type: text
           name: name
           help: Name your knowledge base
+          value: ''
           validation: required
         - label: What are you trying to achieve?
           type: text
           name: description
           help: Describe your knowledge base and objectives
+          value: ''
           validation: required
         - label: Groups
           type: taglist
@@ -300,7 +304,8 @@ variables:
           openOnClick: true
           closeOnSelect: false
           help: Select groups with write access to this knowledge base
-      value: [{ name: '', description: '', groups: [] }]
+          value: []
+#      value: [{ name: '', description: '', groups: [] }]
 
 system:
   - path: open-webui.ingress.host
