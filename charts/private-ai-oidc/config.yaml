@@ -35,12 +35,20 @@ variables:
       label: "Use GPU"
       value: false
   - slug: ssoEnabled
-    path: open-webui.extraEnvVars[6].value
+    path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
     ui:
       type: toggle
       label: Use Single Sign On
       value: false
+  - slug: enableWebAuth
+    path: open-webui.extraEnvVars[0].value
+    forms: [default, defaultUpdate]
+    ui:
+      type: toggle
+      label: Enable OpenWeb UI Web Auth
+      value: $get(ssoEnabled).value
+      outerClass: "hidden"
   - slug: "modelsToPull"
     path: "open-webui.ollama.ollama.models.pull"
     forms: ["default"]
@@ -71,7 +79,7 @@ system:
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
   - path: "ingress.oauth2Proxy.authResponseHeaders"
     value: "authorization"
-  - path: "open-webui.extraEnvVars[6].name"
+  - path: "open-webui.extraEnvVars[0].name"
     value: WEBUI_AUTH
 
 output:
