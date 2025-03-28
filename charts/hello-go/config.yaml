@@ -99,6 +99,7 @@ variables:
         - if: "$get(postInstallOptions).value == 'suggested'"
           type: checkbox
           name: groups
+          id: postInstallGroupsSuggested
           options:
             - label: Engineering Team
               value:
@@ -164,7 +165,8 @@ variables:
       if: "$get(postInstallOptions).value == 'suggested'"
       type: list
       children:
-        - type: group
+        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Engineering Team'))"
+          type: group
           children:
             - type: hidden
               name: name
@@ -177,7 +179,8 @@ variables:
               children:
                 - type: hidden
                   value: Engineering Team
-        - type: group
+        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Marketing Team'))"
+          type: group
           children:
             - type: hidden
               name: name
@@ -190,7 +193,8 @@ variables:
               children:
                 - type: hidden
                   value: Marketing Team
-        - type: group
+        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Product Management'))"
+          type: group
           children:
             - type: hidden
               name: name
@@ -203,7 +207,8 @@ variables:
               children:
                 - type: hidden
                   value: Product Management
-        - type: group
+        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Customer Support'))"
+          type: group
           children:
             - type: hidden
               name: name
