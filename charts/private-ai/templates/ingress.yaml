@@ -1,0 +1,37 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: open-webui
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if and .Values.ingress.oauth2Proxy.enabled .Values.ingress.oauth2Proxy.authUrl .Values.ingress.oauth2Proxy.authSignin }}
+    nginx.ingress.kubernetes.io/auth-url: {{ .Values.ingress.oauth2Proxy.authUrl | quote }}
+    nginx.ingress.kubernetes.io/auth-signin: {{ .Values.ingress.oauth2Proxy.authSignin | quote }}
+    nginx.ingress.kubernetes.io/auth-response-headers: {{ .Values.ingress.oauth2Proxy.authResponseHeaders | quote }}
+    {{- end }}
+spec:
+  {{- if .Values.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.host | quote }}  
+    http:
+      paths:
+      - path: {{ .Values.ingress.path | default "/" | quote }}
+        pathType: {{ .Values.ingress.pathType | default "Prefix" }}
+        backend:
+          service:
+            name: open-webui
+            port:
+              name: http
+  {{- if .Values.ingress.tls }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host | quote }}
+    secretName: webui-tls
+  {{- end }}
+{{- end }}

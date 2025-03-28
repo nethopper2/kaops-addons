@@ -3,10 +3,10 @@ metadata:
   name: Private AI
   description: Deploy generative AI while safeguarding corporate data and scaling into your own infrastructure.
   categories: [Artificial Intelligence]
-  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png'
-  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png'
-  detailUrl: 'https://addons.kaops.net/openwebui/'
-  externalUrl: 'https://openwebui.com'
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png"
+  detailUrl: "https://addons.kaops.net/openwebui/"
+  externalUrl: "https://openwebui.com"
   isProduction: false
   installTargets:
     clusterMessage: Must be installed on clusters configured for Ingress.
@@ -48,7 +48,7 @@ forms:
     label: Configuration
 variables:
   - slug: ssoEnabled
-    path: open-webui.oauth2Proxy.enabled
+    path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
     ui:
       type: toggle
@@ -70,7 +70,7 @@ variables:
       label: Select LLM Models to Pull
       sourceLabel: LLM Models
       options: [gemma2, gemma3:1b, gemma3:4b, llama3.1:8b, llama3.2:3b]
-      help: 'Models to pull from: https://ollama.com/search'
+      help: "Models to pull from: https://ollama.com/search"
       searchable: true
   - slug: postInstallOptions
     path: _postInstall.chosenPostInstallOptions
@@ -118,7 +118,7 @@ variables:
           description: A group for marketing professionals
         - name: Customer Support
           description: A group for customer support representatives
-      validation: 'required'
+      validation: "required"
   - slug: postInstallKnowledgeBases
     path: _postInstall.knowledgeBases
     forms: [default]
@@ -156,16 +156,16 @@ variables:
           # pre-select the related group for each knowledge base (if the group was chosen)
           value:
             if: "$value.name == 'Best Practices for Code Reviews' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Engineering Team'))"
-            then: ['Engineering Team']
+            then: ["Engineering Team"]
             else:
               if: "$value.name == 'Social Media Strategy For This Year' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Marketing Team'))"
-              then: ['Marketing Team']
+              then: ["Marketing Team"]
               else:
                 if: "$value.name == 'Agile Project Management Tips' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Product Management'))"
-                then: ['Product Management']
+                then: ["Product Management"]
                 else:
                   if: "$value.name == 'Handling Difficult Customers' && $u.find($get(postInstallGroups).value, $u.matchesProperty('name', 'Customer Support'))"
-                  then: ['Customer Support']
+                  then: ["Customer Support"]
                   else: []
       value:
         - name: Best Practices for Code Reviews
@@ -178,12 +178,18 @@ variables:
           description: Techniques and strategies for resolving challenging customer situations.
 
 system:
-  - path: open-webui.ingress.host
-    value: 'chat.${system.hubCluster.ingressHostname}'
+  - path: "ingress.host"
+    value: "chat.${system.hubCluster.ingressHostname}"
+  - path: "ingress.oauth2Proxy.authSignin"
+    value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
+  - path: "ingress.oauth2Proxy.authUrl"
+    value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
+  - path: "ingress.oauth2Proxy.authResponseHeaders"
+    value: "authorization"
 
 output:
   - name: Open Web UI URL
     description: The URL to access Open WebUI
-    value: 'https://chat.${system.hubCluster.ingressHostname}'
+    value: "https://chat.${system.hubCluster.ingressHostname}"
     type: url
     slug: default
