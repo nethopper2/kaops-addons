@@ -77,44 +77,45 @@ variables:
     path: postInstall.chosenPostInstallOptions
     forms: [default]
     ui:
-      el: div
-      children:
-        - label: Groups and Knowledge bases
-          type: radio
-          id: postInstallOptions
-          name: chosenPostInstallOptions
-          options:
-            - label: Suggested
-              value: suggested
-            - label: Custom
-              value: custom
-            - label: I'll do this later
-              value: none
-          value: suggested
-          help: You can change the details anytime inside the application itself.
-        - if: "$get(postInstallOptions).value == 'suggested'"
-          type: checkbox
-          options:
-            - label: Engineering Team
-              value:
-                name: Engineering Team
-                description: A group for software engineers
-              help: A group for software engineers
-            - label: Product Management
-              value:
-                name: Product Management
-                description: A group for product managers
-              help: A group for product managers
-            - label: Marketing Team
-              value:
-                name: Marketing Team
-                description: A group for marketing professionals
-              help: A group for marketing professionals
-            - label: Customer Support
-              value:
-                name: Customer Support
-                description: A group for customer support representatives
-              help: A group for customer support representatives
+      - label: Groups and Knowledge bases
+        type: radio
+        id: postInstallOptions
+        name: chosenPostInstallOptions
+        options:
+          - label: Suggested
+            value: suggested
+          - label: Custom
+            value: custom
+          - label: I'll do this later
+            value: none
+        value: suggested
+        help: You can change the details anytime inside the application itself.
+  - slug: foo
+    if: "$get(postInstallOptions).value == 'suggested'"
+    path: postInstall.groups
+    ui:
+      type: checkbox
+      options:
+        - label: Engineering Team
+          value:
+            name: Engineering Team
+            description: A group for software engineers
+          help: A group for software engineers
+        - label: Product Management
+          value:
+            name: Product Management
+            description: A group for product managers
+          help: A group for product managers
+        - label: Marketing Team
+          value:
+            name: Marketing Team
+            description: A group for marketing professionals
+          help: A group for marketing professionals
+        - label: Customer Support
+          value:
+            name: Customer Support
+            description: A group for customer support representatives
+          help: A group for customer support representatives
 
   #          el: div
 #          children:
@@ -235,7 +236,6 @@ variables:
           name: description
           value: ''
           validation: required
-  #      value: [{ name: '', description: '' }]
   - slug: postInstallKnowledgeBasesSuggested
     path: postInstall.knowledgeBases
     isStatic: true
