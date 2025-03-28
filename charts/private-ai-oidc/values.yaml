@@ -39,3 +39,5 @@ open-webui:
       value: "true"
     - name: BYPASS_EMBEDDING_AND_RETRIEVAL
       value: "true"
+    - name: WEBUI_AUTH
+      value: { { $.Values.oauth2Proxy.enabled | toString | quote } }
