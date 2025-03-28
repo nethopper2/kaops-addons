@@ -274,7 +274,7 @@ variables:
     ui:
       type: repeater
       label: Knowledge Bases
-#      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
+      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
       addButton: false
       insertControl: true
       upControl: false
