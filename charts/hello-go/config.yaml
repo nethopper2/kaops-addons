@@ -77,19 +77,23 @@ variables:
     path: postInstall.chosenPostInstallOptions
     forms: [default]
     ui:
-      label: Groups and Knowledge bases
-      type: radio
-      id: postInstallOptions
-      name: chosenPostInstallOptions
-      options:
-        - label: Suggested
+      el: div
+      children:
+        - el: p
+          children: Groups can be used for access control on knowledge, prompts, etc. Knowledge bases are like containers for knowledge or data provided to the models. Below you may choose from our suggestions or select custom to define a few of your own.
+        - label: Groups and Knowledge bases
+          type: radio
+          id: postInstallOptions
+          name: chosenPostInstallOptions
+          options:
+            - label: Suggested
+              value: suggested
+            - label: Custom
+              value: custom
+            - label: I'll do this later
+              value: none
           value: suggested
-        - label: Custom
-          value: custom
-        - label: I'll do this later
-          value: none
-      value: suggested
-      help: You can change the details anytime inside the application itself.
+          help: You can change the details anytime inside the application itself.
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
