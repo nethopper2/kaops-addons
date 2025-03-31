@@ -24,13 +24,17 @@
 //       The script will make API requests to this URL to create the assets.
 
 const axios = require('axios');
+const fs = require('fs');
+require('dotenv').config(); // Load environment variables from .env file
+
+// TODO: In production, we should log errors if the environment variables do not exist?
 
 // Base URL for the API
-const BASE_URL = 'https://chat.trudog.kaops.dev';
+const BASE_URL = process.env.BASE_URL || 'https://chat.shawn.kaops.dev';
 // User details for signup
-const SIGNUP_NAME = 'Peter';
-const SIGNUP_PASSWORD = 'Nethopper123$';
-const SIGNUP_EMAIL = 'peter@nethopper.io';
+const SIGNUP_NAME = process.env.SIGNUP_NAME || 'Shawn';
+const SIGNUP_PASSWORD = process.env.SIGNUP_PASSWORD || 'Nethopper123$';
+const SIGNUP_EMAIL = process.env.SIGNUP_EMAIL || 'shawn@nethopper.io';
 
 async function signUp(name, password, email) {
   const signupUrl = `${BASE_URL}/api/v1/auths/signup`;
@@ -47,8 +51,8 @@ async function signUp(name, password, email) {
     console.log('User created successfully. Token and user ID received.');
     return { token, id };
   } catch (error) {
-    console.error('Error during signup:', error.response ? error.response.data : error.message);
-    throw error;
+    console.error('Error during signup');
+    throw error;  
   }
 }
 
@@ -65,7 +69,7 @@ async function createGroup(token, groupName, description) {
     console.log('Group created successfully:', response.data);
     return response.data.id; // Return the group ID
   } catch (error) {
-    console.error('Error creating group:', error.response ? error.response.data : error.message);
+    console.error('Error creating group');
     throw error;
   }
 }
@@ -95,7 +99,7 @@ async function createKnowledge(token, name, description, groupIds) {
     console.log('Knowledge created successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error creating knowledge:', error.response ? error.response.data : error.message);
+    console.error('Error creating knowledge');
     throw error;
   }
 }
@@ -118,157 +122,25 @@ async function createPrompt(token, command, title, content, accessControl) {
     console.log('Prompt created successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error creating prompt:', error.response ? error.response.data : error.message);
+    console.error('Error creating prompt');
     throw error;
   }
 }
-
-
-async function deleteUser(token, userId) {
-  const deleteUrl = `${BASE_URL}/api/v1/users/${userId}`;
-  const headers = {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  };
-
-  try {
-    const response = await axios.delete(deleteUrl, { headers });
-    console.log('User deleted successfully:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting user:', error.response ? error.response.data : error.message);
-    throw error;
-  }
-}
-
-// Data for groups, knowledge, and prompts
-const groupsToCreate = [
-  {
-    name: "Engineering Team",
-    description: "A group for software engineers"
-  },
-  {
-    name: "Product Management",
-    description: "A group for product managers"
-  },
-  {
-    name: "Marketing Team",
-    description: "A group for marketing professionals"
-  },
-  {
-    name: "Customer Support",
-    description: "A group for customer support representatives"
-  }
-];
-
-const engineeringPrompts = [
-  {
-    command: "/code_review",
-    title: "Code Review Best Practices",
-    content: "As a software engineer, provide a step-by-step guide for conducting an effective code review. Include best practices for giving constructive feedback, what to look for in the code, and how to ensure the review process is efficient and beneficial for the team.",
-    access_control: {}
-  },
-  {
-    command: "/debug_strategy",
-    title: "Debugging Strategy",
-    content: "Outline a systematic approach to debugging complex software issues. Include steps for reproducing the problem, isolating the cause, and implementing a solution. Provide examples of common debugging tools and techniques.",
-    access_control: {}
-  },
-  {
-    command: "/architecture_design",
-    title: "Software Architecture Design",
-    content: "Explain the process of designing a scalable and maintainable software architecture. Cover topics such as choosing appropriate design patterns, considering performance and security, and documenting the architecture effectively.",
-    access_control: {}
-  }
-];
-
-const productManagementPrompts = [
-  {
-    command: "/product_roadmap",
-    title: "Product Roadmap Creation",
-    content: "As a product manager, outline the key steps and considerations for creating a comprehensive product roadmap. Include how to prioritize features, align with business goals, and communicate the roadmap effectively to stakeholders.",
-    access_control: {}
-  },
-  {
-    command: "/user_research",
-    title: "Conducting User Research",
-    content: "Provide a guide on conducting effective user research for product development. Include methods for gathering user feedback, analyzing user behavior, and translating insights into actionable product improvements.",
-    access_control: {}
-  },
-  {
-    command: "/feature_prioritization",
-    title: "Feature Prioritization Framework",
-    content: "Describe a framework for prioritizing product features. Include techniques such as impact vs effort analysis, user story mapping, and how to balance user needs with business objectives.",
-    access_control: {}
-  }
-];
-
-const marketingPrompts = [
-  {
-    command: "/campaign_strategy",
-    title: "Marketing Campaign Strategy",
-    content: "As a marketing professional, provide a framework for developing a successful marketing campaign strategy. Include steps for identifying target audience, choosing appropriate channels, creating compelling content, and measuring campaign effectiveness.",
-    access_control: {}
-  },
-  {
-    command: "/social_media_plan",
-    title: "Social Media Marketing Plan",
-    content: "Outline a comprehensive social media marketing plan. Cover topics such as platform selection, content calendar creation, engagement strategies, and performance metrics to track.",
-    access_control: {}
-  },
-  {
-    command: "/brand_positioning",
-    title: "Brand Positioning Strategy",
-    content: "Explain the process of developing a strong brand positioning strategy. Include steps for identifying unique selling propositions, analyzing competitors, and creating a compelling brand narrative.",
-    access_control: {}
-  }
-];
-
-const customerSupportPrompts = [
-  {
-    command: "/support_scenarios",
-    title: "Customer Support Scenario Handling",
-    content: "As a customer support representative, describe how to handle the following common scenarios: 1) An angry customer demanding a refund, 2) A customer reporting a technical issue with the product, 3) A customer requesting a feature that doesn't exist. Provide step-by-step guidance for each scenario.",
-    access_control: {}
-  },
-  {
-    command: "/customer_empathy",
-    title: "Building Customer Empathy",
-    content: "Provide techniques for developing and demonstrating empathy in customer interactions. Include examples of empathetic language, active listening skills, and how to handle emotionally charged situations.",
-    access_control: {}
-  },
-  {
-    command: "/support_efficiency",
-    title: "Improving Support Efficiency",
-    content: "Outline strategies for improving efficiency in customer support operations. Cover topics such as creating and maintaining a knowledge base, using macros for common responses, and effectively escalating complex issues.",
-    access_control: {}
-  }
-];
-
-const knowledgeToCreate = [
-  {
-    name: "Best Practices for Code Reviews",
-    description: "This guide outlines the key steps for effective code reviews."
-  },
-  {
-    name: "Social Media Strategy For This Year",
-    description: "An overview of our social media approach for the upcoming year."
-  },
-  {
-    name: "Agile Project Management Tips",
-    description: "Key insights for managing agile projects effectively."
-  },
-  {
-    name: "Handling Difficult Customers",
-    description: "Techniques and strategies for resolving challenging customer situations."
-  }  
-];
 
 async function main() {
   let token, userId;
   try {
     // Sign up and get token and user ID
     ({ token, id: userId } = await signUp(SIGNUP_NAME, SIGNUP_PASSWORD, SIGNUP_EMAIL));
+
+    // Load group, knowledge, and prompt assets from external file
+    const assets = JSON.parse(fs.readFileSync('assets.json', 'utf-8'));
+    const groupsToCreate = assets.groups;
+    const engineeringPrompts = assets.engineeringPrompts;
+    const productManagementPrompts = assets.productManagementPrompts;
+    const marketingPrompts = assets.marketingPrompts;
+    const customerSupportPrompts = assets.customerSupportPrompts;
+    const knowledgeToCreate = assets.knowledge;
 
     // Create all groups
     const createdGroupIds = [];
@@ -302,18 +174,21 @@ async function main() {
 
     console.log('All groups, knowledge entries, and prompts created successfully');
 
-    // TODO: Need to integrate this with SSO and the Docker environment
-    //
-    // Attempt to delete the user (this will fail for the first admin account)
-    // try {
-    //   await deleteUser(token, userId);
-    //   console.log('Temporary user deleted');
-    // } catch (deleteError) {
-    //   console.log('Unable to delete user. This may be the primary admin account.');
-    // }
-
   } catch (error) {
-    console.error('An error occurred:', error);
+    if (error.response) {
+      console.error('An error occurred:', {
+        status: error.response.status,
+        data: error.response.data,
+      });
+    } else if (error.request) {
+      console.error('No response received:', error.request._currentUrl || 'Request details unavailable');
+    } else {
+      console.error('An error occurred:', error.message);
+    }
+    console.log('BASE_URL:', BASE_URL);
+    console.log('SIGNUP_NAME:', SIGNUP_NAME);
+    console.log('SIGNUP_PASSWORD:', SIGNUP_PASSWORD);
+    console.log('SIGNUP_EMAIL:', SIGNUP_EMAIL);
   }
 }
 
