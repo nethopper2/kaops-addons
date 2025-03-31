@@ -81,7 +81,7 @@ variables:
       el: div
       children:
         - el: p
-          children: Use groups control access to knowledge, prompts, models and other protected areas of the system. Knowledge bases are containers of information and data use by the models. You may choose from our suggestions below, or select `Custom` to define your own.
+          children: Use groups control access to knowledge, prompts, models and other protected areas of the system. Knowledge bases are containers of information and data use by the models. You may choose from our suggestions below, or select Custom to define your own.
         - label: Groups and Knowledge bases
           type: radio
           id: postInstallOptions
