@@ -80,7 +80,7 @@ variables:
       el: div
       children:
         - el: p
-          children: Groups can be used for access control on knowledge, prompts, etc. Knowledge bases are like containers for knowledge or data provided to the models. Below you may choose from our suggestions or select custom to define a few of your own.
+          children: Use groups control access to knowledge, prompts, models and other protected areas of the system. Knowledge bases are containers of information and data use by the models. You may choose from our suggestions below, or select `Custom` to define your own.
         - label: Groups and Knowledge bases
           type: radio
           id: postInstallOptions
@@ -93,7 +93,7 @@ variables:
             - label: I'll do this later
               value: none
           value: suggested
-          help: You can change the details anytime inside the application itself.
+          help: All settings here may be changed inside the addon.
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
