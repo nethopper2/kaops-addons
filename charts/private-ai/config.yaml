@@ -80,6 +80,8 @@ variables:
     ui:
       el: div
       children:
+        - el: p
+          children: Use groups control access to knowledge, prompts, models and other protected areas of the system. Knowledge bases are containers of information and data use by the models. You may choose from our suggestions below, or select `Custom` to define your own.
         - label: Groups and Knowledge bases
           type: radio
           id: postInstallOptions
@@ -89,101 +91,53 @@ variables:
               value: suggested
             - label: Custom
               value: custom
-            - label: None
+            - label: I'll do this later
               value: none
           value: suggested
-          help: You can change the details anytime inside the application itself.
-        - if: "$get(postInstallOptions).value == 'suggested'"
-          el: div
-          children:
-            - cmp: QItem
-              props:
-                dense: true
-              children:
-                - cmp: QItemSection
-                  children:
-                    - cmp: QItemLabel
-                      children: Engineering Team
-                    - cmp: QItemLabel
-                      props:
-                        caption: true
-                      children: A group for software engineers
-            - cmp: QItem
-              props:
-                dense: true
-              children:
-                - cmp: QItemSection
-                  children:
-                    - cmp: QItemLabel
-                      children: Product Management
-                    - cmp: QItemLabel
-                      props:
-                        caption: true
-                      children: A group for product managers
-            - cmp: QItem
-              props:
-                dense: true
-              children:
-                - cmp: QItemSection
-                  children:
-                    - cmp: QItemLabel
-                      children: Marketing Team
-                    - cmp: QItemLabel
-                      props:
-                        caption: true
-                      children: A group for marketing professionals
-            - cmp: QItem
-              props:
-                dense: true
-              children:
-                - cmp: QItemSection
-                  children:
-                    - cmp: QItemLabel
-                      children: Customer Support
-                    - cmp: QItemLabel
-                      props:
-                        caption: true
-                      children: A group for customer support representatives
+          help: All settings here may be changed inside the addon.
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
-    isStatic: true
     forms: [default]
     ui:
-      if: "$get(postInstallOptions).value == 'suggested'"
-      type: list
+      el: div
       children:
-        - type: group
-          children:
-            - type: hidden
-              name: name
-              value: Engineering Team
-            - type: hidden
-              name: description
-              value: A group for software engineers
-        - type: group
-          children:
-            - type: hidden
-              name: name
-              value: Product Management
-            - type: hidden
-              name: description
-              value: A group for product managers
-        - type: group
-          children:
-            - type: hidden
-              name: name
-              value: Marketing Team
-            - type: hidden
-              name: description
-              value: A group for marketing professionals
-        - type: group
-          children:
-            - type: hidden
-              name: name
-              value: Customer Support
-            - type: hidden
-              name: description
-              value: A group for customer support representatives
+        - if: "$get(postInstallOptions).value == 'suggested'"
+          type: checkbox
+          name: groups
+          id: postInstallGroupsSuggested
+          options:
+            - label: Engineering Team
+              value:
+                name: Engineering Team
+                description: A group for software engineers
+              help: A group for software engineers
+            - label: Product Management
+              value:
+                name: Product Management
+                description: A group for product managers
+              help: A group for product managers
+            - label: Marketing Team
+              value:
+                name: Marketing Team
+                description: A group for marketing professionals
+              help: A group for marketing professionals
+            - label: Customer Support
+              value:
+                name: Customer Support
+                description: A group for customer support representatives
+              help: A group for customer support representatives
+          value:
+            - name: Engineering Team
+              description: A group for software engineers
+            - name: Product Management
+              description: A group for product managers
+            - name: Marketing Team
+              description: A group for marketing professionals
+            - name: Customer Support
+              description: A group for customer support representatives
+        - if: "$get(postInstallOptions).value == 'custom'"
+          el: div
+          children: You prefer to define a few of your own groups and knowledge bases in the following steps.
   - slug: postInstallGroupsCustom
     path: postInstall.groups
     forms: [default]
@@ -216,7 +170,8 @@ variables:
       if: "$get(postInstallOptions).value == 'suggested'"
       type: list
       children:
-        - type: group
+        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Engineering Team'))"
+          type: group
           children:
             - type: hidden
               name: name
@@ -229,7 +184,8 @@ variables:
               children:
                 - type: hidden
                   value: Engineering Team
-        - type: group
+        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Marketing Team'))"
+          type: group
           children:
             - type: hidden
               name: name
@@ -242,7 +198,8 @@ variables:
               children:
                 - type: hidden
                   value: Marketing Team
-        - type: group
+        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Product Management'))"
+          type: group
           children:
             - type: hidden
               name: name
@@ -255,7 +212,8 @@ variables:
               children:
                 - type: hidden
                   value: Product Management
-        - type: group
+        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Customer Support'))"
+          type: group
           children:
             - type: hidden
               name: name
