@@ -39,7 +39,7 @@ variables:
           type: group
           name: extraEnvVars
           children: 
-            -type: hidden
+            - type: hidden
               name: WEBUI_AUTH
               value: true
         - else:
