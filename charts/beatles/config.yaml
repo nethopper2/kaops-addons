@@ -33,8 +33,12 @@ variables:
     path: openweb-ui.extraEnvVars
     forms: [default]
     ui:
-      el: div
+      type: list
       children:
+        id: ssoEnabledDependencies
+        name: extraEnvVars
+        type: group
+        children: 
         - if: $get(ssoEnabled)
           name: WEBUI_AUTH
           value: false
