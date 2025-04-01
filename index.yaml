@@ -274,6 +274,17 @@ entries:
   beatles:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-04-01T21:29:18.442811501Z"
+    description: Iconic British rock band that revolutionized music and culture in
+      the 1960s
+    digest: f663858533d513432b206ca848bc1f1b277c5e4970674e8cb00d0bc8a5911350
+    name: beatles
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/beatles-0.1.4/beatles-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-04-01T21:24:56.536263871Z"
     description: Iconic British rock band that revolutionized music and culture in
       the 1960s
@@ -3322,4 +3333,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-01T21:24:56.536942236Z"
+generated: "2025-04-01T21:29:18.443234138Z"
