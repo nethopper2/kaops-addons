@@ -271,6 +271,18 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/aws-eks-0.1.0/aws-eks-0.1.0.tgz
     version: 0.1.0
+  beatles:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-04-01T20:39:24.760056955Z"
+    description: Iconic British rock band that revolutionized music and culture in
+      the 1960s
+    digest: 166ecdbe924fc3dc3027c2087d68b030f961507dfb0cf090fe93335fcf0c14af
+    name: beatles
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/beatles-0.1.0/beatles-0.1.0.tgz
+    version: 0.1.0
   hello-go:
   - apiVersion: v2
     appVersion: 0.1.0
@@ -3288,4 +3300,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-01T15:05:23.107996598Z"
+generated: "2025-04-01T20:39:24.760533183Z"
