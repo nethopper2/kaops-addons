@@ -1,0 +1,47 @@
+metadata:
+  slug: beatles
+  name: Beatles
+  description: One of the most successful and influential bands in the history of popular music.
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/beatles/logo.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/beatles/logo.png"
+  detailUrl: "https://addons.kaops.net/beatles/"
+  externalUrl: "https://github.com/golang-samples/gopher-vector?tab=readme-ov-file"
+  installTargets:
+    infoMessage: Innovative songwriting, vocal harmonies, and groundbreaking recordings
+
+forms:
+  - slug: default
+    label: Configuration
+    steps:
+      - slug: details
+        isCreateOnly: true
+        variableSlugs:
+          - ssoEnabled
+        ui:
+          label: Details
+  - slug: defaultUpdate
+    label: Configuration
+variables:
+  - slug: ssoEnabled
+    path: ingress.oauth2Proxy.enabled
+    forms: [default, defaultUpdate]
+    ui:
+      type: toggle
+      label: Use Single Sign On
+      value: false
+  - slug: ssoEnabledDependencies
+    path: openweb-ui.extraEnvVars
+    forms: [default]
+    ui:
+      el: div
+      children:
+        - if: $get(ssoEnabled)
+          name: WEBUI_AUTH
+          value: false
+        - else:
+          name: WEBUI_AUTH
+          value: true
+system:
+  - path: open-webui.ingress.host
+    value: 'chat.${system.hubCluster.ingressHostname}'
+
