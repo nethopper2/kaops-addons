@@ -30,7 +30,7 @@ require('dotenv').config(); // Load environment variables from .env file
 // TODO: In production, we should log errors if the environment variables do not exist?
 
 // Base URL for the API
-const BASE_URL = process.env.BASE_URL || 'https://chat.shawn.kaops.dev';
+const BASE_URL = process.env.BASE_URL || 'http://open-webui';
 // User details for signup
 const SIGNUP_NAME = process.env.SIGNUP_NAME || 'Shawn';
 const SIGNUP_PASSWORD = process.env.SIGNUP_PASSWORD || 'Nethopper123$';
@@ -189,6 +189,7 @@ async function main() {
     console.log('SIGNUP_NAME:', SIGNUP_NAME);
     console.log('SIGNUP_PASSWORD:', SIGNUP_PASSWORD);
     console.log('SIGNUP_EMAIL:', SIGNUP_EMAIL);
+    process.exit(1);
   }
 }
 
