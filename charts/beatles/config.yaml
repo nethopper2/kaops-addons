@@ -28,7 +28,7 @@ variables:
     ui:
       type: toggle
       label: Use Single Sign On
-      id: label
+      id: ssoEnabled
       value: false
   - slug: ssoEnabledDependencies
     path: openweb-ui.extraEnvVars
@@ -43,14 +43,14 @@ variables:
           children: 
             - type: hidden
               name: WEBUI_AUTH
-              value: true
-        - else:
+              value: false
+        - then:
           type: group
           name: extraEnvVars
           children: 
             - type: hidden
               name: WEBUI_AUTH
-              value: false
+              value: true
 system:
   - path: open-webui.ingress.host
     value: 'chat.${system.hubCluster.ingressHostname}'
