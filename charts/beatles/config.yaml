@@ -28,14 +28,16 @@ variables:
     ui:
       type: toggle
       label: Use Single Sign On
+      id: label
       value: false
   - slug: ssoEnabledDependencies
     path: openweb-ui.extraEnvVars
+    isStatic: true
     forms: [default]
     ui:
       type: list
       children:
-        - if: $get(ssoEnabled)
+        - if: $get(ssoEnabled).value
           type: group
           name: extraEnvVars
           children: 
