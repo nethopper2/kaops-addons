@@ -58,7 +58,7 @@ variables:
       value: false
       id: ssoEnabled
   - slug: ssoEnabledDependencies
-    path: openweb-ui.extraEnvVars
+    path: open-webui.extraEnvVars
     isStatic: true
     forms: [default]
     ui:
