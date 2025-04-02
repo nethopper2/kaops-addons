@@ -37,17 +37,17 @@ variables:
     ui:
       type: list
       children:
-        type: group
-        children:
-          - type: hidden
-            name: name
-            value: WEBUI_AUTH
-          - type: hidden
-            name: value
-            value: 
-              if: $get(ssoEnabled).value
-              then: false
-              else: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
+              value: 
+                if: $get(ssoEnabled).value
+                then: false
+                else: true
         # - if: "$get(ssoEnabled).value != true"
         #   type: group
         #   children:
