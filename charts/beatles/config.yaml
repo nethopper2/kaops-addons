@@ -40,6 +40,7 @@ variables:
         - if: $get(ssoEnabled).value
           type: group
           name: extraEnvVars
+          path: open-webui.extraEnvVars
           children:
             - type: hidden
               name: name
@@ -48,15 +49,16 @@ variables:
               name: value
               value: false
         - else:
-            type: group
-            name: extraEnvVars
-            children:
-              - type: hidden
-                name: name
-                value: WEBUI_AUTH
-              - type: hidden
-                name: value
-                value: true
+          type: group
+          name: extraEnvVars
+          path: open-webui.extraEnvVars
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
+              value: true
 
 system:
   - path: open-webui.ingress.host
