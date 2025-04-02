@@ -33,11 +33,11 @@ variables:
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
     isStatic: true
-    forms: [default, defaultUpdate]
+    forms: [default]
     ui:
       type: list
       children:
-        - if: $get(ssoEnabled).value === 'true'
+        - if: $get(ssoEnabled).value
           type: group
           name: extraEnvVars
           children:
