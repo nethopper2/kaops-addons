@@ -38,6 +38,7 @@ variables:
       type: list
       children:
         - if: $get(ssoEnabled).value
+        - then:
           type: group
           name: extraEnvVars
           children:
@@ -47,7 +48,7 @@ variables:
             - type: hidden
               name: value
               value: false
-          else:
+        - else:
             type: group
             name: extraEnvVars
             children:
