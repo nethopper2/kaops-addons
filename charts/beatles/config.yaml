@@ -31,7 +31,7 @@ variables:
       id: ssoEnabled
       value: false
   - slug: ssoEnabledDependencies
-    path: openweb-ui.extraEnvVars
+    path: open-webui.extraEnvVars
     isStatic: true
     forms: [default]
     ui:
@@ -40,18 +40,24 @@ variables:
         - if: $get(ssoEnabled).value
           type: group
           name: extraEnvVars
-          children: 
+          children:
             - type: hidden
-              name: WEBUI_AUTH
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
               value: false
         - then:
           type: group
           name: extraEnvVars
-          children: 
+          children:
             - type: hidden
-              name: WEBUI_AUTH
-              value: true
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
+              value: false
+
 system:
   - path: open-webui.ingress.host
-    value: 'chat.${system.hubCluster.ingressHostname}'
-
+    value: "chat.${system.hubCluster.ingressHostname}"
