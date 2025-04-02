@@ -83,7 +83,7 @@ variables:
               value: WEBUI_AUTH
             - type: hidden
               name: value
-              value: false
+              value: true
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
