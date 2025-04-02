@@ -1,4 +1,12 @@
 /.idea
+.DS_Store
+.thumbs.db
+node_modules
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Terraform
 *.tfstate
