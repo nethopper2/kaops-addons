@@ -56,7 +56,7 @@ variables:
               value: WEBUI_AUTH
             - type: hidden
               name: value
-              value: false
+              value: true
 
 system:
   - path: open-webui.ingress.host
