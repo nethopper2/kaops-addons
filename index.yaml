@@ -274,6 +274,17 @@ entries:
   beatles:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-04-02T16:15:28.761528538Z"
+    description: Iconic British rock band that revolutionized music and culture in
+      the 1960s
+    digest: 297a0fa5135cee506210fdd287265637e3e1b854a36ecfa864e9becf746ec023
+    name: beatles
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/beatles-0.1.8/beatles-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-04-02T12:37:24.350470431Z"
     description: Iconic British rock band that revolutionized music and culture in
       the 1960s
@@ -2388,6 +2399,20 @@ entries:
   private-ai:
   - apiVersion: v2
     appVersion: 5.25.0
+    created: "2025-04-02T16:15:28.900770012Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    description: KAOPS addon to install private-ai
+    digest: 4e84d7c705ecc0f2b5574498a8f93519322bbf4c42f9ed3cfa185c2acf72e774
+    name: private-ai
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-0.1.36/private-ai-0.1.36.tgz
+    version: 0.1.36
+  - apiVersion: v2
+    appVersion: 5.25.0
     created: "2025-04-02T15:51:49.552432715Z"
     dependencies:
     - name: open-webui
@@ -3464,4 +3489,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-02T15:51:49.552968874Z"
+generated: "2025-04-02T16:15:28.901245139Z"
