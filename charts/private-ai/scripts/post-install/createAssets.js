@@ -127,9 +127,37 @@ async function createPrompt(token, command, title, content, accessControl) {
   }
 }
 
+// Add server availability check function
+async function checkServerAvailability() {
+  const maxAttempts = 300; // 5 minutes * 60 seconds
+  const checkInterval = 1000; // 1 second
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await axios.get(BASE_URL);
+      if (response.status >= 200 && response.status < 300) {
+        console.log(`Server available after ${attempt} seconds`);
+        return true;
+      }
+    } catch (error) {
+      console.log(`Attempt ${attempt}/${maxAttempts}: Server unavailable`);
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, checkInterval));
+  }
+  
+  console.error('Server not available after 5 minutes');
+  return false;
+}
+
 async function main() {
   let token, userId;
   try {
+    // First check server availability
+    if (!(await checkServerAvailability())) {
+      process.exit(1);
+    }
+
     // Sign up and get token and user ID
     ({ token, id: userId } = await signUp(SIGNUP_NAME, SIGNUP_PASSWORD, SIGNUP_EMAIL));
 

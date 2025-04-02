@@ -1,3 +1,4 @@
+{{- if eq .Values.postInstall.chosenPostInstallOptions "suggested" }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -6,7 +7,7 @@ metadata:
     {{- include "private-ai.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": post-install
-    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
     spec:
@@ -29,3 +30,4 @@ spec:
         - name: scripts
           configMap:
             name: {{ include "private-ai.fullname" . }}-postinstall-scripts
+{{- end }}
