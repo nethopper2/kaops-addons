@@ -45,7 +45,7 @@ variables:
             - type: text
               name: value
               value: 
-                if: $get(ssoEnabled).value
+                if: "$get(ssoEnabled).value == true"
                 then: false
                 else: true
         # - if: "$get(ssoEnabled).value != true"
