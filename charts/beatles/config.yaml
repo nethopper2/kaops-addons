@@ -37,27 +37,20 @@ variables:
     ui:
       type: list
       children:
-        - if: $get(ssoEnabled).value === 'true'
+        - if: $get(ssoEnabled).value
           type: group
           name: extraEnvVars
           children:
             - type: hidden
-              name: name
-              value: WEBUI_AUTH
-            - type: hidden
-              name: value
+              name: WEBUI_AUTH
               value: false
-          else:
-            type: group
-            name: extraEnvVars
-            children:
-              - type: hidden
-                name: name
-                value: WEBUI_AUTH
-              - type: hidden
-                name: value
-                value: true
-
+        - then:
+          type: group
+          name: extraEnvVars
+          children:
+            - type: hidden
+              name: WEBUI_AUTH
+              value: true
 system:
   - path: open-webui.ingress.host
     value: "chat.${system.hubCluster.ingressHostname}"
