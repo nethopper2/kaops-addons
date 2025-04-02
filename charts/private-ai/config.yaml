@@ -75,8 +75,8 @@ variables:
               key: "$: 'webui-auth-' + $get(ssoEnabled).value"
               value: 
                 if: "$get(ssoEnabled).value == true"
-                then: false
-                else: true    
+                then: 'false'
+                else: 'true'    
       # type: list
       # children:
       #   - if: $get(ssoEnabled).value

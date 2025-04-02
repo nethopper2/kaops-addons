@@ -47,17 +47,8 @@ variables:
               key: "$: 'webui-auth-' + $get(ssoEnabled).value"
               value: 
                 if: "$get(ssoEnabled).value == true"
-                then: false
-                else: true
-        # - if: "$get(ssoEnabled).value != true"
-        #   type: group
-        #   children:
-        #     - type: hidden
-        #       name: name
-        #       value: WEBUI_AUTH
-        #     - type: hidden
-        #       name: value
-        #       value: true
+                then: 'false'
+                else: 'true'
 
 system:
   - path: open-webui.ingress.host
