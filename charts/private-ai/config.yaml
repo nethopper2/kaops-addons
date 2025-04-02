@@ -56,6 +56,20 @@ variables:
       type: toggle
       label: Use Single Sign On
       value: false
+  - slug: ssoEnabledDependencies
+    path: openweb-ui.extraEnvVars
+    isStatic: true
+    forms: [default]
+    ui:
+      type: list
+      children:
+        - if: $get(ssoEnabled).value
+          type: group
+          name: extraEnvVars
+          children:
+            - type: hidden
+              name: WEBUI_AUTH
+              value: false
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
@@ -155,12 +169,12 @@ variables:
         - label: Name
           type: text
           name: name
-          value: ''
+          value: ""
           validation: required
         - label: Description
           type: text
           name: description
-          value: ''
+          value: ""
           validation: required
   - slug: postInstallKnowledgeBasesSuggested
     path: postInstall.knowledgeBases
@@ -243,13 +257,13 @@ variables:
           type: text
           name: name
           help: What are you working on?
-          value: ''
+          value: ""
           validation: required
         - label: Description
           type: text
           name: description
           help: What are you trying to achieve?
-          value: ''
+          value: ""
           validation: required
         - label: Groups
           type: taglist
