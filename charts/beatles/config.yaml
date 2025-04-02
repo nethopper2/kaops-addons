@@ -36,28 +36,28 @@ variables:
     forms: [default, defaultUpdate]
     ui:
       type: list
-      # name: extraEnvVars
       children:
         - if: $get(ssoEnabled).value
           type: group
-          # name: extraEnvVars
           children:
             - type: hidden
               name: name
               value: WEBUI_AUTH
             - type: hidden
               name: value
-              value: false
-        - if: "$get(ssoEnabled).value !== true"
-          type: group
-          # name: extraEnvVars
-          children:
-            - type: hidden
-              name: name
-              value: WEBUI_AUTH
-            - type: hidden
-              name: value
-              value: true
+              value: 
+                if: $get(ssoEnabled).value
+                then: false
+                else: true
+        # - if: "$get(ssoEnabled).value != true"
+        #   type: group
+        #   children:
+        #     - type: hidden
+        #       name: name
+        #       value: WEBUI_AUTH
+        #     - type: hidden
+        #       name: value
+        #       value: true
 
 system:
   - path: open-webui.ingress.host
