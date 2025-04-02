@@ -69,7 +69,20 @@ variables:
           name: extraEnvVars
           children:
             - type: hidden
-              name: WEBUI_AUTH
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
+              value: false
+        - then:
+          type: group
+          name: extraEnvVars
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
               value: false
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
