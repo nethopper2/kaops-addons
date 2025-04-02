@@ -48,7 +48,7 @@ variables:
             - type: hidden
               name: value
               value: false
-        - if: $get(ssoEnabled).value !== 'true'
+        - if: "$get(ssoEnabled).value !== true"
           type: group
           # name: extraEnvVars
           children:
