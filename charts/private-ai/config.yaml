@@ -55,8 +55,8 @@ variables:
     ui:
       type: toggle
       label: Use Single Sign On
-      value: false
       id: ssoEnabled
+      value: false
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
     isStatic: true
