@@ -117,8 +117,8 @@ variables:
           options:
             - label: Suggested
               value: suggested
-            - label: Custom
-              value: custom
+            # - label: Custom
+            #   value: custom
             - label: I'll do this later
               value: none
           value: suggested
