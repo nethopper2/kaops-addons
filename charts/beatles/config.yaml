@@ -12,13 +12,13 @@ metadata:
 forms:
   - slug: default
     label: Configuration
-    steps:
-      - slug: details
-        isCreateOnly: true
-        variableSlugs:
-          - ssoEnabled
-        ui:
-          label: Details
+    # steps:
+    #   - slug: details
+    #     isCreateOnly: true
+    #     variableSlugs:
+    #       - ssoEnabled
+    #     ui:
+    #       label: Details
   - slug: defaultUpdate
     label: Configuration
 variables:
@@ -39,10 +39,10 @@ variables:
       children:
         - type: group
           children:
-            - type: hidden
+            - type: text
               name: name
               value: WEBUI_AUTH
-            - type: hidden
+            - type: text
               name: value
               value: 
                 if: $get(ssoEnabled).value
