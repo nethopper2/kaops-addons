@@ -44,7 +44,7 @@ variables:
               value: WEBUI_AUTH
             - type: text
               name: value
-              key: "$: 'webui-auth-' + get(ssoEnabled).value"
+              key: "$: 'webui-auth-' + $get(ssoEnabled).value"
               value: 
                 if: "$get(ssoEnabled).value == true"
                 then: false
