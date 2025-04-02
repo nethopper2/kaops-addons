@@ -39,10 +39,10 @@ variables:
       children:
         - type: group
           children:
-            - type: text
+            - type: hidden
               name: name
               value: WEBUI_AUTH
-            - type: text
+            - type: hidden
               name: value
               key: "$: 'webui-auth-' + $get(ssoEnabled).value"
               value: 
