@@ -12,13 +12,6 @@ metadata:
 forms:
   - slug: default
     label: Configuration
-    # steps:
-    #   - slug: details
-    #     isCreateOnly: true
-    #     variableSlugs:
-    #       - ssoEnabled
-    #     ui:
-    #       label: Details
   - slug: defaultUpdate
     label: Configuration
 variables:
