@@ -91,7 +91,7 @@ variables:
               name: value
               key: "$: 'webui-auth_cookie_same_site'"
               value: lax
-        - if: "$get(ssoEnabled).value == false"
+        - else:
         - type: group
           key: webui-auth-false
           children:
