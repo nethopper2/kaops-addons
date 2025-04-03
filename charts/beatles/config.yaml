@@ -28,8 +28,8 @@ variables:
     isStatic: true
     forms: [default, defaultUpdate]
     ui:
-      type: list
       if: "$get(ssoEnabled).value"
+      type: list
       children:
         # - if: "$get(ssoEnabled).value"
         - type: group
@@ -94,6 +94,7 @@ variables:
               value: lax
         # - else:
       if: "$get(ssoEnabled).value != true"
+      type: list
       children:
         - type: group
           key: webui-auth-false
