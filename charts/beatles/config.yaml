@@ -29,8 +29,9 @@ variables:
     forms: [default, defaultUpdate]
     ui:
       type: list
+      if: "$get(ssoEnabled).value"
       children:
-        - if: "$get(ssoEnabled).value"
+        # - if: "$get(ssoEnabled).value"
         - type: group
           key: webui-auth-true-1
           children:
@@ -91,7 +92,9 @@ variables:
               name: value
               key: "$: 'webui-auth_cookie_same_site'"
               value: lax
-        - else:
+        # - else:
+      if: "$get(ssoEnabled).value != true"
+      children:
         - type: group
           key: webui-auth-false
           children:
