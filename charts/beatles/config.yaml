@@ -41,6 +41,7 @@ variables:
               name: value
               key: "$: 'webui-auth-enable_signup_true'"
               value: 'true'
+          children:
             - type: hidden
               name: name
               value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
@@ -48,6 +49,7 @@ variables:
               name: value
               key: "$: 'webui-auth-trusted_email_header'"
               value: X-Forwarded-Email
+          children:
             - type: hidden
               name: name
               value: WEBUI_AUTH_TRUSTED_NAME_HEADER
@@ -55,6 +57,7 @@ variables:
               name: value 
               key: "$: 'webui-auth-trusted_name_header'"
               value: X-Forwarded-User
+          children:
             - type: hidden
               name: name
               value: ENABLE_OAUTH_SIGNUP
@@ -62,6 +65,7 @@ variables:
               name: value
               key: "$: 'webui-auth-enable_oauth_signup'"
               value: 'true'
+          children:
             - type: hidden
               name: name
               value: WEBUI_SESSION_COOKIE_SAME_SITE
@@ -69,6 +73,7 @@ variables:
               name: value
               key: "$: 'webui-session_cookie_same_site'"
               value: lax
+          children:
             - type: hidden
               name: name
               value: WEBUI_AUTH_COOKIE_SAME_SITE
