@@ -86,10 +86,10 @@ async function createKnowledge(token, name, description, groupIds) {
 
   try {
     const response = await axios.post(url, data, { headers });
-    console.log('  Knowledge created successfully:', response.data?.name);
+    console.log('Knowledge created successfully:', response.data?.name);
     return response.data;
   } catch (error) {
-    console.error('  Error creating knowledge');
+    console.error('Error creating knowledge');
     throw error;
   }
 }
@@ -174,15 +174,17 @@ async function main() {
 
   try {
     // First check server availability
+    console.log("\n------------------------------------");
+    console.log("  Server Availability Check ");
     console.log("------------------------------------");
-    console.log("  Server Availability Check \n");
     if (!(await checkServerAvailability())) {
       process.exit(1);
     }
 
     // Sign up and get token and user ID
+    console.log("\n------------------------------------");
+    console.log("  Create Iniital User and Get Token ");
     console.log("------------------------------------");
-    console.log("  Create Iniital User and Get Token \n");
     ({ token, id: userId } = await signUp(SIGNUP_NAME, SIGNUP_PASSWORD, SIGNUP_EMAIL));
 
     // Load group, knowledge, and prompt assets from external file
@@ -194,9 +196,10 @@ async function main() {
     const customerSupportPrompts = assets.customerSupportPrompts;
     const knowledgeToCreate = assets.knowledge;
 
-    // Create all groups
-    console.log("------------------------------------");
+    // Create all groups and prompts
+    console.log("\n------------------------------------");
     console.log("  Create assets \n");
+    console.log("------------------------------------");
     const createdGroupIds = [];
     const promptGroups = [engineeringPrompts, productManagementPrompts, marketingPrompts, customerSupportPrompts];
 
@@ -219,14 +222,18 @@ async function main() {
       }
     }
 
-    // Create all knowledge entries
+    // Create all knowledge collections
+    console.log("\n------------------------------------");
+    console.log("  Create Knowledge Collections ");
+    console.log("------------------------------------");
+
     for (let i = 0; i < knowledgeToCreate.length; i++) {
       const knowledge = knowledgeToCreate[i];
       const groupId = i < createdGroupIds.length ? createdGroupIds[i] : undefined;
       await createKnowledge(token, knowledge.name, knowledge.description, groupId);
     }
 
-    console.log('All groups, knowledge entries, and prompts created successfully');
+    console.log('** All groups, knowledge collections, and prompts created successfully **');
 
   } catch (error) {
     if (error.response) {
@@ -244,6 +251,9 @@ async function main() {
     console.log('SIGNUP_PASSWORD:', SIGNUP_PASSWORD);
     console.log('SIGNUP_EMAIL:', SIGNUP_EMAIL);
     process.exit(1);
+  } finally {
+    console.log(" The script completed");
+    console.log("==================================================================");
   }
 }
 
