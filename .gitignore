@@ -12,3 +12,6 @@ yarn-error.log*
 *.tfstate
 *.tfvars
 .terraform*
+
+# global
+**/.env

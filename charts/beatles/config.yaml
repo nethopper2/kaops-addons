@@ -12,13 +12,6 @@ metadata:
 forms:
   - slug: default
     label: Configuration
-    steps:
-      - slug: details
-        isCreateOnly: true
-        variableSlugs:
-          - ssoEnabled
-        ui:
-          label: Details
   - slug: defaultUpdate
     label: Configuration
 variables:
@@ -37,20 +30,19 @@ variables:
     ui:
       type: list
       children:
-        - if: $get(ssoEnabled).value
-          type: group
-          name: extraEnvVars
+        - type: group
           children:
             - type: hidden
-              name: WEBUI_AUTH
-              value: false
-        - then:
-          type: group
-          name: extraEnvVars
-          children:
+              name: name
+              value: WEBUI_AUTH
             - type: hidden
-              name: WEBUI_AUTH
-              value: true
+              name: value
+              key: "$: 'webui-auth-' + $get(ssoEnabled).value"
+              value:
+                if: "$get(ssoEnabled).value == true"
+                then: "false"
+                else: "true"
+
 system:
   - path: open-webui.ingress.host
     value: "chat.${system.hubCluster.ingressHostname}"

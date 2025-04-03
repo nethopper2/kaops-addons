@@ -20,6 +20,7 @@ forms:
         isCreateOnly: true
         variableSlugs:
           - ssoEnabled
+          - ssoEnabledDependencies
           - gpuEnabled
           - modelsToPull
         ui:
@@ -60,30 +61,22 @@ variables:
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
     isStatic: true
-    forms: [default]
+    forms: [default, defaultUpdate]
     ui:
       type: list
       children:
-        - if: $get(ssoEnabled).value
-          type: group
-          name: extraEnvVars
+        - type: group
           children:
             - type: hidden
               name: name
               value: WEBUI_AUTH
             - type: hidden
               name: value
-              value: false
-        - then:
-          type: group
-          name: extraEnvVars
-          children:
-            - type: hidden
-              name: name
-              value: WEBUI_AUTH
-            - type: hidden
-              name: value
-              value: true
+              key: "$: 'webui-auth-' + $get(ssoEnabled).value"
+              value: 
+                if: "$get(ssoEnabled).value == true"
+                then: 'false'
+                else: 'true'    
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]

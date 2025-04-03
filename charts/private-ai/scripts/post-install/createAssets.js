@@ -1,33 +1,23 @@
-// Description: This script creates groups, knowledge entries, and prompts in 
-//              the Open WebUI server. It is intended to be run after the Open 
-//              WebUI server has been installed and configured.
-//
-// Usage: node createAssets.js
-//
-// Note: This script requires Node.js and the axios library to be installed.
-//
-// TODO: Need to integrate this with SSO and the Docker environment
+// Description: 
+//   This script creates groups, knowledge entries, and prompts in the Open WebUI server.
+//   It is intended to be run after the Open WebUI server has been installed and configured.
+//   It will create a user, groups, knowledge entries, and prompts.
 // 
-//       Update the SIGNUP_NAME, SIGNUP_PASSWORD, and SIGNUP_EMAIL constants with
-//       the desired user details for signup. The script will create a user with
-//       these details and use the generated token for creating groups, knowledge
-//       entries, and prompts. The script will attempt to delete the user after
-//       creating the assets, but this will fail for the first admin account.
-//
-//       Update the groupsToCreate, engineeringPrompts, productManagementPrompts,
-//       marketingPrompts, customerSupportPrompts, and knowledgeToCreate arrays
-//       with the desired group names, descriptions, prompts, and knowledge entries.
-//       The script will create groups, prompts, and knowledge entries based on these
-//       arrays. The prompts will be associated with the corresponding groups.
-//
-//       Update the BASE_URL constant with the base URL of the Open WebUI server.
-//       The script will make API requests to this URL to create the assets.
+// Usage: node createAssets.js
+// 
+// Required Libraries:
+//   - axios: For making HTTP requests to the Open WebUI API.
+//   - dotenv: For loading environment variables from a .env file.//
+//   - fs: For reading the assets.json file containing group, knowledge, and prompt data.
+// 
+// Installing required libraries:
+//   - To install the axios library, run: `npm install axios`
+//   - To install dotenv, run: `npm install dotenv`
+//   - To install fs, run: `npm install fs`             
 
 const axios = require('axios');
 const fs = require('fs');
 require('dotenv').config(); // Load environment variables from .env file
-
-// TODO: In production, we should log errors if the environment variables do not exist?
 
 // Base URL for the API
 const BASE_URL = process.env.BASE_URL || 'http://open-webui';
@@ -42,13 +32,15 @@ async function signUp(name, password, email) {
 
   try {
     const signupResponse = await axios.post(signupUrl, signupData);
-    const { token, id } = signupResponse.data;
+    const { token, id, email } = signupResponse.data;
 
-    if (!token || !id) {
-      throw new Error('Token or user ID not found in signup response');
+    if (!token || !id || !email) {
+      throw new Error('token, id, or email not found in signup response');
     }
 
-    console.log('User created successfully. Token and user ID received.');
+    console.log('User created successfully.');
+    console.log('  email:', email);
+    console.log('  id:', id);
     return { token, id };
   } catch (error) {
     console.error('Error during signup');
@@ -66,7 +58,7 @@ async function createGroup(token, groupName, description) {
 
   try {
     const response = await axios.post(url, data, { headers });
-    console.log('Group created successfully:', response.data);
+    console.log('Group created successfully:', response.data?.name);
     return response.data.id; // Return the group ID
   } catch (error) {
     console.error('Error creating group');
@@ -96,7 +88,7 @@ async function createKnowledge(token, name, description, groupIds) {
 
   try {
     const response = await axios.post(url, data, { headers });
-    console.log('Knowledge created successfully:', response.data);
+    console.log('Knowledge created successfully:', response.data?.name);
     return response.data;
   } catch (error) {
     console.error('Error creating knowledge');
@@ -119,10 +111,10 @@ async function createPrompt(token, command, title, content, accessControl) {
 
   try {
     const response = await axios.post(url, data, { headers });
-    console.log('Prompt created successfully:', response.data);
+    console.log('  Prompt created successfully:', response.data?.title);
     return response.data;
   } catch (error) {
-    console.error('Error creating prompt');
+    console.error('  Error creating prompt');
     throw error;
   }
 }
@@ -131,34 +123,70 @@ async function createPrompt(token, command, title, content, accessControl) {
 async function checkServerAvailability() {
   const maxAttempts = 300; // 5 minutes * 60 seconds
   const checkInterval = 1000; // 1 second
+
+  console.log("Starting server availability check...");
+  const startTime = new Date();
+  console.log(`Start Time: ${startTime.toISOString()}`);
   
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       const response = await axios.get(BASE_URL);
       if (response.status >= 200 && response.status < 300) {
-        console.log(`Server available after ${attempt} seconds`);
+        console.log("\nServer is available!");
+        const endTime = new Date();
+        console.log(`End Time: ${endTime.toISOString()}`);
+        const elapsedTime = (endTime - startTime) / 1000;
+        console.log(`Elapsed Time: ${formatElapsedTime(elapsedTime)}`);
         return true;
       }
     } catch (error) {
-      console.log(`Attempt ${attempt}/${maxAttempts}: Server unavailable`);
+      process.stdout.write('.'); // Print a dot for each attempt
     }
     
     await new Promise(resolve => setTimeout(resolve, checkInterval));
   }
   
-  console.error('Server not available after 5 minutes');
+  console.error("\nServer not available after 5 minutes.");
+  const endTime = new Date();
+  console.log(`End Time: ${endTime.toISOString()}`);
+  const elapsedTime = (endTime - startTime) / 1000;
+  console.log(`Elapsed Time: ${formatElapsedTime(elapsedTime)}`);
   return false;
+}
+
+// Format elapsed time into seconds or fractional minutes
+function formatElapsedTime(seconds) {
+  if (seconds < 60) {
+    return `${seconds.toFixed(2)} seconds`;
+  } else {
+    const minutes = seconds / 60;
+    return `${minutes.toFixed(2)} minutes`;
+  }
 }
 
 async function main() {
   let token, userId;
+  console.log("==================================================================");
+  console.log("                 Open WebUI Asset Creation Script       ");
+  console.log("==================================================================");
+  console.log("  This script creates groups, knowledge entries, and prompts");
+  console.log("  in the Open WebUI server. It is intended to be run");
+  console.log("  after the Open WebUI server has been installed and configured.");
+  console.log("  It will create a user, groups, knowledge entries, and prompts.");
+
   try {
     // First check server availability
+    console.log("\n------------------------------------");
+    console.log("  Server Availability Check ");
+    console.log("------------------------------------");
     if (!(await checkServerAvailability())) {
       process.exit(1);
     }
 
     // Sign up and get token and user ID
+    console.log("\n------------------------------------");
+    console.log("  Create Iniital User and Get Token ");
+    console.log("------------------------------------");
     ({ token, id: userId } = await signUp(SIGNUP_NAME, SIGNUP_PASSWORD, SIGNUP_EMAIL));
 
     // Load group, knowledge, and prompt assets from external file
@@ -170,7 +198,10 @@ async function main() {
     const customerSupportPrompts = assets.customerSupportPrompts;
     const knowledgeToCreate = assets.knowledge;
 
-    // Create all groups
+    // Create all groups and prompts
+    console.log("\n------------------------------------");
+    console.log("  Create groups and prompts");
+    console.log("------------------------------------");
     const createdGroupIds = [];
     const promptGroups = [engineeringPrompts, productManagementPrompts, marketingPrompts, customerSupportPrompts];
 
@@ -193,14 +224,20 @@ async function main() {
       }
     }
 
-    // Create all knowledge entries
+    // Create all knowledge collections
+    console.log("\n------------------------------------");
+    console.log("  Create Knowledge Collections ");
+    console.log("------------------------------------");
+
     for (let i = 0; i < knowledgeToCreate.length; i++) {
       const knowledge = knowledgeToCreate[i];
       const groupId = i < createdGroupIds.length ? createdGroupIds[i] : undefined;
       await createKnowledge(token, knowledge.name, knowledge.description, groupId);
     }
 
-    console.log('All groups, knowledge entries, and prompts created successfully');
+    console.log("\n**");
+    console.log('** All groups, knowledge collections, and prompts created successfully **');
+    console.log("**");
 
   } catch (error) {
     if (error.response) {
@@ -218,6 +255,10 @@ async function main() {
     console.log('SIGNUP_PASSWORD:', SIGNUP_PASSWORD);
     console.log('SIGNUP_EMAIL:', SIGNUP_EMAIL);
     process.exit(1);
+  } finally {
+    console.log("\n==================================================================");
+    console.log(" end");
+    console.log("==================================================================");
   }
 }
 
