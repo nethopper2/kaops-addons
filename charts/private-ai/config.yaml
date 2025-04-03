@@ -134,11 +134,11 @@ variables:
               children:
                 - type: hidden
                   name: name
-                  value: ENABLE_SIGNUP
+                  value: WEBUI_AUTH
                 - type: hidden
                   name: value
                   key: "$: 'webui-auth-enable_signup_false'"
-                  value: 'false'   
+                  value: 'true'   
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]

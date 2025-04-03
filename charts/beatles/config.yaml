@@ -99,11 +99,11 @@ variables:
               children:
                 - type: hidden
                   name: name
-                  value: ENABLE_SIGNUP
+                  value: WEBUI_AUTH
                 - type: hidden
                   name: value
                   key: "$: 'webui-auth-enable_signup_false'"
-                  value: 'false'
+                  value: 'true'
 system:
   - path: open-webui.ingress.host
     value: "chat.${system.hubCluster.ingressHostname}"
