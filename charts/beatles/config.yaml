@@ -36,60 +36,60 @@ variables:
           - type: group
             key: webui-auth-true-1
             children:
-              - type: hidden
+              - type: text
                 name: name
                 value: ENABLE_SIGNUP
-              - type: hidden
+              - type: text
                 name: value
                 key: "$: 'webui-auth-enable_signup_true'"
                 value: 'true'
           - type: group
             key: webui-auth-true-2
             children:
-              - type: hidden
+              - type: text
                 name: name
                 value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-              - type: hidden
+              - type: text
                 name: value
                 key: "$: 'webui-auth-trusted_email_header'"
                 value: X-Forwarded-Email
           - type: group
             key: webui-auth-true-3
             children:
-              - type: hidden
+              - type: text
                 name: name
                 value: WEBUI_AUTH_TRUSTED_NAME_HEADER
-              - type: hidden
+              - type: text
                 name: value 
                 key: "$: 'webui-auth-trusted_name_header'"
                 value: X-Forwarded-User
           - type: group
             key: webui-auth-true-4
             children:
-              - type: hidden
+              - type: text
                 name: name
                 value: ENABLE_OAUTH_SIGNUP
-              - type: hidden
+              - type: text
                 name: value
                 key: "$: 'webui-auth-enable_oauth_signup'"
                 value: 'true'
           - type: group
             key: webui-auth-true-5
             children:
-              - type: hidden
+              - type: text
                 name: name
                 value: WEBUI_SESSION_COOKIE_SAME_SITE
-              - type: hidden
+              - type: text
                 name: value
                 key: "$: 'webui-session_cookie_same_site'"
                 value: lax
           - type: group
             key: webui-auth-true-6
             children:
-              - type: hidden
+              - type: text
                 name: name
                 value: WEBUI_AUTH_COOKIE_SAME_SITE
-              - type: hidden
+              - type: text
                 name: value
                 key: "$: 'webui-auth_cookie_same_site'"
                 value: lax
@@ -100,10 +100,10 @@ variables:
           - type: group
             key: webui-auth-false
             children:
-              - type: hidden
+              - type: text
                 name: name
                 value: ENABLE_SIGNUP
-              - type: hidden
+              - type: text
                 name: value
                 key: "$: 'webui-auth-enable_signup_false'"
                 value: 'false'
