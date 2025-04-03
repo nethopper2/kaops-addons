@@ -32,13 +32,15 @@ async function signUp(name, password, email) {
 
   try {
     const signupResponse = await axios.post(signupUrl, signupData);
-    const { token, id } = signupResponse.data;
+    const { token, id, email } = signupResponse.data;
 
-    if (!token || !id) {
-      throw new Error('Token or user ID not found in signup response');
+    if (!token || !id || !email) {
+      throw new Error('token, id, or email not found in signup response');
     }
 
-    console.log('User created successfully. Token and user ID received.');
+    console.log('User created successfully.');
+    console.log('  email:', email);
+    console.log('  id:', id);
     return { token, id };
   } catch (error) {
     console.error('Error during signup');
@@ -198,7 +200,7 @@ async function main() {
 
     // Create all groups and prompts
     console.log("\n------------------------------------");
-    console.log("  Create assets \n");
+    console.log("  Create groups and prompts");
     console.log("------------------------------------");
     const createdGroupIds = [];
     const promptGroups = [engineeringPrompts, productManagementPrompts, marketingPrompts, customerSupportPrompts];
@@ -233,7 +235,9 @@ async function main() {
       await createKnowledge(token, knowledge.name, knowledge.description, groupId);
     }
 
+    console.log("\n**");
     console.log('** All groups, knowledge collections, and prompts created successfully **');
+    console.log("**");
 
   } catch (error) {
     if (error.response) {
@@ -252,7 +256,8 @@ async function main() {
     console.log('SIGNUP_EMAIL:', SIGNUP_EMAIL);
     process.exit(1);
   } finally {
-    console.log(" The script completed");
+    console.log("\n==================================================================");
+    console.log(" end");
     console.log("==================================================================");
   }
 }
