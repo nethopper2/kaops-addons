@@ -30,6 +30,7 @@ variables:
     ui:
       - if: "$get(ssoEnabled).value == true"
         type: list
+        key: "1"
         children:
           # - if: "$get(ssoEnabled).value"
           - type: group
@@ -94,6 +95,7 @@ variables:
                 value: lax
       - if: "$get(ssoEnabled).value !== true"
         type: list
+        key: "2"
         children:
           - type: group
             key: webui-auth-false
