@@ -25,6 +25,7 @@ const BASE_URL = process.env.BASE_URL || 'http://open-webui';
 const SIGNUP_NAME = process.env.SIGNUP_NAME || 'Shawn';
 const SIGNUP_PASSWORD = process.env.SIGNUP_PASSWORD || 'Nethopper123$';
 const SIGNUP_EMAIL = process.env.SIGNUP_EMAIL || 'shawn@nethopper.io';
+const ENABLE_OAUTH_SIGNUP = process.env.ENABLE_OAUTH_SIGNUP === 'true' || false;
 
 async function signUp(name, password, email) {
   const signupUrl = `${BASE_URL}/api/v1/auths/signup`;
@@ -119,12 +120,49 @@ async function createPrompt(token, command, title, content, accessControl) {
   }
 }
 
+async function getAdminConfig(token) {
+  const url = `${BASE_URL}/api/v1/auths/admin/config`;
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+
+  try {
+    const response = await axios.get(url, { headers });
+    console.log('Current Admin Config:');
+    console.log(JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching admin config');
+    throw error;
+  }
+}
+
+async function postAdminConfig(token, configData) {
+  const url = `${BASE_URL}/api/v1/auths/admin/config`;
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+
+  try {
+    const response = await axios.post(url, configData, { headers });
+    console.log('Updated Admin Config:');
+    console.log(JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error('Error updating admin config');
+    throw error;
+  }
+}
+
 // Add server availability check function
 async function checkServerAvailability() {
   const maxAttempts = 300; // 5 minutes * 60 seconds
   const checkInterval = 1000; // 1 second
 
   console.log("Starting server availability check...");
+  console.log("Base URL:", BASE_URL);
   const startTime = new Date();
   console.log(`Start Time: ${startTime.toISOString()}`);
   
@@ -235,8 +273,33 @@ async function main() {
       await createKnowledge(token, knowledge.name, knowledge.description, groupId);
     }
 
+
+    // Fetch current admin config
+    console.log("\n------------------------------------");
+    console.log("Fetching Current Admin Config...");
+    console.log("------------------------------------");
+    
+    const currentConfig = await getAdminConfig(token);
+
+    // Conditionally update admin config based on ENABLE_OAUTH_SIGNUP
+    if (ENABLE_OAUTH_SIGNUP) {
+      console.log("Updating Admin Config with ENABLE_OAUTH_SIGNUP Enabled...");
+
+      // Use values from GET response as payload for POST, but always set ENABLE_SIGNUP to true
+      const updatedConfigPayload = {
+        ...currentConfig,
+        ENABLE_SIGNUP: true,
+      };
+
+      await postAdminConfig(token, updatedConfigPayload);
+      console.log("Admin Config Updated Successfully.");
+      
+    } else {
+      console.log("ENABLE_OAUTH_SIGNUP is not enabled. Skipping Admin Config Update.");
+    }
+
     console.log("\n**");
-    console.log('** All groups, knowledge collections, and prompts created successfully **');
+    console.log('** All groups, knowledge collections, and prompts created successfully');
     console.log("**");
 
   } catch (error) {
