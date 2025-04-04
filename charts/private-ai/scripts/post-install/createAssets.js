@@ -284,8 +284,6 @@ async function main() {
     // Conditionally update admin config based on ENABLE_OAUTH_SIGNUP
     console.log("ENABLE_OAUTH_SIGNUP:", ENABLE_OAUTH_SIGNUP);
     const apple = ENABLE_OAUTH_SIGNUP.replace(/"/g, '')
-    console.log("apple: ", apple);
-    console.log("ENABLE_OAUTH_SIGNUP === 'true': ", ENABLE_OAUTH_SIGNUP === 'true');
     if (ENABLE_OAUTH_SIGNUP.replace(/"/g, '') === 'true') {
       console.log("Updating Admin Config with ENABLE_OAUTH_SIGNUP Enabled...");
 
@@ -293,6 +291,7 @@ async function main() {
       const updatedConfigPayload = {
         ...currentConfig,
         ENABLE_SIGNUP: true,
+        DEFAULT_USER_ROLE: 'user'
       };
 
       await postAdminConfig(token, updatedConfigPayload);
