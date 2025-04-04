@@ -25,7 +25,7 @@ const BASE_URL = process.env.BASE_URL || 'http://open-webui';
 const SIGNUP_NAME = process.env.SIGNUP_NAME || 'Shawn';
 const SIGNUP_PASSWORD = process.env.SIGNUP_PASSWORD || 'Nethopper123$';
 const SIGNUP_EMAIL = process.env.SIGNUP_EMAIL || 'shawn@nethopper.io';
-const ENABLE_OAUTH_SIGNUP = process.env.ENABLE_OAUTH_SIGNUP === 'true' || false;
+const ENABLE_OAUTH_SIGNUP = process.env.ENABLE_OAUTH_SIGNUP;
 
 async function signUp(name, password, email) {
   const signupUrl = `${BASE_URL}/api/v1/auths/signup`;
@@ -283,7 +283,7 @@ async function main() {
 
     // Conditionally update admin config based on ENABLE_OAUTH_SIGNUP
     console.log("ENABLE_OAUTH_SIGNUP: ", ENABLE_OAUTH_SIGNUP);
-    if (ENABLE_OAUTH_SIGNUP !== false ) {
+    if (ENABLE_OAUTH_SIGNUP === 'true' ) {
       console.log("Updating Admin Config with ENABLE_OAUTH_SIGNUP Enabled...");
 
       // Use values from GET response as payload for POST, but always set ENABLE_SIGNUP to true
