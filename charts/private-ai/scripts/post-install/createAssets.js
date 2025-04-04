@@ -282,8 +282,9 @@ async function main() {
     const currentConfig = await getAdminConfig(token);
 
     // Conditionally update admin config based on ENABLE_OAUTH_SIGNUP
-    console.log("ENABLE_OAUTH_SIGNUP: ", ENABLE_OAUTH_SIGNUP);
-    if (ENABLE_OAUTH_SIGNUP === 'true' ) {
+    console.log("ENABLE_OAUTH_SIGNUP:", ENABLE_OAUTH_SIGNUP);
+    console.log("ENABLE_OAUTH_SIGNUP === 'true': ", ENABLE_OAUTH_SIGNUP === 'true');
+    if (ENABLE_OAUTH_SIGNUP.trim() === 'true') {
       console.log("Updating Admin Config with ENABLE_OAUTH_SIGNUP Enabled...");
 
       // Use values from GET response as payload for POST, but always set ENABLE_SIGNUP to true
