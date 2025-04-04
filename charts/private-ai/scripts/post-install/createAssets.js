@@ -291,7 +291,7 @@ async function main() {
       const updatedConfigPayload = {
         ...currentConfig,
         ENABLE_SIGNUP: true,
-        DEFAULT_USER_ROLE: 'user'
+        DEFAULT_USER_ROLE: 'admin'
       };
 
       await postAdminConfig(token, updatedConfigPayload);
