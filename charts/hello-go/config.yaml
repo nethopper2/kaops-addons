@@ -18,6 +18,7 @@ forms:
       - slug: details
         isCreateOnly: true
         variableSlugs:
+          - cpTest
           - ssoEnabled
           - gpuEnabled
           - modelsToPull
