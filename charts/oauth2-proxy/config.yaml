@@ -25,18 +25,21 @@ variables:
     ui:
       type: "text"
       label: "Oauth Client ID"
+      help: A public identifier for applications
   - slug: "clientSecret"
     path: "oauth2-proxy.config.clientSecret"
     forms: ["default"]
     ui:
       type: "password" #TODO: Change to secret
       label: "Oauth Client Secret"
+      help: "A secret known only to the application and the authorization server"
   - slug: "cookieSecret"
     path: "oauth2-proxy.config.cookieSecret"
     forms: ["default"]
     ui:
       type: "password" #TODO: Change to secret
       label: "Oauth Cookie Secret"
+      help: "A secret used to encrypt cookies. Reference: cookieSecrethttps://oauth2-proxy.github.io/oauth2-proxy/configuration/overview?_highlight=cookiesecret#generating-a-cookie-secret"
   - slug: "oidcConfig"
     path: "oauth2-proxy.config.configFile"
     forms: ["default"]
@@ -44,6 +47,7 @@ variables:
       type: "textarea"
       value: "email_domains = \noidc_issuer_url = \npass_access_token = \nskip_provider_button = \nprovider = \nprovider_display_name = \nredirect_url = \nupstreams = \nwhitelist_domains = \ncookie_domains = "
       label: "OIDC Configuration"
+      help: "Reference: https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview"
 
 system:
   - path: "oauth2-proxy.ingress.hosts[0]"
