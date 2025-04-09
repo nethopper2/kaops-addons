@@ -184,20 +184,22 @@ variables:
       el: div
       children:
         - el: p
-          children: Use groups control access to knowledge, prompts, models and other protected areas of the system. Knowledge bases are containers of information and data use by the models. You may choose from our suggestions below, or select Custom to define your own.
-        - label: Groups and Knowledge bases
+          children: |-
+            The installation process optionally creates Knowledge Collections, Prompts, and User Groups 
+            (non-SSO only) in your AI service. Admins can add, change, or remove these after installation.
+        - label: Create Knowledge Collections, Prompts, and User Groups
           type: radio
           id: postInstallOptions
           name: chosenPostInstallOptions
           options:
-            - label: Suggested
+            - label: Create Assets
               value: suggested
             # - label: Custom
             #   value: custom
             - label: I'll do this later
               value: none
           value: suggested
-          help: All settings here may be changed inside the addon.
+          # help: All settings here may be changed inside the addon.
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
@@ -205,33 +207,33 @@ variables:
       el: div
       key: "$: 'postInstallCreateAssets-' + $get(postInstallOptions).value"
       children:
-        - el: p
+        - el: div
           if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value == true"
-          children: SSO enabled, install assets 
-          # children: |-
-          #   With SSO enabled, the application manages group membership based on the user SSO configuration.
-          #   When a user logs in via SSO, the application creates groups if they are not defined, and adds the user to all groups specified by the SSO.
-          #   Additionally, the installer creates arbitrary Knowledge Collections and User Prompts.
+          children: |-
+            With SSO enabled, the application manages group membership based on the user SSO configuration.
+            When a user logs in via SSO, the application creates groups if they are not defined, and adds the 
+            user to all groups specified by the SSO. Additionally, the installer creates arbitrary Knowledge 
+            Collections and User Prompts.
 
-        - el: p
+        - el: div
           if: "$get(postInstallOptions).value == 'none' && $get(ssoEnabled).value == true"
-          children: SSO enabled, bypass asset install
-          # children: |-
-          #   With SSO enabled, the application manages group membership based on the user SSO configuration.
-          #   When a user logs in via SSO, the application creates groups if they are not defined, and adds the user to all groups specified by the SSO.
-          #   The installer does not create Knowledge Collections or User Prompts.
+          children: |-
+            With SSO enabled, the application manages group membership based on the user SSO configuration.
+            When a user logs in via SSO, the application creates groups if they are not defined, and adds the 
+            user to all groups specified by the SSO. The installer does not create Knowledge Collections or 
+            User Prompts.
 
-        - el: p
+        - el: div
           if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value !== true"
-          children: SSO disabled, install assets
-          # children: |-
-          #   With SSO disabled, the installer creates arbitrary Knowledge Collections, User Prompts, and Group definitions.
+          children: |-
+            With SSO disabled, the installer creates arbitrary Knowledge Collections, User Prompts, and Group 
+            definitions.
 
-        - el: p
+        - el: div
           if: "$get(postInstallOptions).value == 'none' && $get(ssoEnabled).value !== true"
-          children: SSO disabled, bypass asset install
-          # children: |-
-          #   With SSO disabled, the installer does not create Knowledge Collections, User Prompts, or Group definitions.
+          children: |-
+            With SSO disabled, the installer does not create Knowledge Collections, User Prompts, or Group 
+            definitions.
 
       
         - if: "$get(postInstallOptions).value == 'not-used-disabled'"
