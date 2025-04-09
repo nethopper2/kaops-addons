@@ -205,7 +205,7 @@ variables:
       el: div
       key: "$: 'postInstallCreateAssets-' + $get(postInstallOptions).value"
       children:
-        - $el: p
+        - el: p
           if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value == true"
           children: SSO enabled, install assets 
           # children: |-
@@ -213,7 +213,7 @@ variables:
           #   When a user logs in via SSO, the application creates groups if they are not defined, and adds the user to all groups specified by the SSO.
           #   Additionally, the installer creates arbitrary Knowledge Collections and User Prompts.
 
-        - $el: p
+        - el: p
           if: "$get(postInstallOptions).value == 'none' && $get(ssoEnabled).value == true"
           children: SSO enabled, bypass asset install
           # children: |-
@@ -221,14 +221,14 @@ variables:
           #   When a user logs in via SSO, the application creates groups if they are not defined, and adds the user to all groups specified by the SSO.
           #   The installer does not create Knowledge Collections or User Prompts.
 
-        - $el: p
+        - el: p
           if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value !== true"
           children: SSO disabled, install assets
           # children: |-
           #   With SSO disabled, the installer creates arbitrary Knowledge Collections, User Prompts, and Group definitions.
 
-        - $el: p
-          if: "$get(postInstallOptions).value == 'none' && $get(ssoEnabled).value !== 'false'"
+        - el: p
+          if: "$get(postInstallOptions).value == 'none' && $get(ssoEnabled).value !== true"
           children: SSO disabled, bypass asset install
           # children: |-
           #   With SSO disabled, the installer does not create Knowledge Collections, User Prompts, or Group definitions.
