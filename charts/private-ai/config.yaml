@@ -189,10 +189,10 @@ variables:
             (non-SSO only) in your AI service. Admins can add, change, or remove these after installation.
         - el: div
           children: 
-            - el: span
+            - el: div
               children:
                 - 'SSO Enabled: '
-                - "$get(ssoEnabled).value"
+                - "$get(ssoEnabled).value == true ? 'Yes' : 'No'"
         - label: Create Knowledge Collections, Prompts, and User Groups
           type: radio
           id: postInstallOptions
@@ -215,8 +215,6 @@ variables:
       attrs:
         class: text-neutral-500
       children:
-        - el: div
-          children: "SSO Enabled: {{ $get(ssoEnabled).value }}" 
         - el: div
           if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value == true"
           children: |-
