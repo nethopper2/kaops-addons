@@ -1,5 +1,5 @@
 metadata:
-  slug: aws-eks
+  slug: aws-eks-iac
   name: AWS EKS
   description: Start, run, and scale Kubernetes applications in the AWS cloud and on-premises data centers.
   categories: ['Infrastructure']

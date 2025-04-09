@@ -18,6 +18,7 @@ forms:
       - slug: details
         isCreateOnly: true
         variableSlugs:
+          - cpTest
           - ssoEnabled
           - gpuEnabled
           - modelsToPull
@@ -48,6 +49,11 @@ forms:
   - slug: defaultUpdate
     label: Configuration
 variables:
+  - slug: cpTest
+    path: my.cp.test
+    forms: [default]
+    ui:
+      type: cloudProvider
   - slug: ssoEnabled
     path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
