@@ -206,7 +206,11 @@ variables:
     ui:
       el: div
       key: "$: 'postInstallCreateAssets-' + $get(postInstallOptions).value"
+      attrs:
+        class: text-neutral-500
       children:
+        - el: div
+          children: "SSO Enabled: {{ $get(ssoEnabled).value }}" 
         - el: div
           if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value == true"
           children: |-
@@ -235,7 +239,7 @@ variables:
             With SSO disabled, the installer does not create Knowledge Collections, User Prompts, or Group 
             definitions.
 
-      
+        # NOTE: The remaining options are currenlty not used. They are the original form ideas that did not make MVP.
         - if: "$get(postInstallOptions).value == 'not-used-disabled'"
           type: checkbox
           name: groups
