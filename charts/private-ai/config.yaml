@@ -193,13 +193,11 @@ variables:
               attrs:
                 class: mb-2
               children:
-                - 'SSO Enabled: '
                 - {
                   if: "$get(ssoEnabled).value",
-                  then: 'Yes',
-                  else: 'No'
+                  then: 'SSO Enabled',
+                  else: 'SSO Disabled'
                 }
-                # - "$get(ssoEnabled).value == true ? 'Yes' : 'No'"
         - label: Create Knowledge Collections, Prompts, and User Groups
           type: radio
           id: postInstallOptions
