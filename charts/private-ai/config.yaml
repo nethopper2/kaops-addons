@@ -190,9 +190,16 @@ variables:
         - el: div
           children: 
             - el: div
+              attrs:
+                class: mb-2
               children:
                 - 'SSO Enabled: '
-                - "$get(ssoEnabled).value == true ? 'Yes' : 'No'"
+                - {
+                  if: "$get(ssoEnabled).value",
+                  then: 'Yes',
+                  else: 'No'
+                }
+                # - "$get(ssoEnabled).value == true ? 'Yes' : 'No'"
         - label: Create Knowledge Collections, Prompts, and User Groups
           type: radio
           id: postInstallOptions
