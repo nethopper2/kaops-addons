@@ -49,6 +49,7 @@ forms:
           label: Knowledge
   - slug: defaultUpdate
     label: Configuration
+
 variables:
   - slug: ssoEnabled
     path: ingress.oauth2Proxy.enabled
@@ -147,6 +148,16 @@ variables:
                   name: value
                   key: "$: 'webui-auth-enabled_true'"
                   value: "true"
+            - type: group
+              key: webui-auth-true-9
+              children:
+                - type: hidden
+                  name: name
+                  value: WEBUI_AUTH_TRUSTED_GROUPS_HEADER
+                - type: hidden
+                  name: value
+                  key: "$: 'webui-auth-trusted_groups_header'"
+                  value: X-Forwarded-Groups
 
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
