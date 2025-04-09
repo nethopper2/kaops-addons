@@ -29,8 +29,8 @@ forms:
         isCreateOnly: true
         variableSlugs:
           - postInstallOptions
-          - postInstallGroupsSuggested
-          - postInstallKnowledgeBasesSuggested
+          # - postInstallGroupsSuggested
+          # - postInstallKnowledgeBasesSuggested
         ui:
           label: Options
       - slug: groups
@@ -204,7 +204,32 @@ variables:
     ui:
       el: div
       children:
-        - if: "$get(postInstallOptions).value == 'suggested'"
+        - $el: p
+          if: '$get("postInstallOptions").value === "suggested" && $get("ssoEnabled").value === "true"'
+          children: |-
+            With SSO enabled, the application manages group membership based on the user SSO configuration.
+            When a user logs in via SSO, the application creates groups if they are not defined, and adds the user to all groups specified by the SSO.
+            Additionally, the installer creates arbitrary Knowledge Collections and User Prompts.
+
+        - $el: p
+          if: '$get("postInstallOptions").value === "none" && $get("ssoEnabled").value === "true"'
+          children: |-
+            With SSO enabled, the application manages group membership based on the user SSO configuration.
+            When a user logs in via SSO, the application creates groups if they are not defined, and adds the user to all groups specified by the SSO.
+            The installer does not create Knowledge Collections or User Prompts.
+
+        - $el: p
+          if: '$get("postInstallOptions").value === "suggested" && $get("ssoEnabled").value === "false"'
+          children: |-
+            With SSO disabled, the installer creates arbitrary Knowledge Collections, User Prompts, and Group definitions.
+
+        - $el: p
+          if: '$get("postInstallOptions").value === "none" && $get("ssoEnabled").value === "false"'
+          children: |-
+            With SSO disabled, the installer does not create Knowledge Collections, User Prompts, or Group definitions.
+
+      
+        - if: "$get(postInstallOptions).value == 'not-used-disabled'"
           type: checkbox
           name: groups
           id: postInstallGroupsSuggested
