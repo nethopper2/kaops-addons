@@ -2,6 +2,7 @@ ingress:
   enabled: true
   oauth2Proxy:
     enabled: true
+    adminEmail:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/ingress.class: nginx
@@ -45,7 +46,7 @@ open-webui:
       value: "true"
     - name: WEBUI_AUTH
       value: "false"
-    - name: ENV   # allows access to the API /docs endpoint
+    - name: ENV # allows access to the API /docs endpoint
       value: dev
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list

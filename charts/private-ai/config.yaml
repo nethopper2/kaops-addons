@@ -59,6 +59,14 @@ variables:
       label: Use Single Sign On
       id: ssoEnabled
       value: false
+  - if: "$get(ssoEnabled).value == true"
+    slug: "systemAdmin"
+    path: "ingress.oauth2Proxy.adminEmail"
+    forms: ["default"]
+    ui:
+      type: "text"
+      label: "System Admin Email"
+      help: An email for admin account of your private ai
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
     isStatic: true
@@ -188,16 +196,16 @@ variables:
             The installation process optionally creates Knowledge Collections, Prompts, and User Groups 
             (non-SSO only) in your AI service. Admins can add, change, or remove these after installation.
         - el: div
-          children: 
+          children:
             - el: div
               attrs:
                 class: mb-2
               children:
                 - {
-                  if: "$get(ssoEnabled).value",
-                  then: 'SSO Enabled',
-                  else: 'SSO Disabled'
-                }
+                    if: "$get(ssoEnabled).value",
+                    then: "SSO Enabled",
+                    else: "SSO Disabled",
+                  }
         - label: Create Knowledge Collections, Prompts, and User Groups
           type: radio
           id: postInstallOptions
