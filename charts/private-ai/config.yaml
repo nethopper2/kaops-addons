@@ -64,10 +64,12 @@ variables:
     path: "ingress.oauth2Proxy.adminEmail"
     forms: [default]
     ui:
+      if: "$get(ssoEnabled).value"
       type: "text"
       label: "System Admin Email"
       id: "systemAdmin"
       help: An email for admin account of your private ai
+      validation: email
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
     isStatic: true
