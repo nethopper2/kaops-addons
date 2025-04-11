@@ -59,8 +59,7 @@ variables:
       label: Use Single Sign On
       id: ssoEnabled
       value: false
-  - if: "$get(ssoEnabled).value == true"
-    slug: "systemAdmin"
+  - slug: "systemAdmin"
     path: "ingress.oauth2Proxy.adminEmail"
     forms: ["default"]
     ui:
