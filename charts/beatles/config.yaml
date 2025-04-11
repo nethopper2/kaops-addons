@@ -12,8 +12,8 @@ metadata:
 forms:
   - slug: default
     label: Configuration
-  - slug: defaultUpdate
-    label: Configuration
+#  - slug: defaultUpdate
+#    label: Configuration
 variables:
   - slug: oidcConfig
     path: "oauth2-proxy.config.configFile"
