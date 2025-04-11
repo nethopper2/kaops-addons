@@ -15,95 +15,159 @@ forms:
   - slug: defaultUpdate
     label: Configuration
 variables:
-  - slug: ssoEnabled
-    path: ingress.oauth2Proxy.enabled
-    forms: [default, defaultUpdate]
+  - slug: oidcConfig
+    path: "oauth2-proxy.config.configFile"
+    forms: ["default"]
     ui:
-      type: toggle
-      label: Use Single Sign On
-      id: ssoEnabled
-      value: false
-  - slug: ssoEnabledDependencies
-    path: open-webui.extraEnvVars
-    isStatic: true
-    forms: [default, defaultUpdate]
-    ui:
-      type: list
+      type: group
       children:
-        - if: "$get(ssoEnabled).value == true"
-          children:
-            - type: group
-              key: webui-auth-true-1
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_SIGNUP
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enable_signup_true'"
-                  value: 'true'
-            - type: group
-              key: webui-auth-true-2
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-trusted_email_header'"
-                  value: X-Forwarded-Email
-            - type: group
-              key: webui-auth-true-3
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_NAME_HEADER
-                - type: hidden
-                  name: value 
-                  key: "$: 'webui-auth-trusted_name_header'"
-                  value: X-Forwarded-User
-            - type: group
-              key: webui-auth-true-4
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_OAUTH_SIGNUP
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enable_oauth_signup'"
-                  value: 'true'
-            - type: group
-              key: webui-auth-true-5
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_SESSION_COOKIE_SAME_SITE
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-session_cookie_same_site'"
-                  value: lax
-            - type: group
-              key: webui-auth-true-6
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_COOKIE_SAME_SITE
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth_cookie_same_site'"
-                  value: lax
-        - if: "$get(ssoEnabled).value !== true"
-          children:
-            - type: group
-              key: webui-auth-false
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enable_signup_false'"
-                  value: 'true'
+        - type: text
+          label: Email Domains
+          name: email_domains
+        - type: url
+          label: OIDC Issuer URL
+          name: oidc_issuer_url
+        - type: toggle
+          label: Pass Access Token
+          name: pass_access_token
+        - type: toggle
+          label: Pass User Headers
+          name: pass_user_headers
+        - type: toggle
+          label: Pass Host Header
+          name: pass_host_header
+        - type: toggle
+          label: Pass Authorization Header
+          name: pass_authorization_header
+        - type: text
+          label: Set XAuthRequest
+          name: set_xauthrequest
+        - type: text
+          label: Skip Provider Button
+          name: skip_provider_button
+        - type: text
+          label: Provider
+          name: provider
+        - type: text
+          label: Provider Display Name
+          name: provider_display_name
+        - type: url
+          label: Redirect URL
+          name: redirect_url
+        - type: text
+          label: Upstreams
+          name: upstreams
+        - type: text
+          label: Whitelist Domains
+          name: whitelist_domains
+        - type: text
+          label: Cookie Domains
+          name: cookie_domains
+        - type: text
+          label: Cookie Expire
+          name: cookie_expire
+        - type: number
+          label: Upstream Timeout
+          name: upstream_timeout
+          min: 0
+        - type: text
+          label: Reverse Proxy
+          name: reverse_proxy
+        - type: text
+          label: Scope
+          name: scope
+
+
+#  - slug: ssoEnabled
+#    path: ingress.oauth2Proxy.enabled
+#    forms: [default, defaultUpdate]
+#    ui:
+#      type: toggle
+#      label: Use Single Sign On
+#      id: ssoEnabled
+#      value: false
+#  - slug: ssoEnabledDependencies
+#    path: open-webui.extraEnvVars
+#    isStatic: true
+#    forms: [default, defaultUpdate]
+#    ui:
+#      type: list
+#      children:
+#        - if: "$get(ssoEnabled).value == true"
+#          children:
+#            - type: group
+#              key: webui-auth-true-1
+#              children:
+#                - type: hidden
+#                  name: name
+#                  value: ENABLE_SIGNUP
+#                - type: hidden
+#                  name: value
+#                  key: "$: 'webui-auth-enable_signup_true'"
+#                  value: 'true'
+#            - type: group
+#              key: webui-auth-true-2
+#              children:
+#                - type: hidden
+#                  name: name
+#                  value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
+#                - type: hidden
+#                  name: value
+#                  key: "$: 'webui-auth-trusted_email_header'"
+#                  value: X-Forwarded-Email
+#            - type: group
+#              key: webui-auth-true-3
+#              children:
+#                - type: hidden
+#                  name: name
+#                  value: WEBUI_AUTH_TRUSTED_NAME_HEADER
+#                - type: hidden
+#                  name: value
+#                  key: "$: 'webui-auth-trusted_name_header'"
+#                  value: X-Forwarded-User
+#            - type: group
+#              key: webui-auth-true-4
+#              children:
+#                - type: hidden
+#                  name: name
+#                  value: ENABLE_OAUTH_SIGNUP
+#                - type: hidden
+#                  name: value
+#                  key: "$: 'webui-auth-enable_oauth_signup'"
+#                  value: 'true'
+#            - type: group
+#              key: webui-auth-true-5
+#              children:
+#                - type: hidden
+#                  name: name
+#                  value: WEBUI_SESSION_COOKIE_SAME_SITE
+#                - type: hidden
+#                  name: value
+#                  key: "$: 'webui-session_cookie_same_site'"
+#                  value: lax
+#            - type: group
+#              key: webui-auth-true-6
+#              children:
+#                - type: hidden
+#                  name: name
+#                  value: WEBUI_AUTH_COOKIE_SAME_SITE
+#                - type: hidden
+#                  name: value
+#                  key: "$: 'webui-auth_cookie_same_site'"
+#                  value: lax
+#        - if: "$get(ssoEnabled).value !== true"
+#          children:
+#            - type: group
+#              key: webui-auth-false
+#              children:
+#                - type: hidden
+#                  name: name
+#                  value: WEBUI_AUTH
+#                - type: hidden
+#                  name: value
+#                  key: "$: 'webui-auth-enable_signup_false'"
+#                  value: 'true'
+
 system:
   - path: open-webui.ingress.host
     value: "chat.${system.hubCluster.ingressHostname}"
