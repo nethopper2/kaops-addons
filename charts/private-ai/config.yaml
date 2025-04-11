@@ -20,6 +20,7 @@ forms:
         isCreateOnly: true
         variableSlugs:
           - ssoEnabled
+          - systemAdmin
           - ssoEnabledDependencies
           - gpuEnabled
           - modelsToPull
@@ -65,6 +66,7 @@ variables:
     ui:
       type: "text"
       label: "System Admin Email"
+      id: "systemAdmin"
       help: An email for admin account of your private ai
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
