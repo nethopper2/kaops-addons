@@ -61,7 +61,7 @@ variables:
       value: false
   - slug: "systemAdmin"
     path: "ingress.oauth2Proxy.adminEmail"
-    forms: ["default"]
+    forms: [default]
     ui:
       type: "text"
       label: "System Admin Email"
