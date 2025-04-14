@@ -1641,6 +1641,20 @@ entries:
   oauth2-proxy:
   - apiVersion: v2
     appVersion: 0.5.16
+    created: "2025-04-14T15:22:36.874594881Z"
+    dependencies:
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.6
+    description: A Helm chart for Kubernetes
+    digest: 3b6d35c51cb4cdd0c713b31c2e8aec18f446b24aa2ede7b335e7825e8aa1e536
+    name: oauth2-proxy
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/oauth2-proxy-0.1.32/oauth2-proxy-0.1.32.tgz
+    version: 0.1.32
+  - apiVersion: v2
+    appVersion: 0.5.16
     created: "2025-04-10T16:33:10.200676816Z"
     dependencies:
     - name: oauth2-proxy
@@ -2581,6 +2595,20 @@ entries:
     - https://github.com/nethopper2/kaops-addons/releases/download/prefect-server-0.1.0/prefect-server-0.1.0.tgz
     version: 0.1.0
   private-ai:
+  - apiVersion: v2
+    appVersion: 5.25.0
+    created: "2025-04-14T15:22:37.054425053Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    description: KAOPS addon to install private-ai
+    digest: 474690c123aabb8a0fe8812c50b06e2efad89a830be24bb9b6d638c5f3438547
+    name: private-ai
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-0.1.84/private-ai-0.1.84.tgz
+    version: 0.1.84
   - apiVersion: v2
     appVersion: 5.25.0
     created: "2025-04-11T16:48:40.625000494Z"
@@ -4331,4 +4359,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-11T20:40:53.464329476Z"
+generated: "2025-04-14T15:22:37.05564788Z"
