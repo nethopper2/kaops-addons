@@ -8,6 +8,7 @@ metadata:
   detailUrl: "https://addons.kaops.net/openwebui/"
   externalUrl: "https://openwebui.com"
   isProduction: false
+  isStaging: true
   installTargets:
     clusterMessage: Must be installed on clusters configured for Ingress.
     infoMessage: Install the oAuth2 Proxy Addon to use SSO.

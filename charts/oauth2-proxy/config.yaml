@@ -8,6 +8,7 @@ metadata:
   detailUrl: "https://addons.kaops.net/oauth2-proxy/"
   externalUrl: "https://oauth2-proxy.github.io/oauth2-proxy/"
   isProduction: false
+  isStaging: true
   installTargets:
     hub: true
     hubRequired: false
