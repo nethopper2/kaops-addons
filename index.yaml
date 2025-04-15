@@ -3746,6 +3746,20 @@ entries:
   private-ai-oidc:
   - apiVersion: v2
     appVersion: 5.13.0
+    created: "2025-04-15T12:42:28.478951191Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.13.0
+    description: KAOPS addon to install private-ai-oidc
+    digest: 1178b3559d8095bbda2da8bca05cf173c29a5f5211228676a75ad60973f29e47
+    name: private-ai-oidc
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-oidc-0.1.51/private-ai-oidc-0.1.51.tgz
+    version: 0.1.51
+  - apiVersion: v2
+    appVersion: 5.13.0
     created: "2025-03-28T11:01:12.762434263Z"
     dependencies:
     - name: open-webui
@@ -4397,4 +4411,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-15T09:27:17.499606519Z"
+generated: "2025-04-15T12:42:28.479678101Z"
