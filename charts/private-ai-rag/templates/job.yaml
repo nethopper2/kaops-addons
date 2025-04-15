@@ -1,0 +1,34 @@
+{{- if eq .Values.postInstall.chosenPostInstallOptions "suggested" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "private-ai.fullname" . }}-postinstall-job
+  labels: 
+    {{- include "private-ai.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": hook-failed
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: node-runner
+          image: node:23.10.0
+          workingDir: /app
+          volumeMounts:
+            - name: scripts
+              mountPath: /app
+          command: [ "sh", "-c", "cp package.json /tmp && npm install --prefix /tmp && npm start" ]
+          env:
+            - name: NODE_PATH
+              value: /tmp/node_modules
+          envFrom:
+            - secretRef: 
+                name: {{ include "private-ai.fullname" . }}-secret
+      volumes:
+        - name: scripts
+          configMap:
+            name: {{ include "private-ai.fullname" . }}-postinstall-scripts
+{{- end }}

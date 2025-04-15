@@ -1,0 +1,52 @@
+ingress:
+  enabled: true
+  oauth2Proxy:
+    enabled: true
+    adminEmail: "admin@nethopper.io"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: http
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/tls-acme: "true"
+  host:
+  tls:
+    - hosts:
+open-webui:
+  image:
+    repository: nethopper/kaops-open-webui
+    tag: 0.6.2-alpha.1
+    pullPolicy: Always
+  ollama:
+    persistentVolume:
+      enabled: true
+    ollama:
+      gpu:
+        enabled: false
+      models:
+        pull: []
+    service:
+      type: ClusterIP
+  extraEnvVars:
+    - name: WEBUI_NAME
+      value: "Private AI"
+    - name: ENABLE_CODE_EXECUTION
+      value: "false"
+    - name: ENABLE_CODE_INTERPRETER
+      value: "false"
+    - name: ENABLE_GOOGLE_DRIVE_INTEGRATION
+      value: "true"
+    - name: ENABLE_ONEDRIVE_INTEGRATION
+      value: "true"
+    - name: BYPASS_EMBEDDING_AND_RETRIEVAL
+      value: "true"
+    - name: BYPASS_MODEL_ACCESS_CONTROL
+      value: "true"
+    - name: WEBUI_AUTH
+      value: "false"
+    - name: ENV # allows access to the API /docs endpoint
+      value: dev
+    - name: API_KEY_ALLOWED_ENDPOINTS
+      value: /api/v1/knowledge/,/api/v1/knowledge/list
