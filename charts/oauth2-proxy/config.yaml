@@ -3,8 +3,8 @@ metadata:
   name: "Single Sign On"
   description: "oAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, Okta and others) to validate accounts by email, domain or group."
   categories: ["Security"]
-  logoUrlDark: "https://avatars.githubusercontent.com/u/62798169?s=200&v=4"
-  logoUrlLight: "https://avatars.githubusercontent.com/u/62798169?s=200&v=4"
+  logoUrlDark: https://nh-addons.s3.us-east-1.amazonaws.com/oauth2-proxy/logo-dark.png  
+  logoUrlLight: https://nh-addons.s3.us-east-1.amazonaws.com/oauth2-proxy/logo.png
   detailUrl: "https://addons.kaops.net/oauth2-proxy/"
   externalUrl: "https://oauth2-proxy.github.io/oauth2-proxy/"
   isProduction: false

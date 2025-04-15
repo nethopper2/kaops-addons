@@ -5,8 +5,8 @@ metadata:
   categories: [Artificial Intelligence]
   logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png"
   logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png"
-  detailUrl: "https://addons.kaops.net/openwebui/"
-  externalUrl: "https://openwebui.com"
+  detailUrl: "https://addons.kaops.net/private-ai/"
+  externalUrl: "https://nethopper.io"
   isProduction: false
   isStaging: true
   installTargets:
