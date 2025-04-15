@@ -4330,6 +4330,24 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-oidc-0.1.9/private-ai-oidc-0.1.9.tgz
     version: 0.1.9
+  private-ai-rag:
+  - apiVersion: v2
+    appVersion: 5.25.0
+    created: "2025-04-15T09:20:57.579529809Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    description: KAOPS addon to install private-ai
+    digest: 7e6db6fccceafcff2f8aef13715ebc31d215d2fa5748dfeed3ecfae49f02dec9
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.84/private-ai-rag-0.1.84.tgz
+    version: 0.1.84
   yahoo-webui:
   - apiVersion: v2
     appVersion: 5.13.0
@@ -4359,4 +4377,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-14T15:22:37.05564788Z"
+generated: "2025-04-15T09:20:57.579992758Z"
