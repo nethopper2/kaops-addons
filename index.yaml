@@ -1652,6 +1652,20 @@ entries:
   oauth2-proxy:
   - apiVersion: v2
     appVersion: 0.5.16
+    created: "2025-04-15T22:13:18.293140946Z"
+    dependencies:
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.6
+    description: A Helm chart for Kubernetes
+    digest: ff4d2f0f74dad6b7110377accdece8cbcd694b976f7564951af306b8148979b1
+    name: oauth2-proxy
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/oauth2-proxy-0.1.33/oauth2-proxy-0.1.33.tgz
+    version: 0.1.33
+  - apiVersion: v2
+    appVersion: 0.5.16
     created: "2025-04-14T15:22:36.874594881Z"
     dependencies:
     - name: oauth2-proxy
@@ -2620,6 +2634,20 @@ entries:
     - https://github.com/nethopper2/kaops-addons/releases/download/prefect-server-0.1.0/prefect-server-0.1.0.tgz
     version: 0.1.0
   private-ai:
+  - apiVersion: v2
+    appVersion: 5.25.0
+    created: "2025-04-15T22:13:18.427811377Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    description: KAOPS addon to install private-ai
+    digest: 141d49df5e3ddd63bc1617eb9dc52bb13cb9bad07653cfb338d3f8e8dbf36ec0
+    name: private-ai
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-0.1.85/private-ai-0.1.85.tgz
+    version: 0.1.85
   - apiVersion: v2
     appVersion: 5.25.0
     created: "2025-04-14T15:22:37.054425053Z"
@@ -4372,6 +4400,26 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: 5.25.0
+    created: "2025-04-15T22:13:18.640368887Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    description: KAOPS addon to install private-ai
+    digest: 6e5cf86ee500abb07555bb1d00de3eb224b2f0b0302cc0ea7479995ace53c289
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.86/private-ai-rag-0.1.86.tgz
+    version: 0.1.86
+  - apiVersion: v2
+    appVersion: 5.25.0
     created: "2025-04-15T09:27:17.499240555Z"
     dependencies:
     - name: open-webui
@@ -4436,4 +4484,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-15T14:46:45.784072061Z"
+generated: "2025-04-15T22:13:18.6410987Z"
