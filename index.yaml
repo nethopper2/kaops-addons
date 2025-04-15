@@ -2104,6 +2104,20 @@ entries:
   open-webui:
   - apiVersion: v2
     appVersion: 5.13.0
+    created: "2025-04-15T12:55:46.520149323Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.13.0
+    description: KAOPS addon to install open-webui
+    digest: 99993425c05e9a3a814d2cefd652bd72ecf0bd11f47dcaba947e4c639924d3f3
+    name: open-webui
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/open-webui-0.1.19/open-webui-0.1.19.tgz
+    version: 0.1.19
+  - apiVersion: v2
+    appVersion: 5.13.0
     created: "2025-02-28T09:22:38.830640511Z"
     dependencies:
     - name: open-webui
@@ -4411,4 +4425,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-15T12:42:28.479678101Z"
+generated: "2025-04-15T12:55:46.520605499Z"
