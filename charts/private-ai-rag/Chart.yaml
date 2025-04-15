@@ -27,6 +27,6 @@ dependencies:
   - name: open-webui
     version: 5.25.0
     repository: https://helm.openwebui.com/
-  - name: postgresql
+  - name: bitnami/postgresql
     version: 16.6.3
-    repository: oci://registry-1.docker.io/bitnamicharts/postgresql
+    repository: https://charts.bitnami.com/bitnami
