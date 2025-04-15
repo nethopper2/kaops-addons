@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "metrics-exporter.fullname" . }}-scripts
+  labels: 
+    {{- include "metrics-exporter.labels" . | nindent 4 }}
+data:
+  exporter.js: |-
+{{ (.Files.Get "scripts/exporter.js") | indent 4 }}
+  package.json: |-
+{{ (.Files.Get "scripts/package.json") | indent 4 }}
+  queries.json: |-
+{{ (.Files.Get "scripts/queries.json") | indent 4 }}

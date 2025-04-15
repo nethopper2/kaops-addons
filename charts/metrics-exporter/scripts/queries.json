@@ -1,0 +1,7 @@
+[
+  {
+    "name": "namespace_cost",
+    "valueName": "namespace",
+    "query": "sum_over_time(sum by (namespace)(sum by (namespace, instance) (label_replace(label_replace(container_cpu_allocation, \"instance\", \"$1.$2.$3.$4\", \"instance\", \"^ip-([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+).*\"),\"instance\", \"$1\", \"instance\", \"^([0-9]+\\\\.[0-9]+\\\\.[0-9]+\\\\.[0-9]+).*\") * on (instance) group_left() (label_replace(node_cpu_hourly_cost, \"instance\", \"$1.$2.$3.$4\", \"instance\", \"ip-([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+).*\") / 60)+label_replace(label_replace(container_memory_allocation_bytes, \"instance\", \"$1.$2.$3.$4\", \"instance\", \"^ip-([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+).*\"),\"instance\", \"$1\", \"instance\", \"^([0-9]+\\\\.[0-9]+\\\\.[0-9]+\\\\.[0-9]+).*\") * on (instance) group_left() (label_replace(node_ram_hourly_cost, \"instance\", \"$1.$2.$3.$4\", \"instance\", \"ip-([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+).*\") / (1024 * 1024 * 1024) / 60)+label_replace(label_replace(container_gpu_allocation, \"instance\", \"$1.$2.$3.$4\", \"instance\", \"^ip-([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+).*\"),\"instance\", \"$1\", \"instance\", \"^([0-9]+\\\\.[0-9]+\\\\.[0-9]+\\\\.[0-9]+).*\") * on (instance) group_left() (label_replace(node_gpu_hourly_cost, \"instance\", \"$1.$2.$3.$4\", \"instance\", \"ip-([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+).*\") / 60)))[86400s:1m])"
+  }
+]

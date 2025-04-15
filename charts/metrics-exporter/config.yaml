@@ -1,0 +1,41 @@
+metadata:
+  slug: metrics-exporter
+  name: metrics-exporter
+  description: A tool to export metrics from Prometheus to S3.
+  categories: [Data Management]
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/metrics-exporter/logo.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/metrics-exporter/logo.png"
+  detailUrl: "https://addons.kaops.net/metrics-exporter/"
+  externalUrl: "https://prometheus.io"
+  isProduction: false
+  installTargets:
+    clusterMessage: Must be installed on hub cluster with observability network feature.
+
+forms:
+  - slug: default
+    label: Configuration
+    description: Metrics Exporter configuration
+variables:
+  - slug: 'cloudIntegrationSecret'
+    path: 'opencost.cloudIntegrationSecret'
+    forms: ['default']
+    ui:
+      type: 'secret'
+      placeholder: 'Cloud Integration Secret'
+      validation: 'required'
+  - slug: 'bucket'
+    path: 's3.bucket'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'S3 Bucket Name'
+  - slug: 'region'
+    path: 's3.region'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'AWS Region'
+
+system:
+  - path: "prometheus.url"
+    value: "${system.observabilityInfo.prometheusServiceName}.${system.cluster.namespace}.svc.cluster.local:9090"
