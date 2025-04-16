@@ -95,29 +95,71 @@ variables:
     ui:
       type: list
       key: "$: 'ssoEnabledDependencies-' + $get(oauthProviderName).value"
-      value:
-        - name: ENABLE_SIGNUP
-          value: true
-        - name: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-          value: X-Forwarded-Email
-        - name: WEBUI_AUTH_TRUSTED_NAME_HEADER
-          value: X-Forwarded-User
-        - name: ENABLE_OAUTH_SIGNUP
-          value: true
-        - name: WEBUI_SESSION_COOKIE_SAME_SITE
-          value: lax
-        - name: WEBUI_AUTH_COOKIE_SAME_SITE
-          value: lax
-        - name: WEBUI_AUTH
-          value: true
-        - name: ENABLE_LOGIN_FORM
-          value: true
-        - name: WEBUI_AUTH_TRUSTED_GROUPS_HEADER
-          value: X-Forwarded-Groups
-        - name: OAUTH_PROVIDER_NAME
-          value: ''
-#          value: $get(oauthProviderName).value
       children:
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_SIGNUP
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
+            - type: hidden
+              name: value
+              value: X-Forwarded-Email
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_TRUSTED_NAME_HEADER
+            - type: hidden
+              name: value
+              value: X-Forwarded-User
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_OAUTH_SIGNUP
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_SESSION_COOKIE_SAME_SITE
+            - type: hidden
+              name: value
+              value: lax
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_COOKIE_SAME_SITE
+            - type: hidden
+              name: value
+              value: lax
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_LOGIN_FORM
+            - type: hidden
+              name: value
+              value: true
         - type: group
           children:
             - type: hidden
