@@ -66,19 +66,6 @@ variables:
       label: Use Single Sign On
       id: ssoEnabled
       value: false
-#  - slug: oauthProviderName
-#    path: todo.fix.me
-#    forms: [default]
-#    ui:
-#      type: select
-#      label: OAuth Provider Name
-#      id: oauthProviderName
-#      options:
-#        - label: Google
-#          value: google
-#        - label: Okta
-#          value: okta
-#      validation: required
   - slug: systemAdmin
     path: ingress.oauth2Proxy.adminEmail
     forms: [default]
@@ -88,99 +75,100 @@ variables:
       id: systemAdmin
       help: An email for admin account of your private AI
       validation: email
+  - slug: oauthProviderName
+    path: ignored
+    forms: [default]
+    ui:
+      type: select
+      label: OAuth Provider Name
+      id: oauthProviderName
+      options:
+        - label: Google
+          value: google
+        - label: Okta
+          value: okta
+      validation: required
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
     isStatic: true
     forms: [default]
     ui:
-      el: div
+      type: list
+      key: "$: 'ssoEnabledDependencies-' + $get(oauthProviderName).value"
+      name: extraEnvVars
       children:
-        - type: select
-          label: OAuth Provider Name
-          id: oauthProviderName
-          name: oauthProviderName
-          options:
-            - label: Google
-              value: google
-            - label: Okta
-              value: okta
-          validation: required
-        - type: list
-          key: "$: 'ssoEnabledDependencies-' + $get(oauthProviderName).value"
-          name: extraEnvVars
+        - type: group
           children:
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_SIGNUP
-                - type: hidden
-                  name: value
-                  value: true
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-                - type: hidden
-                  name: value
-                  value: X-Forwarded-Email
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_NAME_HEADER
-                - type: hidden
-                  name: value
-                  value: X-Forwarded-User
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_OAUTH_SIGNUP
-                - type: hidden
-                  name: value
-                  value: true
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_SESSION_COOKIE_SAME_SITE
-                - type: hidden
-                  name: value
-                  value: lax
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_COOKIE_SAME_SITE
-                - type: hidden
-                  name: value
-                  value: lax
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH
-                - type: hidden
-                  name: value
-                  value: true
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_LOGIN_FORM
-                - type: hidden
-                  name: value
-                  value: true
-            - type: group
-              children:
-                - type: hidden
-                  name: name
-                  value: OAUTH_PROVIDER_NAME
-                - type: hidden
-                  name: value
-                  value: $get(oauthProviderName).value
+            - type: hidden
+              name: name
+              value: ENABLE_SIGNUP
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
+            - type: hidden
+              name: value
+              value: X-Forwarded-Email
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_TRUSTED_NAME_HEADER
+            - type: hidden
+              name: value
+              value: X-Forwarded-User
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_OAUTH_SIGNUP
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_SESSION_COOKIE_SAME_SITE
+            - type: hidden
+              name: value
+              value: lax
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_COOKIE_SAME_SITE
+            - type: hidden
+              name: value
+              value: lax
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_LOGIN_FORM
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: OAUTH_PROVIDER_NAME
+            - type: hidden
+              name: value
+              value: $get(oauthProviderName).value
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
