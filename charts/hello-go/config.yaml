@@ -31,7 +31,7 @@ forms:
           - systemAdmin
           - ssoEnabledDependencies
         ui:
-          label: Details
+          label: SSO
       - slug: postInstall
         isCreateOnly: true
         variableSlugs:
@@ -67,12 +67,17 @@ variables:
       id: ssoEnabled
       value: false
   - slug: oauthProviderName
-    path: open-webui.extraEnvVars
+    path: todo.fix.me
     forms: [default]
     ui:
-      type: text
+      type: select
       label: OAuth Provider Name
       id: oauthProviderName
+      options:
+        - label: Google
+          value: google
+        - label: Okta
+          value: okta
       validation: required
   - slug: systemAdmin
     path: ingress.oauth2Proxy.adminEmail
