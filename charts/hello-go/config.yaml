@@ -18,18 +18,26 @@ forms:
       - slug: details
         isCreateOnly: true
         variableSlugs:
-          - providerConfigRef
           - ssoEnabled
           - gpuEnabled
           - modelsToPull
         ui:
           label: Details
+      - slug: sso
+        isCreateOnly: true
+        variableSlugs:
+          - oauthProviderName
+          - systemAdmin
+          - ssoEnabledDependencies
+        ui:
+          if: $get(ssoEnabled).value
+          label: SSO
       - slug: postInstall
         isCreateOnly: true
         variableSlugs:
           - postInstallOptions
           - postInstallGroupsSuggested
-          - postInstallKnowledgeBasesSuggested
+          # - postInstallKnowledgeBasesSuggested
         ui:
           label: Options
       - slug: groups
@@ -48,20 +56,118 @@ forms:
           label: Knowledge
   - slug: defaultUpdate
     label: Configuration
+
 variables:
-  - slug: providerConfigRef
-    path: providerConfigRef
-    forms: [default]
-    ui:
-      type: cloudProvider
-      validation: required
   - slug: ssoEnabled
     path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
     ui:
       type: toggle
       label: Use Single Sign On
+      id: ssoEnabled
       value: false
+  - slug: oauthProviderName
+    path: todo.fix.me
+    forms: [default]
+    ui:
+      type: select
+      label: OAuth Provider Name
+      id: oauthProviderName
+      options:
+        - label: Google
+          value: google
+        - label: Okta
+          value: okta
+      validation: required
+  - slug: systemAdmin
+    path: ingress.oauth2Proxy.adminEmail
+    forms: [default]
+    ui:
+      type: text
+      label: System Admin Email
+      id: systemAdmin
+      help: An email for admin account of your private ai
+      validation: email
+  - slug: ssoEnabledDependencies
+    path: open-webui.extraEnvVars
+    isStatic: true
+    forms: [default, defaultUpdate]
+    ui:
+      type: list
+      key: "$: 'ssoEnabledDependencies-' + $get(oauthProviderName).value"
+      children:
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_SIGNUP
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
+            - type: hidden
+              name: value
+              value: X-Forwarded-Email
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_TRUSTED_NAME_HEADER
+            - type: hidden
+              name: value
+              value: X-Forwarded-User
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_OAUTH_SIGNUP
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_SESSION_COOKIE_SAME_SITE
+            - type: hidden
+              name: value
+              value: lax
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_COOKIE_SAME_SITE
+            - type: hidden
+              name: value
+              value: lax
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_LOGIN_FORM
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: OAUTH_PROVIDER_NAME
+            - type: hidden
+              name: value
+              value: $get(oauthProviderName).value
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
@@ -87,27 +193,70 @@ variables:
       el: div
       children:
         - el: p
-          children: Use groups control access to knowledge, prompts, models and other protected areas of the system. Knowledge bases are containers of information and data use by the models. You may choose from our suggestions below, or select Custom to define your own.
-        - label: Groups and Knowledge bases
+          children: |-
+            The installation process optionally creates Knowledge Collections, Prompts, and User Groups 
+            (non-SSO only) in your AI service. Admins can add, change, or remove these after installation.
+        - el: div
+          children:
+            - el: div
+              attrs:
+                class: mb-2
+              children:
+                - if: "$get(ssoEnabled).value"
+                  then: "SSO Enabled"
+                  else: "SSO Disabled"
+        - label: Create Knowledge Collections, Prompts, and User Groups
           type: radio
           id: postInstallOptions
           name: chosenPostInstallOptions
           options:
-            - label: Suggested
+            - label: Create Assets
               value: suggested
-            - label: Custom
-              value: custom
+            # - label: Custom
+            #   value: custom
             - label: I'll do this later
               value: none
           value: suggested
-          help: All settings here may be changed inside the addon.
+          # help: All settings here may be changed inside the addon.
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
     ui:
       el: div
+      key: "$: 'postInstallCreateAssets-' + $get(postInstallOptions).value"
+      attrs:
+        class: text-neutral-500
       children:
-        - if: "$get(postInstallOptions).value == 'suggested'"
+        - el: div
+          if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value == true"
+          children: |-
+            The installer will create arbitrary Knowledge Collections, User Prompts, and Groups. 
+            With SSO enabled, the application manages group membership based on the user SSO configuration. 
+            When a user logs in via SSO, the application creates groups if they are not defined, and adds 
+            the user to all groups specified by the SSO.
+
+        - el: div
+          if: "$get(postInstallOptions).value == 'none' && $get(ssoEnabled).value == true"
+          children: |-
+            The installer will not create Knowledge Collections, User Prompts and Groups. 
+            With SSO enabled, the application manages group membership based on the user SSO configuration. 
+            When a user logs in via SSO, the application creates groups if they are not defined, and adds 
+            the user to all groups specified by the SSO.
+
+        - el: div
+          if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value !== true"
+          children: |-
+            The installer will create arbitrary Knowledge Collections, User Prompts, and Group 
+            definitions.
+
+        - el: div
+          if: "$get(postInstallOptions).value == 'none' && $get(ssoEnabled).value !== true"
+          children: |-
+            The installer will not create arbitrary Knowledge Collections, User Prompts, and Group 
+            definitions.
+
+        # NOTE: The remaining options are currently not used. They are the original form ideas that did not make MVP.
+        - if: "$get(postInstallOptions).value == 'not-used-disabled'"
           type: checkbox
           name: groups
           id: postInstallGroupsSuggested
@@ -161,12 +310,12 @@ variables:
         - label: Name
           type: text
           name: name
-          value: ''
+          value: ""
           validation: required
         - label: Description
           type: text
           name: description
-          value: ''
+          value: ""
           validation: required
   - slug: postInstallKnowledgeBasesSuggested
     path: postInstall.knowledgeBases
@@ -238,7 +387,6 @@ variables:
     ui:
       type: repeater
       label: Knowledge Bases
-      #      key: "$: 'knowledgeBases-' + $get(postInstallGroupsCustom).value.length"
       addButton: false
       insertControl: true
       upControl: false
@@ -250,13 +398,13 @@ variables:
           type: text
           name: name
           help: What are you working on?
-          value: ''
+          value: ""
           validation: required
         - label: Description
           type: text
           name: description
           help: What are you trying to achieve?
-          value: ''
+          value: ""
           validation: required
         - label: Groups
           type: taglist
@@ -269,7 +417,6 @@ variables:
           closeOnSelect: false
           help: Select groups with write access to this knowledge base
           value: []
-#      value: [{ name: '', description: '', groups: [] }]
 
 system:
   - path: open-webui.ingress.host
