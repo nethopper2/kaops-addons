@@ -114,8 +114,17 @@ variables:
           value: true
         - name: WEBUI_AUTH_TRUSTED_GROUPS_HEADER
           value: X-Forwarded-Groups
-        - name: OAUTH_PROVIDER_NAME
-          value: $get(oauthProviderName).value
+#        - name: OAUTH_PROVIDER_NAME
+#          value: $get(oauthProviderName).value
+      children:
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: OAUTH_PROVIDER_NAME
+            - type: hidden
+              name: value
+              value: $get(oauthProviderName).value
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
