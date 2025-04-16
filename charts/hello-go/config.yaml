@@ -114,7 +114,8 @@ variables:
           value: true
         - name: WEBUI_AUTH_TRUSTED_GROUPS_HEADER
           value: X-Forwarded-Groups
-#        - name: OAUTH_PROVIDER_NAME
+        - name: OAUTH_PROVIDER_NAME
+          value: ''
 #          value: $get(oauthProviderName).value
       children:
         - type: group
