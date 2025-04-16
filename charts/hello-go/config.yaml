@@ -23,14 +23,14 @@ forms:
           - modelsToPull
         ui:
           label: Details
-      - if: $get(ssoEnabled).value
-        slug: sso
+      - slug: sso
         isCreateOnly: true
         variableSlugs:
           - oauthProviderName
           - systemAdmin
           - ssoEnabledDependencies
         ui:
+          if: $get(ssoEnabled).value
           label: SSO
       - slug: postInstall
         isCreateOnly: true
