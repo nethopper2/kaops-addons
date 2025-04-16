@@ -86,18 +86,19 @@ variables:
       type: text
       label: System Admin Email
       id: systemAdmin
-      help: An email for admin account of your private ai
+      help: An email for admin account of your private AI
       validation: email
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
     isStatic: true
-    forms: [default, defaultUpdate]
+    forms: [default]
     ui:
       el: div
       children:
         - type: select
           label: OAuth Provider Name
           id: oauthProviderName
+          name: oauthProviderName
           options:
             - label: Google
               value: google
