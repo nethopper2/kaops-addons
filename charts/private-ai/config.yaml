@@ -21,12 +21,19 @@ forms:
         isCreateOnly: true
         variableSlugs:
           - ssoEnabled
-          - systemAdmin
-          - ssoEnabledDependencies
           - gpuEnabled
           - modelsToPull
         ui:
           label: Details
+      - slug: sso
+        isCreateOnly: true
+        variableSlugs:
+          - systemAdmin
+          - oauthProviderName
+          - ssoEnabledDependencies
+        ui:
+          if: $get(ssoEnabled).value
+          label: SSO
       - slug: postInstall
         isCreateOnly: true
         variableSlugs:
@@ -61,116 +68,109 @@ variables:
       label: Use Single Sign On
       id: ssoEnabled
       value: false
-  - slug: "systemAdmin"
-    path: "ingress.oauth2Proxy.adminEmail"
+  - slug: systemAdmin
+    path: ingress.oauth2Proxy.adminEmail
     forms: [default]
     ui:
-      if: "$get(ssoEnabled).value"
-      type: "text"
-      label: "System Admin Email"
-      id: "systemAdmin"
-      help: An email for admin account of your private ai
+      type: text
+      label: System Admin Email
+      id: systemAdmin
+      help: An email for admin account of your private AI
       validation: email
+  - slug: oauthProviderName
+    path: ignored.oauthProviderName
+    forms: [default]
+    ui:
+      type: select
+      label: OAuth Provider Name
+      id: oauthProviderName
+      options:
+        - label: Google
+          value: google
+        - label: Okta
+          value: okta
+      validation: required
   - slug: ssoEnabledDependencies
     path: open-webui.extraEnvVars
     isStatic: true
-    forms: [default, defaultUpdate]
+    forms: [default]
     ui:
       type: list
+      key: "$: 'ssoEnabledDependencies-' + $get(oauthProviderName).value"
+      name: extraEnvVars
       children:
-        - if: "$get(ssoEnabled).value == true"
+        - type: group
           children:
-            - type: group
-              key: webui-auth-true-1
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_SIGNUP
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enable_signup_true'"
-                  value: "true"
-            - type: group
-              key: webui-auth-true-2
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-trusted_email_header'"
-                  value: X-Forwarded-Email
-            - type: group
-              key: webui-auth-true-3
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_NAME_HEADER
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-trusted_name_header'"
-                  value: X-Forwarded-User
-            - type: group
-              key: webui-auth-true-4
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_OAUTH_SIGNUP
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enable_oauth_signup'"
-                  value: "true"
-            - type: group
-              key: webui-auth-true-5
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_SESSION_COOKIE_SAME_SITE
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-session_cookie_same_site'"
-                  value: lax
-            - type: group
-              key: webui-auth-true-6
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_COOKIE_SAME_SITE
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth_cookie_same_site'"
-                  value: lax
-            - type: group
-              key: webui-auth-true-7
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enabled_true'"
-                  value: "true"
-            - type: group
-              key: webui-auth-true-8
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_LOGIN_FORM
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enabled_true'"
-                  value: "true"
-            - type: group
-              key: webui-auth-true-9
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_GROUPS_HEADER
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-trusted_groups_header'"
-                  value: X-Forwarded-Groups
-
+            - type: hidden
+              name: name
+              value: ENABLE_SIGNUP
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
+            - type: hidden
+              name: value
+              value: X-Forwarded-Email
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_TRUSTED_NAME_HEADER
+            - type: hidden
+              name: value
+              value: X-Forwarded-User
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_OAUTH_SIGNUP
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_SESSION_COOKIE_SAME_SITE
+            - type: hidden
+              name: value
+              value: lax
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH_COOKIE_SAME_SITE
+            - type: hidden
+              name: value
+              value: lax
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: WEBUI_AUTH
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: ENABLE_LOGIN_FORM
+            - type: hidden
+              name: value
+              value: true
+        - type: group
+          children:
+            - type: hidden
+              name: name
+              value: OAUTH_PROVIDER_NAME
+            - type: hidden
+              name: value
+              value: $get(oauthProviderName).value
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
@@ -205,11 +205,9 @@ variables:
               attrs:
                 class: mb-2
               children:
-                - {
-                    if: "$get(ssoEnabled).value",
-                    then: "SSO Enabled",
-                    else: "SSO Disabled",
-                  }
+                - if: "$get(ssoEnabled).value"
+                  then: "SSO Enabled"
+                  else: "SSO Disabled"
         - label: Create Knowledge Collections, Prompts, and User Groups
           type: radio
           id: postInstallOptions
@@ -260,7 +258,7 @@ variables:
             The installer will not create arbitrary Knowledge Collections, User Prompts, and Group 
             definitions.
 
-        # NOTE: The remaining options are currenlty not used. They are the original form ideas that did not make MVP.
+        # NOTE: The remaining options are currently not used. They are the original form ideas that did not make MVP.
         - if: "$get(postInstallOptions).value == 'not-used-disabled'"
           type: checkbox
           name: groups
