@@ -26,8 +26,8 @@ forms:
       - slug: sso
         isCreateOnly: true
         variableSlugs:
-          - oauthProviderName
           - systemAdmin
+          - oauthProviderName
           - ssoEnabledDependencies
         ui:
           if: $get(ssoEnabled).value
@@ -76,7 +76,7 @@ variables:
       help: An email for admin account of your private AI
       validation: email
   - slug: oauthProviderName
-    path: ignored
+    path: ignored.oauthProviderName
     forms: [default]
     ui:
       type: select
