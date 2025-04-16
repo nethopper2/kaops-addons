@@ -16,13 +16,6 @@ forms:
     label: Configuration
     description: Metrics Exporter configuration
 variables:
-  - slug: 'cloudIntegrationSecret'
-    path: 'opencost.cloudIntegrationSecret'
-    forms: ['default']
-    ui:
-      type: 'secret'
-      placeholder: 'Cloud Integration Secret'
-      validation: 'required'
   - slug: 'bucket'
     path: 's3.bucket'
     forms: ['default']
@@ -35,6 +28,18 @@ variables:
     ui:
       type: 'text'
       label: 'AWS Region'
+  - slug: 'accessKeyId'
+    path: 's3.accessKeyId'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'AWS Access Key ID'
+  - slug: 'secretAccessKey'
+    path: 'secretAccessKey'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'AWS Secret Access Key'
 
 system:
   - path: "prometheus.url"

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "metrics-exporter.fullname" . }}-s3-envs
+  labels: 
+    {{- include "metrics-exporter.labels" . | nindent 4 }}
+data:
+  PROMETHEUS_URL: {{ .Values.prometheus.url }}
+  S3_BUCKET: {{ .Values.s3.bucket }}
+  AWS_REGION: {{ .Values.s3.region }}

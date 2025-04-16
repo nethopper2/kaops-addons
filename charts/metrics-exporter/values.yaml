@@ -2,8 +2,6 @@ job:
   schedule: "1 0 * * *"
 prometheus:
   url: # system input
-opencost:
-  cloudIntegrationSecret: # user input
 s3:
   bucket: # user input
   region: # user input

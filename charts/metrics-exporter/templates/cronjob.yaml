@@ -24,9 +24,9 @@ spec:
                   value: /tmp/node_modules
               envFrom:
                 - secretRef: 
-                    name: {{ include "metrics-exporter.fullname" . }}-secret
-                - secretRef:
-                    name: {{ .Values.opencost.cloudIntegrationSecret }}
+                    name: {{ include "metrics-exporter.fullname" . }}-secret-s3-envs
+                - configMapRef:
+                    name: {{ include "metrics-exporter.fullname" . }}-s3-envs
           volumes:
             - name: scripts
               configMap:
