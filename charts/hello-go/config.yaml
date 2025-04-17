@@ -105,8 +105,8 @@ variables:
       id: oauthProviderName
       options:
         - label: Google
+          # The values in the options are an array intentionally.
           value:
-            - # The values in the options are an array intentionally.
             - name: OAUTH_PROVIDER_NAME
               value: google
         - label: Okta
