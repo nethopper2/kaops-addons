@@ -35,7 +35,7 @@ variables:
       type: 'text'
       label: 'AWS Access Key ID'
   - slug: 'secretAccessKey'
-    path: 'secretAccessKey'
+    path: 's3.secretAccessKey'
     forms: ['default']
     ui:
       type: 'text'
