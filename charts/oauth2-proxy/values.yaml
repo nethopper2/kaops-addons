@@ -1,9 +1,10 @@
 oauth2-proxy:
   config:
-    clientID:
-    clientSecret:
-    cookieSecret:
-    configFile:
+    # clientID:
+    # clientSecret:
+    # cookieSecret:
+    existingConfig: oauth2-proxy-config
+    configFile: /etc/oauth2-proxy/oauth2_proxy.cfg
   ingress:
     enabled: true
     annotations:
@@ -19,3 +20,28 @@ oauth2-proxy:
     tls:
       - hosts:
         secretName:
+oauth2-configmap:
+  clientId:
+  clientSecret:
+  cookieSecret:
+  email_domains: 
+  oidc_issuer_url: 
+  pass_access_token:
+  pass_user_headers: 
+  pass_host_header: 
+  pass_authorization_header: 
+  set_xauthrequest: 
+  skip_provider_button: 
+  provider:
+  provider_display_name:
+  redirect_url: 
+  upstreams: 
+  whitelist_domains: 
+  cookie_domains: 
+  cookie_expire: 
+  cookie_name:
+  upstream_timeout: 
+  reverse_proxy: 
+  scope:
+
+
