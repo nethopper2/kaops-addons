@@ -50,4 +50,4 @@ variables:
 
 system:
   - path: "prometheus.url"
-    value: "${system.observabilityInfo.prometheusServiceName}.${system.cluster.namespace}.svc.cluster.local:9090"
+    value: "http://${system.observabilityInfo.prometheusServiceName}.${system.cluster.namespace}.svc.cluster.local:9090"
