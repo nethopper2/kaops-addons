@@ -40,6 +40,13 @@ variables:
     ui:
       type: 'text'
       label: 'AWS Secret Access Key'
+  - slug: 'schedule'
+    path: 'job.schedule'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'CronJob Schedule'
+      value: '1 0 * * *'
 
 system:
   - path: "prometheus.url"
