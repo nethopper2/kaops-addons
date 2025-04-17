@@ -38,7 +38,7 @@ variables:
     path: 's3.secretAccessKey'
     forms: ['default']
     ui:
-      type: 'text'
+      type: 'password'
       label: 'AWS Secret Access Key'
   - slug: 'schedule'
     path: 'job.schedule'
