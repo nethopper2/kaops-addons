@@ -86,7 +86,7 @@ variables:
     ui:
       type: list
       children:
-        - if: $get(ssoEnabled).value
+        - if: "$get(ssoEnabled).value != true"
           type: hidden
           value: extraEnvVars
   - slug: ssoEnabled
