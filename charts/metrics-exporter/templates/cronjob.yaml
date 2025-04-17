@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: {{ include "metrics-exporter.fullname" . }}-cronjob
   labels: 
-    {{- include "metrics-exporter.fullname" . | nindent 4 }}
+    {{- include "metrics-exporter.labels" . | nindent 4 }}
 spec:
   schedule: {{ .Values.job.schedule }}
   jobTemplate:
