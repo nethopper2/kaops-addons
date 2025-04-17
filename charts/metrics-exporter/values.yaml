@@ -1,5 +1,5 @@
 job:
-  schedule: "1 0 * * *"
+  schedule: "* * * * *"
 prometheus:
   url: # system input
 s3:
