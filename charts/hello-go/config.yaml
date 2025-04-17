@@ -64,19 +64,19 @@ baseFormData:
       open-webui:
         extraEnvVars:
           - name: ENABLE_SIGNUP
-            value: true
+            value: 'true'
           - name: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
             value: X-Forwarded-Email
           - name: WEBUI_AUTH_TRUSTED_NAME_HEADER
             value: X-Forwarded-User
           - name: ENABLE_OAUTH_SIGNUP
-            value: true
+            value: 'true'
           - name: WEBUI_SESSION_COOKIE_SAME_SITE
             value: lax
           - name: WEBUI_AUTH_COOKIE_SAME_SITE
             value: lax
           - name: ENABLE_LOGIN_FORM
-            value: true
+            value: 'true'
 
 variables:
   - slug: ssoEnabled
@@ -106,12 +106,13 @@ variables:
       options:
         - label: Google
           value:
-            name: OAUTH_PROVIDER_NAME
-            value: google
+            - # The values in the options are an array intentionally.
+            - name: OAUTH_PROVIDER_NAME
+              value: google
         - label: Okta
           value:
-            name: OAUTH_PROVIDER_NAME
-            value: okta
+            - name: OAUTH_PROVIDER_NAME
+              value: okta
       validation: required
 #  - slug: ssoEnabledDependencies
 #    path: open-webui.extraEnvVars
