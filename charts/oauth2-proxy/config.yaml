@@ -17,13 +17,8 @@ metadata:
 forms:
   - slug: default
     label: "oAuth2 Proxy configuration"
-<<<<<<< Updated upstream
-    description: ""
-
-=======
     description: "Something cool to say about it, maybe"
     
->>>>>>> Stashed changes
 variables:
   - slug: oidcConfig
     path: "oauth2-proxy.config.configFile"
