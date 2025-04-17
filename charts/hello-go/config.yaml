@@ -105,9 +105,13 @@ variables:
       id: oauthProviderName
       options:
         - label: Google
-          value: google
+          value:
+            name: OAUTH_PROVIDER_NAME
+            value: google
         - label: Okta
-          value: okta
+          value:
+            name: OAUTH_PROVIDER_NAME
+            value: okta
       validation: required
 #  - slug: ssoEnabledDependencies
 #    path: open-webui.extraEnvVars
