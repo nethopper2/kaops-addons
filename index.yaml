@@ -1762,6 +1762,16 @@ entries:
   metrics-exporter:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-04-17T10:06:08.436591509Z"
+    description: KAOPS addon to export PromQL queries results to block storage
+    digest: 33d8c5ad7a979f609c2e46aa181ec9723062634359074efeab3a5b0605ceaf58
+    name: metrics-exporter
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/metrics-exporter-0.1.6/metrics-exporter-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-04-17T09:56:47.037332525Z"
     description: KAOPS addon to export PromQL queries results to block storage
     digest: a71b6b0f4365c9f881ab7a8481fce5507d3e4f6b6fcfab4b7b373d0284f0669d
@@ -4698,4 +4708,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-17T09:56:47.03791152Z"
+generated: "2025-04-17T10:06:08.437153309Z"
