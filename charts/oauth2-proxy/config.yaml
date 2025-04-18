@@ -18,10 +18,10 @@ forms:
   - slug: default
     label: "oAuth2 Proxy configuration"
     description: "Something cool to say about it, maybe"
-    
+
 variables:
   - slug: oidcConfig
-    path: "oauth2-proxy.config.configFile"
+    path: "oauth2-configmap"
     forms: ["default"]
     ui:
       type: group
