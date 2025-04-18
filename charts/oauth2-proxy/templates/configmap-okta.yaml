@@ -6,7 +6,7 @@ metadata:
   labels:
     app: oauth2
 data:
-  oauth2_proxy.cfg: |
+  oauth2_proxy.cfg: |-
     clientId: {{.Values.oauth2Configmap.clientId}}
     clientSecret: {{.Values.oauth2Configmap.clientSecret}}
     cookieSecret: {{.Values.oauth2Configmap.cookieSecret}}
