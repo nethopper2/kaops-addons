@@ -29,9 +29,3 @@ data:
     upstream_timeout: {{.Values.oauth2Configmap.upstream_timeout}}
     reverse_proxy: {{.Values.oauth2Configmap.reverse_proxy}}
     scope: {{.Values.oauth2Configmap.scope}}
-
-# {{- if eq .Values.provider "okta" }}
-# {{end}}
-# {{- if eq .Values.provider "google" }}
-# {{end}}
-
