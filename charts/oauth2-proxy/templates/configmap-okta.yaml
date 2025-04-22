@@ -1,4 +1,3 @@
-# {{- if eq .Values.cluster.type "HUB_ACTIVE" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,25 +6,25 @@ metadata:
     app: oauth2
 data:
   oauth2_proxy.cfg: |-
-    clientId: {{.Values.oauth2Configmap.clientId}}
-    clientSecret: {{.Values.oauth2Configmap.clientSecret}}
-    cookieSecret: {{.Values.oauth2Configmap.cookieSecret}}
-    email_domains: {{.Values.oauth2Configmap.email_domains}}
-    oidc_issuer_url: {{.Values.oauth2Configmap.oidc_issuer_url}}
-    pass_access_token: {{.Values.oauth2Configmap.pass_access_token}}
-    pass_user_headers: {{.Values.oauth2Configmap.pass_user_headers}}
-    pass_host_header: {{.Values.oauth2Configmap.pass_host_header}}
-    pass_authorization_header: {{.Values.oauth2Configmap.pass_authorization_header}}
-    set_xauthrequest: {{.Values.oauth2Configmap.set_xauthrequest}}
-    skip_provider_button: {{.Values.oauth2Configmap.skip_provider_button}}
-    provider: {{.Values.oauth2Configmap.provider}}
-    provider_display_name: {{.Values.oauth2Configmap.provider_display_name}}
-    redirect_url: {{.Values.oauth2Configmap.redirect_url}}
-    upstreams: {{.Values.oauth2Configmap.upstreams}}
-    whitelist_domains: {{.Values.oauth2Configmap.whitelist_domains}}
-    cookie_domains: {{.Values.oauth2Configmap.cookie_domains}}
-    cookie_expire: {{.Values.oauth2Configmap.cookie_expire}}
-    cookie_name: {{.Values.oauth2Configmap.cookie_name}}
-    upstream_timeout: {{.Values.oauth2Configmap.upstream_timeout}}
-    reverse_proxy: {{.Values.oauth2Configmap.reverse_proxy}}
-    scope: {{.Values.oauth2Configmap.scope}}
+    clientId: "{{ .Values.oauth2Configmap.clientId }}"
+    clientSecret: "{{ .Values.oauth2Configmap.clientSecret }}"
+    cookieSecret: "{{ .Values.oauth2Configmap.cookieSecret }}"
+    email_domains: "{{ .Values.oauth2Configmap.email_domains }}"
+    oidc_issuer_url: "{{ .Values.oauth2Configmap.oidc_issuer_url }}"
+    pass_access_token: "{{ .Values.oauth2Configmap.pass_access_token }}"
+    pass_user_headers: "{{ .Values.oauth2Configmap.pass_user_headers }}"
+    pass_host_header: "{{ .Values.oauth2Configmap.pass_host_header }}"
+    pass_authorization_header: "{{ .Values.oauth2Configmap.pass_authorization_header }}"
+    set_xauthrequest: "{{ .Values.oauth2Configmap.set_xauthrequest }}"
+    skip_provider_button: "{{ .Values.oauth2Configmap.skip_provider_button }}"
+    provider: "{{ .Values.oauth2Configmap.provider }}"
+    provider_display_name: "{{ .Values.oauth2Configmap.provider_display_name }}"
+    redirect_url: "{{ .Values.oauth2Configmap.redirect_url }}"
+    upstreams: "{{ .Values.oauth2Configmap.upstreams | join \",\" }}"
+    whitelist_domains: "{{ .Values.oauth2Configmap.whitelist_domains | join \",\" }}"
+    cookie_domains: "{{ .Values.oauth2Configmap.cookie_domains | join \",\" }}"
+    cookie_expire: "{{ .Values.oauth2Configmap.cookie_expire }}"
+    cookie_name: "{{ .Values.oauth2Configmap.cookie_name }}"
+    upstream_timeout: "{{ .Values.oauth2Configmap.upstream_timeout }}"
+    reverse_proxy: "{{ .Values.oauth2Configmap.reverse_proxy }}"
+    scope: "{{ .Values.oauth2Configmap.scope }}"
