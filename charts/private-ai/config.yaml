@@ -83,7 +83,6 @@ baseFormData:
 
 variables:
   - slug: __baseFormDataExclusions
-    path: __baseFormDataExclusions
     forms: [default]
     ui:
       type: list
