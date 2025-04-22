@@ -2,8 +2,8 @@ metadata:
   slug: gdrive-gcs-sync
   name: GDrive GCS Sync
   description: Addon to sync files between Google Drive and Google Cloud Storage.
-  logoUrlDark: "https://en.wikipedia.org/wiki/Google_Drive#/media/File:Google_Drive_icon_(2020).svg"
-  logoUrlLight: "https://en.wikipedia.org/wiki/Google_Drive#/media/File:Google_Drive_icon_(2020).svg"
+  logoUrlDark: "https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png"
+  logoUrlLight: "https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png"
   detailUrl: "https://addons.kaops.net/gdrive-gcs-sync/"
   externalUrl: "https://kaops.net"
   installTargets:
