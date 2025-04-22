@@ -20,7 +20,7 @@ oauth2-proxy:
     tls:
       - hosts:
         secretName:
-oauth2Configmap:
+oauth2-configmap:
   clientId:
   clientSecret:
   cookieSecret:
