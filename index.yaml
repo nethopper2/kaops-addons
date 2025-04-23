@@ -1,5 +1,20 @@
 apiVersion: v1
 entries:
+  SingleSO:
+  - apiVersion: v2
+    appVersion: 0.5.16
+    created: "2025-04-23T15:11:32.764394499Z"
+    dependencies:
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.6
+    description: A Helm chart for Kubernetes
+    digest: 6a112859962c0c0df1351a6114a107389c722f45da2ad57a4f97067cc81ff49f
+    name: SingleSO
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/SingleSO-0.1.46/SingleSO-0.1.46.tgz
+    version: 0.1.46
   aws-eks-iac:
   - apiVersion: v2
     appVersion: 0.1.0
@@ -5213,4 +5228,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-23T14:26:14.608756133Z"
+generated: "2025-04-23T15:11:32.764886042Z"
