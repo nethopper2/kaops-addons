@@ -5213,6 +5213,21 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.84/private-ai-rag-0.1.84.tgz
     version: 0.1.84
+  singleSO:
+  - apiVersion: v2
+    appVersion: 0.5.16
+    created: "2025-04-23T15:47:16.657638971Z"
+    dependencies:
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.6
+    description: A Helm chart for Kubernetes
+    digest: b111ca0fdaef9095ec908c7445aa744fe2edfe6d209376b112dbf04e334e812f
+    name: singleSO
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/singleSO-0.1.47/singleSO-0.1.47.tgz
+    version: 0.1.47
   yahoo-webui:
   - apiVersion: v2
     appVersion: 5.13.0
@@ -5242,4 +5257,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-23T15:43:27.272738583Z"
+generated: "2025-04-23T15:47:16.658089574Z"
