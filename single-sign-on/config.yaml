@@ -1,6 +1,6 @@
 metadata:
-  slug: "sso"
-  name: "SSO"
+  slug: singleSO
+  name: SingleSO
   description: "oAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, Okta and others) to validate accounts by email, domain or group."
   categories: ["Security"]
   logoUrlDark: https://nh-addons.s3.us-east-1.amazonaws.com/oauth2-proxy/logo-dark.png
