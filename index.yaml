@@ -3,6 +3,20 @@ entries:
   SingleSO:
   - apiVersion: v2
     appVersion: 0.5.16
+    created: "2025-04-23T15:43:27.27217101Z"
+    dependencies:
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.6
+    description: A Helm chart for Kubernetes
+    digest: 966cd1687f10efb4811caa0dea9d94923bad38cc242fe3a9871855ce7583e6e8
+    name: SingleSO
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/SingleSO-0.1.47/SingleSO-0.1.47.tgz
+    version: 0.1.47
+  - apiVersion: v2
+    appVersion: 0.5.16
     created: "2025-04-23T15:11:32.764394499Z"
     dependencies:
     - name: oauth2-proxy
@@ -5228,4 +5242,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-23T15:11:32.764886042Z"
+generated: "2025-04-23T15:43:27.272738583Z"
