@@ -19,7 +19,7 @@ variables:
     path: "gdrive-gcs-sync.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64"
     forms: [default]
     ui:
-      type: text
+      type: secret
       label: Google Application Credentials
       help: Base64 encoded Google Application Credentials JSON file.
       validation: base64
