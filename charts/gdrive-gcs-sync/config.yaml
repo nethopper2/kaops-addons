@@ -47,7 +47,13 @@ variables:
       label: GDrive Folder ID
       help: ID of the Google Drive folder to sync.
       validation: required
-
+  - slug: ALLOWED_EXTENSIONS
+    path: "gdrive-gcs-sync.env.ALLOWED_EXTENSIONS"
+    forms: [default]
+    ui:
+      type: text
+      label: Allowed Extensions
+      help: Comma separated list of allowed file extensions to sync. No dots.
 
   # - slug: test
   #   path: "test"
