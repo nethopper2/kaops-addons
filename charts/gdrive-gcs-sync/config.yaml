@@ -16,7 +16,7 @@ forms:
 
 variables:
   - slug: googleApplicationCredentialsBase64
-    path: gdriveGcsSync.googleApplicationCredentialsBase64
+    path: gdrive-gcs-sync.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64
     forms: [default]
     ui:
       type: text
@@ -25,7 +25,7 @@ variables:
       help: Base64 encoded Google Application Credentials JSON file.
       validation: base64
   - slug: gcsBucketName
-    path: gdriveGcsSync.gcsBucketName
+    path: gdrive-gcs-sync.env.GCS_BUCKET_NAME
     forms: [default]
     ui:
       type: text
@@ -34,7 +34,7 @@ variables:
       help: Name of the GCS bucket sync target.
       validation: required
   - slug: apiScopes
-    path: gdriveGcsSync.apiScopes
+    path: gdrive-gcs-sync.env.GOOGLE_API_SCOPES
     forms: [default]
     ui:
       type: text
@@ -43,7 +43,7 @@ variables:
       help: Comma separated list of API scopes to request.
       validation: required
   - slug: gdriveFolderId
-    path: gdriveGcsSync.gdriveFolderId
+    path: gdrive-gcs-sync.env.DRIVE_FOLDER_ID
     forms: [default]
     ui:
       type: text
