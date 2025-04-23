@@ -21,7 +21,6 @@ variables:
     ui:
       type: text
       label: Google Application Credentials
-      name: googleApplicationCredentialsBase64
       help: Base64 encoded Google Application Credentials JSON file.
       validation: base64
   - slug: GCS_BUCKET_NAME
@@ -30,7 +29,6 @@ variables:
     ui:
       type: text
       label: GCS Bucket Name
-      name: gcsBucketName
       help: Name of the GCS bucket sync target.
       validation: required
   - slug: GOOGLE_API_SCOPES
@@ -39,7 +37,6 @@ variables:
     ui:
       type: text
       label: API Scopes
-      name: apiScopes
       help: Comma separated list of API scopes to request.
       validation: required
   - slug: DRIVE_FOLDER_ID
@@ -48,7 +45,6 @@ variables:
     ui:
       type: text
       label: GDrive Folder ID
-      name: gdriveFolderId
       help: ID of the Google Drive folder to sync.
       validation: required
 
