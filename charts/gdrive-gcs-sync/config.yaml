@@ -1,0 +1,64 @@
+metadata:
+  slug: gdrive-gcs-sync
+  name: GDrive GCS Sync
+  description: Addon to sync files between Google Drive and Google Cloud Storage.
+  logoUrlDark: "https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png"
+  logoUrlLight: "https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png"
+  detailUrl: "https://addons.kaops.net/gdrive-gcs-sync/"
+  externalUrl: "https://kaops.net"
+  installTargets:
+    infoMessage: Sync files between Google Drive and Google Cloud Storage
+  categories: ['Playground']
+
+forms:
+  - slug: default
+    label: Configuration
+
+variables:
+  - slug: googleApplicationCredentialsBase64
+    path: gdriveGcsSync.googleApplicationCredentialsBase64
+    forms: [default]
+    ui:
+      type: text
+      label: Google Application Credentials
+      name: googleApplicationCredentialsBase64
+      help: Base64 encoded Google Application Credentials JSON file.
+      validation: base64
+  - slug: gcsBucketName
+    path: gdriveGcsSync.gcsBucketName
+    forms: [default]
+    ui:
+      type: text
+      label: GCS Bucket Name
+      name: gcsBucketName
+      help: Name of the GCS bucket sync target.
+      validation: required
+  - slug: apiScopes
+    path: gdriveGcsSync.apiScopes
+    forms: [default]
+    ui:
+      type: text
+      label: API Scopes
+      name: apiScopes
+      help: Comma separated list of API scopes to request.
+      validation: required
+  - slug: gdriveFolderId
+    path: gdriveGcsSync.gdriveFolderId
+    forms: [default]
+    ui:
+      type: text
+      label: GDrive Folder ID
+      name: gdriveFolderId
+      help: ID of the Google Drive folder to sync.
+      validation: required
+
+
+  # - slug: test
+  #   path: "test"
+  #   forms: ["default"]
+  #   ui:
+  #     type: group
+  #     children:
+  #       - type: text
+  #         label: test
+  #         name: test
