@@ -1,0 +1,29 @@
+metadata:
+  slug: n8n-automation
+  name: n8n-automation
+  description: "n8n is a free and open source workflow automation tool that enables you to connect various applications and services to automate tasks and processes."
+  logoUrlDark: "https://avatars.githubusercontent.com/u/45487711?s=48&v=4"
+  logoUrlLight: "https://avatars.githubusercontent.com/u/45487711?s=48&v=4"
+  detailUrl: "https://addons.kaops.net/n8n/"
+  externalUrl: "https://n8n.io"
+  installTargets:
+    infoMessage: "Automate your workflows with n8n"
+  categories: ['Automation']
+
+forms:
+  - slug: default
+    label: Configuration
+
+variables:
+  - slug: test
+    path: "n8n-automation.env.test"
+    forms: [default]
+    ui:
+      type: text
+      label: Google Application Credentials
+      help: Base64 encoded Google Application Credentials JSON file.
+      validation: base64
+
+system:
+  - path: "ingress.host"
+    value: "n8n.${system.hubCluster.ingressHostname}"
