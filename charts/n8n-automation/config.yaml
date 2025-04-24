@@ -14,3 +14,12 @@ forms:
   - slug: default
     label: Configuration
 
+variables:
+  - slug: test
+    path: "n8n-automation.env.test"
+    forms: [default]
+    ui:
+      type: text
+      label: Google Application Credentials
+      help: Base64 encoded Google Application Credentials JSON file.
+      validation: base64
