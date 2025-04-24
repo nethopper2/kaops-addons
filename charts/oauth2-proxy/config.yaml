@@ -1,6 +1,6 @@
 metadata:
-  slug: "oauth2-proxy"
-  name: "Single Sign On"
+  slug: singleSO
+  name: singleSO
   description: "oAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, Okta and others) to validate accounts by email, domain or group."
   categories: ["Security"]
   logoUrlDark: https://nh-addons.s3.us-east-1.amazonaws.com/oauth2-proxy/logo-dark.png
@@ -8,7 +8,7 @@ metadata:
   detailUrl: "https://addons.kaops.net/oauth2-proxy/"
   externalUrl: "https://oauth2-proxy.github.io/oauth2-proxy/"
   isProduction: false
-  isStaging: true
+  isStaging: false
   installTargets:
     hub: true
     hubRequired: false
@@ -17,79 +17,38 @@ metadata:
 forms:
   - slug: default
     label: "oAuth2 Proxy configuration"
-    description: "Something cool to say about it, maybe"
+    description: ""
 
 variables:
-  - slug: oidcConfig
-    path: "oauth2-configmap"
+  - slug: "clientId"
+    path: "oauth2-proxy.config.clientID"
     forms: ["default"]
     ui:
-      type: group
-      children:
-        - type: text
-          label: Oauth Client ID
-          name: clientId
-        - type: password
-          label: Oauth Client Secret
-          name: clientSecret
-        - type: password
-          label: Oauth Cookie Secret
-          name: cookieSecret
-        - type: text
-          label: Email Domains
-          name: email_domains
-        - type: url
-          label: OIDC Issuer URL
-          name: oidc_issuer_url
-        - type: toggle
-          label: Pass Access Token
-          name: pass_access_token
-        - type: toggle
-          label: Pass User Headers
-          name: pass_user_headers
-        - type: toggle
-          label: Pass Host Header
-          name: pass_host_header
-        - type: toggle
-          label: Pass Authorization Header
-          name: pass_authorization_header
-        - type: text
-          label: Set XAuthRequest
-          name: set_xauthrequest
-        - type: text
-          label: Skip Provider Button
-          name: skip_provider_button
-        - type: text
-          label: Provider
-          name: provider
-        - type: text
-          label: Provider Display Name
-          name: provider_display_name
-        - type: url
-          label: Redirect URL
-          name: redirect_url
-        - type: text
-          label: Upstreams
-          name: upstreams
-        - type: text
-          label: Whitelist Domains
-          name: whitelist_domains
-        - type: text
-          label: Cookie Domains
-          name: cookie_domains
-        - type: text
-          label: Cookie Expire
-          name: cookie_expire
-        - type: number
-          label: Upstream Timeout
-          name: upstream_timeout
-          min: 0
-        - type: text
-          label: Reverse Proxy
-          name: reverse_proxy
-        - type: text
-          label: Scope
-          name: scope
+      type: "text"
+      label: "Oauth Client ID"
+      help: A public identifier for applications
+  - slug: "clientSecret"
+    path: "oauth2-proxy.config.clientSecret"
+    forms: ["default"]
+    ui:
+      type: "password" #TODO: Change to secret
+      label: "Oauth Client Secret"
+      help: "A secret known only to the application and the authorization server"
+  - slug: "cookieSecret"
+    path: "oauth2-proxy.config.cookieSecret"
+    forms: ["default"]
+    ui:
+      type: "password" #TODO: Change to secret
+      label: "Oauth Cookie Secret"
+      help: "A secret used to encrypt cookies. Reference: cookieSecrethttps://oauth2-proxy.github.io/oauth2-proxy/configuration/overview?_highlight=cookiesecret#generating-a-cookie-secret"
+  - slug: "oidcConfig"
+    path: "oauth2-proxy.config.configFile"
+    forms: ["default"]
+    ui:
+      type: "textarea"
+      value: "email_domains = \noidc_issuer_url = \npass_access_token = \npass_user_headers = \npass_host_header = \npass_authorization_header = \nset_xauthrequest = \nskip_provider_button = \nprovider = \nprovider_display_name = \nredirect_url = \nupstreams = \nwhitelist_domains = \ncookie_domains = \ncookie_expire = \nupstream_timeout = \nreverse_proxy = \nscope ="
+      label: "OIDC Configuration"
+      help: "Reference: https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview"
 
 system:
   - path: "oauth2-proxy.ingress.hosts[0]"
@@ -105,3 +64,110 @@ output:
     value: "https://oauth.${system.hubCluster.ingressHostname}"
     type: "url"
     slug: default
+# metadata:
+#   slug: "oauth2-proxy"
+#   name: "Single Sign On"
+#   description: "oAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, Okta and others) to validate accounts by email, domain or group."
+#   categories: ["Security"]
+#   logoUrlDark: https://nh-addons.s3.us-east-1.amazonaws.com/oauth2-proxy/logo-dark.png
+#   logoUrlLight: https://nh-addons.s3.us-east-1.amazonaws.com/oauth2-proxy/logo.png
+#   detailUrl: "https://addons.kaops.net/oauth2-proxy/"
+#   externalUrl: "https://oauth2-proxy.github.io/oauth2-proxy/"
+#   isProduction: false
+#   isStaging: true
+#   installTargets:
+#     hub: true
+#     hubRequired: false
+#     edge: false
+
+# forms:
+#   - slug: default
+#     label: "oAuth2 Proxy configuration"
+#     description: "Something cool to say about it, maybe"
+
+# variables:
+#   - slug: oidcConfig
+#     path: "oauth2-configmap"
+#     forms: ["default"]
+#     ui:
+#       type: group
+#       children:
+#         - type: text
+#           label: Oauth Client ID
+#           name: clientId
+#         - type: password
+#           label: Oauth Client Secret
+#           name: clientSecret
+#         - type: password
+#           label: Oauth Cookie Secret
+#           name: cookieSecret
+#         - type: text
+#           label: Email Domains
+#           name: email_domains
+#         - type: url
+#           label: OIDC Issuer URL
+#           name: oidc_issuer_url
+#         - type: toggle
+#           label: Pass Access Token
+#           name: pass_access_token
+#         - type: toggle
+#           label: Pass User Headers
+#           name: pass_user_headers
+#         - type: toggle
+#           label: Pass Host Header
+#           name: pass_host_header
+#         - type: toggle
+#           label: Pass Authorization Header
+#           name: pass_authorization_header
+#         - type: text
+#           label: Set XAuthRequest
+#           name: set_xauthrequest
+#         - type: text
+#           label: Skip Provider Button
+#           name: skip_provider_button
+#         - type: text
+#           label: Provider
+#           name: provider
+#         - type: text
+#           label: Provider Display Name
+#           name: provider_display_name
+#         - type: url
+#           label: Redirect URL
+#           name: redirect_url
+#         - type: text
+#           label: Upstreams
+#           name: upstreams
+#         - type: text
+#           label: Whitelist Domains
+#           name: whitelist_domains
+#         - type: text
+#           label: Cookie Domains
+#           name: cookie_domains
+#         - type: text
+#           label: Cookie Expire
+#           name: cookie_expire
+#         - type: number
+#           label: Upstream Timeout
+#           name: upstream_timeout
+#           min: 0
+#         - type: text
+#           label: Reverse Proxy
+#           name: reverse_proxy
+#         - type: text
+#           label: Scope
+#           name: scope
+
+# system:
+#   - path: "oauth2-proxy.ingress.hosts[0]"
+#     value: "oauth.${system.hubCluster.ingressHostname}"
+#   - path: "oauth2-proxy.ingress.tls[0].hosts[0]"
+#     value: "oauth.${system.hubCluster.ingressHostname}"
+#   - path: "oauth2-proxy.ingress.tls[0].secretName"
+#     value: "oauth-tls"
+
+# output:
+#   - name: Test
+#     description: "test"
+#     value: "https://oauth.${system.hubCluster.ingressHostname}"
+#     type: "url"
+#     slug: default
