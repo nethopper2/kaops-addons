@@ -2196,6 +2196,21 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/metrics-exporter-0.1.0/metrics-exporter-0.1.0.tgz
     version: 0.1.0
+  n8n-automation:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-04-24T12:26:33.011939456Z"
+    dependencies:
+    - name: n8n
+      repository: oci://8gears.container-registry.com/library
+      version: 1.0.6
+    description: A Helm chart for Kubernetes
+    digest: 9ff30b4041f069b04893182ee81d5483ff67256e85a1993a1b50c50b014839a6
+    name: n8n-automation
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/n8n-automation-0.1.0/n8n-automation-0.1.0.tgz
+    version: 0.1.0
   oatuh2-proxy:
   - apiVersion: v2
     appVersion: 0.5.16
@@ -5271,4 +5286,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-04-23T22:09:03.386625422Z"
+generated: "2025-04-24T12:26:33.012527133Z"
