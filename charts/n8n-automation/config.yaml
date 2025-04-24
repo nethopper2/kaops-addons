@@ -26,4 +26,4 @@ variables:
 
 system:
   - path: "ingress.host"
-    value: "chat.${system.hubCluster.ingressHostname}"
+    value: "n8n.${system.hubCluster.ingressHostname}"
