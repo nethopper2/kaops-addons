@@ -23,3 +23,7 @@ variables:
       label: Google Application Credentials
       help: Base64 encoded Google Application Credentials JSON file.
       validation: base64
+
+system:
+  - path: "ingress.host"
+    value: "chat.${system.hubCluster.ingressHostname}"
