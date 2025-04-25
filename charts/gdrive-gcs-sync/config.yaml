@@ -15,8 +15,8 @@ forms:
     label: Configuration
 
 variables:
-  - slug: GOOGLE_APPLICATION_CREDENTIALS_BASE64
-    path: "gdrive-gcs-sync.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64"
+  - slug: GOOGLE_APPLICATION_CREDENTIALS_SECRET_REF
+    path: "gdrive-gcs-sync.env.GOOGLE_APPLICATION_CREDENTIALS_SECRET_REF"
     forms: [default]
     ui:
       type: secret

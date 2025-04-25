@@ -25,5 +25,5 @@ appVersion: "1.0.0"
 
 dependencies:
   - name: gdrive-gcs-sync
-    version: 0.1.8
+    version: 0.1.9
     repository: https://nethopper2.github.io/helm-charts/
