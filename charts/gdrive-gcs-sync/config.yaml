@@ -54,7 +54,7 @@ variables:
     ui:
       type: text
       label: Allowed Extensions
-      validation: "matches:/^([a-zA-Z0-9]+(,\s*[a-zA-Z0-9]+\s*)*)?$/"
+      validation: "matches:/^([a-zA-Z0-9]+(,\\s*[a-zA-Z0-9]+\\s*)*)?$/"
       validation-visibility: "live"
       validation-messages: 
         - fileExtensions: 'Invalid format. Use comma-separated extensions like: jpg,png'
