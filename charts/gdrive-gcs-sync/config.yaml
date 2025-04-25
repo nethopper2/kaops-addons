@@ -22,7 +22,7 @@ variables:
       type: secret
       label: Google Application Credentials
       help: Base64 encoded Google Application Credentials JSON file.
-      validation: base64
+      validation: required
   - slug: DRIVE_FOLDER_ID
     path: "gdrive-gcs-sync.env.DRIVE_FOLDER_ID"
     forms: [default]
@@ -54,8 +54,4 @@ variables:
     ui:
       type: text
       label: Allowed Extensions
-      validation: "matches:/^([a-zA-Z0-9]+(,\\s*[a-zA-Z0-9]+\\s*)*)?$/"
-      validation-visibility: "live"
-      validation-messages: 
-        - fileExtensions: 'Invalid format. Use comma-separated extensions like: jpg,png'
       help: Comma separated list of allowed file extensions to sync. No dots.
