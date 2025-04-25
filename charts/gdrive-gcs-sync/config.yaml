@@ -23,12 +23,20 @@ variables:
       label: Google Application Credentials
       help: Base64 encoded Google Application Credentials JSON file.
       validation: base64
+  - slug: DRIVE_FOLDER_ID
+    path: "gdrive-gcs-sync.env.DRIVE_FOLDER_ID"
+    forms: [default]
+    ui:
+      type: text
+      label: "Source: GDrive Folder ID"
+      help: ID of the Google Drive folder to sync.
+      validation: required
   - slug: GCS_BUCKET_NAME
     path: "gdrive-gcs-sync.env.GCS_BUCKET_NAME"
     forms: [default]
     ui:
       type: text
-      label: GCS Bucket Name
+      label: "Destination: GCS Bucket Name"
       help: Name of the GCS bucket sync target.
       validation: required
   - slug: GOOGLE_API_SCOPES
@@ -37,15 +45,8 @@ variables:
     ui:
       type: text
       label: API Scopes
+      value: "https://www.googleapis.com/auth/drive.readonly"
       help: Comma separated list of API scopes to request.
-      validation: required
-  - slug: DRIVE_FOLDER_ID
-    path: "gdrive-gcs-sync.env.DRIVE_FOLDER_ID"
-    forms: [default]
-    ui:
-      type: text
-      label: GDrive Folder ID
-      help: ID of the Google Drive folder to sync.
       validation: required
   - slug: ALLOWED_EXTENSIONS
     path: "gdrive-gcs-sync.env.ALLOWED_EXTENSIONS"
@@ -53,14 +54,8 @@ variables:
     ui:
       type: text
       label: Allowed Extensions
+      validation: "matches:/^([a-zA-Z0-9]+(,\s*[a-zA-Z0-9]+\s*)*)?$/"
+      validation-visibility: "live"
+      validation-messages: 
+        - fileExtensions: 'Invalid format. Use comma-separated extensions like: jpg,png'
       help: Comma separated list of allowed file extensions to sync. No dots.
-
-  # - slug: test
-  #   path: "test"
-  #   forms: ["default"]
-  #   ui:
-  #     type: group
-  #     children:
-  #       - type: text
-  #         label: test
-  #         name: test
