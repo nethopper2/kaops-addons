@@ -12,6 +12,7 @@ metadata:
     hub: true
     hubRequired: true
     edge: false
+  minimumAgentVersion: v6.5.1
 
 forms: 
   - slug: default
