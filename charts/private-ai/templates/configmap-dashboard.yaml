@@ -9,4 +9,3 @@ metadata:
 data:
   dashboard1.json: |-
 {{ .Files.Get "dashboards/22867_rev2.json" | indent 4}}
-{{- end }}
