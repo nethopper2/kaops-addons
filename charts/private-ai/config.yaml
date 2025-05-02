@@ -388,6 +388,11 @@ system:
     value: "storage.${system.hubCluster.ingressHostname}" 
   - path: "private-ai-storage-ui.ingress.tls[0].hosts[0]"
     value: "storage.${system.hubCluster.ingressHostname}" 
+  - path: "private-ai-storage-ui.ingress.hosts[0].paths[0].path"
+    value: "/" 
+  - path: "private-ai-storage-ui.ingress.hosts[0].paths[0].pathType"
+    value: "ImplementationSpecific" 
+
 
 output:
   - name: Open Web UI URL
