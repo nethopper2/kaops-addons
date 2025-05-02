@@ -392,7 +392,8 @@ system:
     value: "/" 
   - path: "private-ai-storage-ui.ingress.hosts[0].paths[0].pathType"
     value: "ImplementationSpecific" 
-
+  - path: "private-ai-storage-ui.ingress.tls[0].secretName"
+    value: "private-ai-storage-ui-tls" 
 
 output:
   - name: Open Web UI URL
