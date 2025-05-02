@@ -3615,6 +3615,23 @@ entries:
   private-ai:
   - apiVersion: v2
     appVersion: 5.26.0
+    created: "2025-05-02T19:10:17.972639811Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: private-ai-storage-ui
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.4
+    description: KAOPS addon to install private-ai
+    digest: 6102fe4d552d2b08448ecd11dee7384dc390c964541ee44474a3b135b0623468
+    name: private-ai
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-0.1.99/private-ai-0.1.99.tgz
+    version: 0.1.99
+  - apiVersion: v2
+    appVersion: 5.26.0
     created: "2025-05-02T15:20:14.105252697Z"
     dependencies:
     - name: open-webui
@@ -5704,4 +5721,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-02T15:20:14.105927297Z"
+generated: "2025-05-02T19:10:17.973332321Z"
