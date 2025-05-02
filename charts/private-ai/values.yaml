@@ -50,12 +50,13 @@ open-webui:
       value: dev
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list
+sharedConfigMap: shared-config
 private-ai-storage-ui:
   image:
     repository: nethopper/private-ai-storage-ui
     tag: 0.1.2
     pullPolicy: Always
-  sharedConfigMap: shared-config
+  # sharedConfigMap: shared-config
   ingress:
     enabled: true
     annotations:
