@@ -384,6 +384,10 @@ system:
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
   - path: "ingress.oauth2Proxy.authResponseHeaders"
     value: "authorization"
+  - path: "private-ai-storage-ui.ingress.hosts[0].host"
+    value: "storage.${system.hubCluster.ingressHostname}" 
+  - path: "private-ai-storage-ui.ingress.tls[0].hosts[0]"
+    value: "storage.${system.hubCluster.ingressHostname}" 
 
 output:
   - name: Open Web UI URL
