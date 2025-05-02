@@ -55,6 +55,7 @@ private-ai-storage-ui:
     repository: nethopper/private-ai-storage-ui
     tag: 0.1.2
     pullPolicy: Always
+  sharedConfigMap: shared-config
   ingress:
     enabled: true
     annotations:
