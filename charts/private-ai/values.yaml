@@ -50,7 +50,7 @@ open-webui:
       value: dev
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list
-sharedConfigMap: shared-config
+# sharedConfigMap: shared-config
 private-ai-storage-ui:
   sharedConfigMap: shared-config
   image:
