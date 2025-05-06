@@ -50,13 +50,12 @@ open-webui:
       value: dev
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list
-private-ai-storage-ui:
+private-ai-rest:
   sharedConfigMap: shared-config
   image:
-    repository: nethopper/private-ai-storage-ui
+    repository: nethopper/private-ai-rest
     tag: 0.1.2
     pullPolicy: Always
-  # sharedConfigMap: shared-config
   ingress:
     enabled: true
     annotations:
@@ -73,5 +72,29 @@ private-ai-storage-ui:
           - path: /
             pathType: ImplementationSpecific
     tls:
-      - secretName: private-ai-storage-ui-tls
+      - secretName: private-ai-rest-tls
         hosts:
+# private-ai-storage-ui:
+#   sharedConfigMap: shared-config
+#   image:
+#     repository: nethopper/private-ai-storage-ui
+#     tag: 0.1.2
+#     pullPolicy: Always
+#   ingress:
+#     enabled: true
+#     annotations:
+#       cert-manager.io/cluster-issuer: letsencrypt-prod
+#       kubernetes.io/ingress.class: nginx
+#       kubernetes.io/tls-acme: "true"
+#       nginx.ingress.kubernetes.io/backend-protocol: http
+#       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+#       nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#       nginx.ingress.kubernetes.io/tls-acme: "true"
+#     hosts:
+#       - host: 
+#         paths: 
+#           - path: /
+#             pathType: ImplementationSpecific
+#     tls:
+#       - secretName: private-ai-storage-ui-tls
+#         hosts:
