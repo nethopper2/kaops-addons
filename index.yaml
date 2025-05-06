@@ -3615,6 +3615,23 @@ entries:
   private-ai:
   - apiVersion: v2
     appVersion: 5.26.0
+    created: "2025-05-06T20:53:06.331430237Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.0
+    description: KAOPS addon to install private-ai
+    digest: e33b71e545253d283dac2cd98e31dc504961a5256cff9fc9093d26fef6c4665b
+    name: private-ai
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-0.1.110/private-ai-0.1.110.tgz
+    version: 0.1.110
+  - apiVersion: v2
+    appVersion: 5.26.0
     created: "2025-05-05T16:08:53.029311393Z"
     dependencies:
     - name: open-webui
@@ -5778,6 +5795,29 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: 5.25.0
+    created: "2025-05-06T20:53:06.48688191Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.0
+    description: KAOPS addon to install private-ai
+    digest: 6ef9be9a4e5209ee6d26fcc618687df06425aaf3a45fc8e70035a27a3f58ee9c
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.90/private-ai-rag-0.1.90.tgz
+    version: 0.1.90
+  - apiVersion: v2
+    appVersion: 5.25.0
     created: "2025-05-06T16:38:20.330453302Z"
     dependencies:
     - name: open-webui
@@ -5960,4 +6000,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-06T16:38:20.330923095Z"
+generated: "2025-05-06T20:53:06.487539131Z"
