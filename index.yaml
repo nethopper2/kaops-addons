@@ -548,6 +548,20 @@ entries:
   gdrive-gcs-sync:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-05-07T21:21:47.07903532Z"
+    dependencies:
+    - name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.11
+    description: A Helm chart for Kubernetes
+    digest: 91811cc39a9c642808494b5f446e40c80257e33fcbf47dc7ec19cb1476016cc2
+    name: gdrive-gcs-sync
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/gdrive-gcs-sync-0.1.22/gdrive-gcs-sync-0.1.22.tgz
+    version: 0.1.22
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-04-29T03:44:15.560098067Z"
     dependencies:
     - name: gdrive-gcs-sync
@@ -6290,6 +6304,20 @@ entries:
   singleSO:
   - apiVersion: v2
     appVersion: 0.5.16
+    created: "2025-05-07T21:21:47.229067887Z"
+    dependencies:
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.6
+    description: A Helm chart for Kubernetes
+    digest: 82427fa8f1593a649b442036ee4cb29d6031eabb62979f66627961708e5d5119
+    name: singleSO
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/singleSO-0.1.49/singleSO-0.1.49.tgz
+    version: 0.1.49
+  - apiVersion: v2
+    appVersion: 0.5.16
     created: "2025-04-24T12:33:58.698173656Z"
     dependencies:
     - name: oauth2-proxy
@@ -6345,4 +6373,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-07T20:36:04.841737112Z"
+generated: "2025-05-07T21:21:47.229779568Z"
