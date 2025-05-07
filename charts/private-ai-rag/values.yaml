@@ -51,7 +51,7 @@ open-webui:
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list
 private-ai-rest:
-  sharedConfigMap: shared-config
+  sharedConfigMap: shared-rag-configmap
   image:
     repository: nethopper/private-ai-rest
     tag: 0.1.0
@@ -74,3 +74,9 @@ private-ai-rest:
     tls:
       - secretName: private-ai-rest-tls
         hosts:
+rag:
+  gcsBucketName: "nh-corporate-brain"
+  postgressHost: "nh-postgresql"
+
+postInstall:
+  chosenPostInstallOptions: ""
