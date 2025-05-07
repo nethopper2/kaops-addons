@@ -77,7 +77,7 @@ private-ai-rest:
 rag:
   gcsBucketName: "nh-corporate-brain"
   postgressHost: "nh-postgresql"
-  allowedOrigins: "https://*.trudog.kaops.dev"
+  allowedOrigin: "https://*.trudog.kaops.dev"
 
 postInstall:
   chosenPostInstallOptions: ""
