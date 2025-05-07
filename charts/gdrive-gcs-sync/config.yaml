@@ -6,6 +6,7 @@ metadata:
   logoUrlLight: "https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png"
   detailUrl: "https://addons.kaops.net/gdrive-gcs-sync/"
   externalUrl: "https://kaops.net"
+  isProduction: true
   installTargets:
     infoMessage: Sync files between Google Drive and Google Cloud Storage
   categories: ['Playground']
