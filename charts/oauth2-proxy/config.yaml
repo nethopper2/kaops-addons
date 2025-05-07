@@ -9,6 +9,7 @@ metadata:
   externalUrl: "https://oauth2-proxy.github.io/oauth2-proxy/"
   isProduction: false
   isStaging: true
+  isProduction: true
   installTargets:
     hub: true
     hubRequired: false
