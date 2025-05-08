@@ -260,7 +260,7 @@ variables:
             The installer will not create arbitrary Knowledge Collections, User Prompts, and Group 
             definitions.
 
-        # NOTE: The remaining options are currenlty not used. They are the original form ideas that did not make MVP.
+        # NOTE: The remaining options are currently not used. They are the original form ideas that did not make MVP.
         - if: "$get(postInstallOptions).value == 'not-used-disabled'"
           type: checkbox
           name: groups

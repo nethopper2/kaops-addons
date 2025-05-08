@@ -51,7 +51,7 @@ open-webui:
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list
 private-ai-rest:
-  sharedConfigMap: shared-rag-configmap
+  sharedConfigMap: shared-configmap-rag
   image:
     repository: nethopper/private-ai-rest
     tag: typed
@@ -67,8 +67,8 @@ private-ai-rest:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/tls-acme: "true"
     hosts:
-      - host: 
-        paths: 
+      - host:
+        paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
@@ -76,7 +76,7 @@ private-ai-rest:
         hosts:
 rag:
   gcsBucketName: "nh-corporate-brain"
-  postgressHost: "nh-postgresql"
+  postgresHost: "nh-postgresql"
   allowedOrigin: "https://*.trudog.kaops.dev"
 
 postInstall:
