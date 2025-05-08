@@ -442,6 +442,11 @@ system:
     value: "ImplementationSpecific"
   - path: "private-ai-rest.ingress.tls[0].secretName"
     value: "private-ai-rest-tls"
+#  - path: "rag.allowedOrigin"
+#    value: "chat.${system.hubCluster.ingressHostname}"
+#  - path: "rag.apiBaseUrl"
+#    value: "storage.${system.hubCluster.ingressHostname}"
+
 
 output:
   - name: Open Web UI URL

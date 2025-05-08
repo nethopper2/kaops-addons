@@ -75,9 +75,11 @@ private-ai-rest:
       - secretName: private-ai-rest-tls
         hosts:
 rag:
-  gcsBucketName: "nh-corporate-brain"
+  # gcsBucketName: "nh-corporate-brain"
   postgresHost: "nh-postgresql"
-  allowedOrigin: "https://*.trudog.kaops.dev"
+  allowedOrigin:
+  # allowedOrigin: "https://*.trudog.kaops.dev"
+  apiBaseUrl:
 
 postInstall:
   chosenPostInstallOptions: ""

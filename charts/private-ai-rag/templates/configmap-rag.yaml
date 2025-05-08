@@ -7,6 +7,8 @@ metadata:
 data:
   GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName | quote }} # get from private-ai user input
   POSTGRESSQL_HOST: {{ .Values.rag.postgressHost | quote }} # derived by BE
-  ALLOWED_ORIGIN: {{ .Values.rag.allowedOrigin | quote }} # derived by BE
+  ALLOWED_ORIGIN: {{ .Values.ingress.host | quote }}
+  NH_API_BASE_URL: {{ index .Values "private-ai-rest" | quote }}
+  # ALLOWED_ORIGIN: {{ .Values.rag.allowedOrigin | quote }} # derived by BE
   # DATABASE_HOST: {{ .Values.rag.databaseHost | quote }} # derived by BE ??? needed
   # NH_API_BASE_URL: {{ .Values.rag.nhApiBaseUrl | quote }} # derived from convention. BE?
