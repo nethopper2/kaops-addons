@@ -50,3 +50,34 @@ open-webui:
       value: dev
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list
+private-ai-rest:
+  sharedConfigMap: shared-rag-configmap
+  image:
+    repository: nethopper/private-ai-rest
+    tag: typed
+    pullPolicy: Always
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: http
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: 
+        paths: 
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: private-ai-rest-tls
+        hosts:
+rag:
+  gcsBucketName: "nh-corporate-brain"
+  postgressHost: "nh-postgresql"
+  allowedOrigin: "https://*.trudog.kaops.dev"
+
+postInstall:
+  chosenPostInstallOptions: ""
