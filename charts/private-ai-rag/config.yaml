@@ -432,6 +432,16 @@ system:
     value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
   - path: "ingress.oauth2Proxy.authResponseHeaders"
     value: "authorization"
+  - path: "private-ai-rest.ingress.hosts[0].host"
+    value: "storage.${system.hubCluster.ingressHostname}"
+  - path: "private-ai-rest.ingress.tls[0].hosts[0]"
+    value: "storage.${system.hubCluster.ingressHostname}"
+  - path: "private-ai-rest.ingress.hosts[0].paths[0].path"
+    value: "/"
+  - path: "private-ai-rest.ingress.hosts[0].paths[0].pathType"
+    value: "ImplementationSpecific"
+  - path: "private-ai-rest.ingress.tls[0].secretName"
+    value: "private-ai-rest-tls"
 
 output:
   - name: Open Web UI URL
