@@ -7,7 +7,6 @@ metadata:
   logoUrlLight: https://nh-addons.s3.us-east-1.amazonaws.com/oauth2-proxy/logo.png
   detailUrl: "https://addons.kaops.net/oauth2-proxy/"
   externalUrl: "https://oauth2-proxy.github.io/oauth2-proxy/"
-  isProduction: false
   isStaging: true
   isProduction: true
   installTargets:
