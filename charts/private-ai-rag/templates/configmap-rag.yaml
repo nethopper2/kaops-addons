@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
 data:
-  POSTGRESSQL_HOST: {{ .Values.rag.postgressHost }} 
+  POSTGRES_HOST: {{ .Values.rag.postgressHost }} 
   GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName }} 
   ALLOWED_CORS_ORIGIN: "https://{{ .Values.ingress.host }}"
   NH_API_BASE_URL: {{ .Values.rag.baseUrl }}
