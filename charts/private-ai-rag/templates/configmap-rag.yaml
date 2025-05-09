@@ -5,12 +5,11 @@ metadata:
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
 data:
-  POSTGRES_HOST: {{ .Values.rag.postgressHost }} 
-  GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName }} 
-  ALLOWED_CORS_ORIGIN: "https://{{ .Values.ingress.host }}"
-  NH_API_BASE_URL: {{ .Values.rag.baseUrl }}
-  {{- if .Values.gdriveGcsSync.enabled }}
-  GOOGLE_DRIVE_FOLDER_ID: {{ .Values.rag.googleDriveFolderId }}
-  GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes }}
-  GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions }}
-  {{- end }}
+  POSTGRES_HOST: {{ .Values.rag.postgresHost | quote }}
+  GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName | quote }}
+  ALLOWED_CORS_ORIGIN: "https://{{ .Values.ingress.host | quote }}"
+  NH_API_BASE_URL: {{ .Values.rag.apiBaseUrl | quote }}
+  GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes | quote }}
+  GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions | quote }}
+  #DATABASE_URL: Is this elsewhere? (same as open webui)
+  #JWT_SECRET: Is this elsewhere? (same as open webui)

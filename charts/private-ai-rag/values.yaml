@@ -84,11 +84,12 @@ private-ai-storage:
     postgresHost: # system provided
     postgresSecret: # system provided
 rag:
-  gcsBucketName: # user provided 
-  googleDriveFolderId: # user provided 
-  gcsBucketName: # user provided 
-  googleApiScopes: # default form value 
-  googleAllowedExtensions: # user provided 
+  apiBaseUrl: # system provided
+  googleAllowedExtensions: # user provided
+  googleApplicationSecretRef: # user provided
+  gcsBucketName: # user provided
+  googleApiScopes: # system provided
+  postgresHost: # system provided
 
 postInstall:
   chosenPostInstallOptions: ""
