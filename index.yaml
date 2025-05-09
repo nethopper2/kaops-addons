@@ -548,6 +548,20 @@ entries:
   gdrive-gcs-sync:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-05-09T16:45:31.219935844Z"
+    dependencies:
+    - name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.18
+    description: A Helm chart for Kubernetes
+    digest: 50739594fea16959fa5db71d15e714513ed9b70b6f76cd017548aa27997f0272
+    name: gdrive-gcs-sync
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/gdrive-gcs-sync-0.1.26/gdrive-gcs-sync-0.1.26.tgz
+    version: 0.1.26
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-05-09T16:21:28.291786738Z"
     dependencies:
     - name: gdrive-gcs-sync
@@ -6894,4 +6908,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-09T16:21:28.292600541Z"
+generated: "2025-05-09T16:45:31.221243832Z"
