@@ -21,6 +21,7 @@ forms:
         isCreateOnly: true
         variableSlugs:
           - ssoEnabled
+          - gdriveSyncEnabled
           - systemAdmin
           - ssoEnabledDependencies
           - gpuEnabled
