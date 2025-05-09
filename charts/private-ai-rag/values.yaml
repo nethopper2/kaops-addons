@@ -55,11 +55,10 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: JWT_SECRET_KEY
-private-ai-rest:
+private-ai-storage:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
   image:
-    repository: nethopper/private-ai-rest
     pullPolicy: Always
   ingress:
     enabled: true
@@ -77,7 +76,7 @@ private-ai-rest:
           - path: /
             pathType: ImplementationSpecific
     tls:
-      - secretName: private-ai-rest-tls
+      - secretName: private-ai-storage-tls
         hosts:
 rag:
   gcsBucketName: # user provided 
