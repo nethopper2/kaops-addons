@@ -232,7 +232,7 @@ variables:
       help: Install the oAuth2 Proxy Addon to use SSO.
       value: false
   - slug: gdriveSyncEnabled
-    path: gdrive-gcs-sync.enabled
+    path: gdriveGcsSync.enabled
     forms: [default]
     ui:
       type: toggle
