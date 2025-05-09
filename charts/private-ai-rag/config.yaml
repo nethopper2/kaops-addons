@@ -25,6 +25,8 @@ forms:
           - ssoEnabledDependencies
           - gpuEnabled
           - modelsToPull
+          - googleApplicationCredentialsSecretRef
+          - gcsBucketName
         ui:
           label: Details
       - slug: postInstall
@@ -49,10 +51,59 @@ forms:
         ui:
           if: "$get(postInstallOptions).value == 'custom'"
           label: Knowledge
+      - slug: gdrive-gcs-sync
+        isCreateOnly: true
+        variableSlugs:
+          - DRIVE_FOLDER_ID
+          - ALLOWED_EXTENSIONS
+          - GOOGLE_API_SCOPES
+        ui:
+          if: "$get(gdriveSyncEnabled).value == 'true'"
+          label: GDrive sync options
   - slug: defaultUpdate
     label: Configuration
 
 variables:
+  - slug: googleApplicationCredentialsSecretRef
+    path: "rag.googleApplicationCredentialsSecretRef"
+    forms: [default]
+    ui:
+      type: secret
+      label: Google Application Credentials
+      help: Base64 encoded Google Application Credentials JSON file.
+      validation: required
+  - slug: gcsBucketName
+    path: "rag.gcsBucketName"
+    forms: [default]
+    ui:
+      type: text
+      label: "Destination: GCS Bucket Name"
+      help: Name of the GCS bucket sync target.
+      validation: required
+  - slug: googleDriveFolderId
+    path: "rag.googleDriveFolderId"
+    forms: [default]
+    ui:
+      type: text
+      label: "Source: GDrive Folder ID"
+      help: ID of the Google Drive folder to sync.
+      validation: required
+  - slug: googleApiScopes
+    path: "rag.googleApiScopes"
+    forms: [default]
+    ui:
+      type: text
+      label: API Scopes
+      value: "https://www.googleapis.com/auth/drive.readonly"
+      help: Comma separated list of API scopes to request.
+      validation: required
+  - slug: googleAllowedExtensions
+    path: "rag.googleAllowedExtensions"
+    forms: [default]
+    ui:
+      type: text
+      label: Allowed Extensions
+      help: Comma separated list of allowed file extensions to sync. No dots.
   - slug: ssoEnabled
     path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
@@ -178,6 +229,13 @@ variables:
       type: toggle
       label: Use GPU
       help: Install the oAuth2 Proxy Addon to use SSO.
+      value: false
+  - slug: gdriveSyncEnabled
+    path: gdrive-gcs-sync.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Enable GDrive sync
       value: false
   - slug: modelsToPull
     path: open-webui.ollama.ollama.models.pull
@@ -442,10 +500,6 @@ system:
     value: "ImplementationSpecific"
   - path: "private-ai-rest.ingress.tls[0].secretName"
     value: "private-ai-rest-tls"
-#  - path: "rag.allowedOrigin"
-#    value: "chat.${system.hubCluster.ingressHostname}"
-#  - path: "rag.apiBaseUrl"
-#    value: "storage.${system.hubCluster.ingressHostname}"
 
 
 output:

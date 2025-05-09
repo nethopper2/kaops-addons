@@ -5,10 +5,15 @@ metadata:
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
 data:
-  GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName | quote }} # get from private-ai user input
-  POSTGRESSQL_HOST: {{ .Values.rag.postgressHost | quote }} # derived by BE
-  ALLOWED_CORS_ORIGIN: {{ printf "https://%s" .Values.ingress.host | quote }}
-  NH_API_BASE_URL: {{ index (index (index .Values "private-ai-rest").ingress.hosts 0) "host" | quote }}
-  # ALLOWED_CORS_ORIGIN: {{ .Values.rag.allowedCorsOrigin | quote }} # derived by BE
-  # DATABASE_HOST: {{ .Values.rag.databaseHost | quote }} # derived by BE ??? needed
-  # NH_API_BASE_URL: {{ .Values.rag.nhApiBaseUrl | quote }} # derived from convention. BE?
+  POSTGRESSQL_HOST: {{ .Values.rag.postgressHost }} 
+  GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName }} 
+  ALLOWED_CORS_ORIGIN: "https://{{ .Values.ingress.host }}"
+  NH_API_BASE_URL: {{ .Values.rag.baseUrl }}
+  DATABASE_HOST: {{ .Values.rag.databaseHost }} 
+  GOOGLE_APPLICATION_CREDENTIALS_SECRET_REF: {{ .Values.rag.googleApplicationCredentialsSecretRef }}
+
+  {{- if .Values.gdrive-gcs-sync.enabled }}
+  GOOGLE_DRIVE_FOLDER_ID: {{ .Values.rag.googleDriveFolderId }}
+  GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes }}
+  GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions }}
+  {{- end }}

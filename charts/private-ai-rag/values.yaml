@@ -50,11 +50,16 @@ open-webui:
       value: dev
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list
+    - name: WEBUI_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: shared-secrets-rag
+          key: JWT_SECRET_KEY
 private-ai-rest:
   sharedConfigMap: shared-configmap-rag
+  sharedSecrets: shared-secrets-rag
   image:
     repository: nethopper/private-ai-rest
-    # tag:
     pullPolicy: Always
   ingress:
     enabled: true
@@ -75,11 +80,15 @@ private-ai-rest:
       - secretName: private-ai-rest-tls
         hosts:
 rag:
-  # gcsBucketName: "nh-corporate-brain"
-  postgresHost: "nh-postgresql"
-  # allowedCorsOrigin:
-  # allowedCorsOrigin: "https://*.trudog.kaops.dev"
-  # apiBaseUrl:
+  gcsBucketName: # user provided 
+  googleDriveFolderId: # user provided 
+  gcsBucketName: # user provided 
+  googleApiScopes: # default form value 
+  googleAllowedExtensions: # user provided 
 
 postInstall:
   chosenPostInstallOptions: ""
+
+gdrive-gcs-sync:
+  extraEnvVarsCM: shared-configmap-rag
+  extraEnvVarsSecret: shared-secrets-rag

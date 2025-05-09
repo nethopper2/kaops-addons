@@ -26,7 +26,7 @@ spec:
               value: /tmp/node_modules
           envFrom:
             - secretRef: 
-                name: {{ include "private-ai.fullname" . }}-secret
+                name: shared-secrets-rag
       volumes:
         - name: scripts
           configMap:
