@@ -9,8 +9,6 @@ data:
   GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName }} 
   ALLOWED_CORS_ORIGIN: "https://{{ .Values.ingress.host }}"
   NH_API_BASE_URL: {{ .Values.rag.baseUrl }}
-  DATABASE_HOST: {{ .Values.rag.databaseHost }} 
-  GOOGLE_APPLICATION_CREDENTIALS_SECRET_REF: {{ .Values.rag.googleApplicationCredentialsSecretRef }}
   {{- if .Values.gdriveGcsSync.enabled }}
   GOOGLE_DRIVE_FOLDER_ID: {{ .Values.rag.googleDriveFolderId }}
   GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes }}

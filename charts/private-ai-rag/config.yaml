@@ -505,6 +505,8 @@ system:
     value: "${system.cluster.name}-private-ai-rag-postgresql"
   - path: "private-ai-storage.config.postgresSecret"
     value: "${system.cluster.name}-private-ai-rag-postgresql"
+  - path: "rag.baseUrl"
+    value: "storage.${system.hubCluster.ingressHostname}"
 
 
 output:
