@@ -59,7 +59,6 @@ private-ai-rest:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
   image:
-    tag: 1.0.1
     repository: nethopper/private-ai-rest
     pullPolicy: Always
   ingress:
