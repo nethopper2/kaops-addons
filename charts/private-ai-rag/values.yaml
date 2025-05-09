@@ -1,3 +1,5 @@
+global:
+  googleApplicationCredentialsSecretRef: # user provided
 ingress:
   enabled: true
   oauth2Proxy:
@@ -78,6 +80,9 @@ private-ai-storage:
     tls:
       - secretName: private-ai-storage-tls
         hosts:
+  config:
+    postgresHost: # system provided
+    postgresSecret: # system provided
 rag:
   gcsBucketName: # user provided 
   googleDriveFolderId: # user provided 
