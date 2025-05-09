@@ -1,7 +1,7 @@
 gdrive-gcs-sync:
   env:
     GOOGLE_APPLICATION_CREDENTIALS_SECRET_REF: ""
-    DRIVE_FOLDER_ID: ""
+    # DRIVE_FOLDER_ID: ""
     GCS_BUCKET_NAME: ""
     GOOGLE_API_SCOPES: "https://www.googleapis.com/auth/drive.readonly"
     ALLOWED_EXTENSIONS: ""

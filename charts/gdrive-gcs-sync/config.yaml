@@ -24,14 +24,14 @@ variables:
       label: Google Application Credentials
       help: Base64 encoded Google Application Credentials JSON file.
       validation: required
-  - slug: DRIVE_FOLDER_ID
-    path: "gdrive-gcs-sync.env.DRIVE_FOLDER_ID"
-    forms: [default]
-    ui:
-      type: text
-      label: "Source: GDrive Folder ID"
-      help: ID of the Google Drive folder to sync.
-      validation: required
+  # - slug: DRIVE_FOLDER_ID
+  #   path: "gdrive-gcs-sync.env.DRIVE_FOLDER_ID"
+  #   forms: [default]
+  #   ui:
+  #     type: text
+  #     label: "Source: GDrive Folder ID"
+  #     help: ID of the Google Drive folder to sync.
+  #     validation: required
   - slug: GCS_BUCKET_NAME
     path: "gdrive-gcs-sync.env.GCS_BUCKET_NAME"
     forms: [default]
