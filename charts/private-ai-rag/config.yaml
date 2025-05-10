@@ -20,16 +20,29 @@ forms:
       - slug: details
         isCreateOnly: true
         variableSlugs:
+          - __baseFormDataExclusions
           - ssoEnabled
-          - gdriveSyncEnabled
-          - systemAdmin
-          - ssoEnabledDependencies
           - gpuEnabled
           - modelsToPull
-          - googleApplicationCredentialsSecretRef
-          - gcsBucketName
         ui:
           label: Details
+      - slug: gDrive
+        isCreateOnly: true
+        variableSlugs:
+          - gDriveGoogleApplicationsCredentialsSecretRef
+          - gDriveGcsBucketName
+          - gDriveApiScopes
+          - gDriveAllowedExtensions
+        ui:
+          label: GDrive
+      - slug: sso
+        isCreateOnly: true
+        variableSlugs:
+          - systemAdmin
+          - oauthProviderName
+        ui:
+          if: $get(ssoEnabled).value
+          label: SSO
       - slug: postInstall
         isCreateOnly: true
         variableSlugs:
@@ -52,59 +65,40 @@ forms:
         ui:
           if: "$get(postInstallOptions).value == 'custom'"
           label: Knowledge
-      - slug: gdrive-gcs-sync
-        isCreateOnly: true
-        variableSlugs:
-          - DRIVE_FOLDER_ID
-          - ALLOWED_EXTENSIONS
-          - GOOGLE_API_SCOPES
-        ui:
-          if: "$get(gdriveSyncEnabled).value == 'true'"
-          label: GDrive sync options
   - slug: defaultUpdate
     label: Configuration
 
+baseFormData:
+  - slug: extraEnvVars
+    forms: [default]
+    isCreateOnly: true
+    data:
+      open-webui:
+        extraEnvVars:
+          - name: ENABLE_SIGNUP
+            value: 'true'
+          - name: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
+            value: X-Forwarded-Email
+          - name: WEBUI_AUTH_TRUSTED_NAME_HEADER
+            value: X-Forwarded-User
+          - name: ENABLE_OAUTH_SIGNUP
+            value: 'true'
+          - name: WEBUI_SESSION_COOKIE_SAME_SITE
+            value: lax
+          - name: WEBUI_AUTH_COOKIE_SAME_SITE
+            value: lax
+          - name: ENABLE_LOGIN_FORM
+            value: 'true'
+
 variables:
-  - slug: googleApplicationCredentialsSecretRef
-    path: "global.googleApplicationCredentialsSecretRef"
+  - slug: __baseFormDataExclusions
     forms: [default]
     ui:
-      type: secret
-      label: Google Application Credentials
-      help: Base64 encoded Google Application Credentials JSON file.
-      validation: required
-  - slug: gcsBucketName
-    path: "rag.gcsBucketName"
-    forms: [default]
-    ui:
-      type: text
-      label: "Destination: GCS Bucket Name"
-      help: Name of the GCS bucket sync target.
-      validation: required
-  - slug: googleDriveFolderId
-    path: "rag.googleDriveFolderId"
-    forms: [default]
-    ui:
-      type: text
-      label: "Source: GDrive Folder ID"
-      help: ID of the Google Drive folder to sync.
-      validation: required
-  - slug: googleApiScopes
-    path: "rag.googleApiScopes"
-    forms: [default]
-    ui:
-      type: text
-      label: API Scopes
-      value: "https://www.googleapis.com/auth/drive.readonly"
-      help: Comma separated list of API scopes to request.
-      validation: required
-  - slug: googleAllowedExtensions
-    path: "rag.googleAllowedExtensions"
-    forms: [default]
-    ui:
-      type: text
-      label: Allowed Extensions
-      help: Comma separated list of allowed file extensions to sync. No dots.
+      type: list
+      children:
+        - if: "$get(ssoEnabled).value != true"
+          type: hidden
+          value: extraEnvVars
   - slug: ssoEnabled
     path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
@@ -113,116 +107,56 @@ variables:
       label: Use Single Sign On
       id: ssoEnabled
       value: false
-  - slug: "systemAdmin"
-    path: "ingress.oauth2Proxy.adminEmail"
+  - slug: gDriveGoogleApplicationsCredentialsSecretRef
+    path: "rag.googleApplicationSecretRef"
     forms: [default]
     ui:
-      if: "$get(ssoEnabled).value"
-      type: "text"
-      label: "System Admin Email"
-      id: "systemAdmin"
-      help: An email for admin account of your private ai
-      validation: email
-  - slug: ssoEnabledDependencies
-    path: open-webui.extraEnvVars
-    isStatic: true
-    forms: [default, defaultUpdate]
+      type: secret
+      label: Google Application Credentials
+      help: Base64 encoded Google Application Credentials JSON file.
+      validation: required
+  - slug: gDriveGcsBucketName
+    path: "rag.gcsBucketName"
+    forms: [default]
     ui:
-      type: list
-      children:
-        - if: "$get(ssoEnabled).value == true"
-          children:
-            - type: group
-              key: webui-auth-true-1
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_SIGNUP
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enable_signup_true'"
-                  value: "true"
-            - type: group
-              key: webui-auth-true-2
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-trusted_email_header'"
-                  value: X-Forwarded-Email
-            - type: group
-              key: webui-auth-true-3
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_NAME_HEADER
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-trusted_name_header'"
-                  value: X-Forwarded-User
-            - type: group
-              key: webui-auth-true-4
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_OAUTH_SIGNUP
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enable_oauth_signup'"
-                  value: "true"
-            - type: group
-              key: webui-auth-true-5
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_SESSION_COOKIE_SAME_SITE
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-session_cookie_same_site'"
-                  value: lax
-            - type: group
-              key: webui-auth-true-6
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_COOKIE_SAME_SITE
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth_cookie_same_site'"
-                  value: lax
-            - type: group
-              key: webui-auth-true-7
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enabled_true'"
-                  value: "true"
-            - type: group
-              key: webui-auth-true-8
-              children:
-                - type: hidden
-                  name: name
-                  value: ENABLE_LOGIN_FORM
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-enabled_true'"
-                  value: "true"
-            - type: group
-              key: webui-auth-true-9
-              children:
-                - type: hidden
-                  name: name
-                  value: WEBUI_AUTH_TRUSTED_GROUPS_HEADER
-                - type: hidden
-                  name: value
-                  key: "$: 'webui-auth-trusted_groups_header'"
-                  value: X-Forwarded-Groups
-
+      type: text
+      label: "Destination: GCS Bucket Name"
+      help: Name of the GCS bucket sync target.
+      validation: required
+  - slug: gDriveAllowedExtensions
+    path: "rag.googleAllowedExtensions"
+    forms: [default]
+    ui:
+      type: text
+      label: Allowed Extensions
+      help: Comma separated list of allowed file extensions to sync. No dots.
+  - slug: systemAdmin
+    path: ingress.oauth2Proxy.adminEmail
+    forms: [default]
+    ui:
+      type: text
+      label: System Admin Email
+      id: systemAdmin
+      help: An email for admin account of your private AI
+      validation: email
+  - slug: oauthProviderName
+    path: open-webui.extraEnvVars
+    forms: [default]
+    ui:
+      type: select
+      label: OAuth Provider Name
+      id: oauthProviderName
+      options:
+        - label: Google
+          # The values in the options are an array intentionally to merge with baseFormData.
+          value:
+            - name: OAUTH_PROVIDER_NAME
+              value: google
+        - label: Okta
+          value:
+            - name: OAUTH_PROVIDER_NAME
+              value: okta
+      validation: required
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
@@ -230,13 +164,6 @@ variables:
       type: toggle
       label: Use GPU
       help: Install the oAuth2 Proxy Addon to use SSO.
-      value: false
-  - slug: gdriveSyncEnabled
-    path: gdriveGcsSync.enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: Enable GDrive sync
       value: false
   - slug: modelsToPull
     path: open-webui.ollama.ollama.models.pull
@@ -264,11 +191,9 @@ variables:
               attrs:
                 class: mb-2
               children:
-                - {
-                    if: "$get(ssoEnabled).value",
-                    then: "SSO Enabled",
-                    else: "SSO Disabled",
-                  }
+                - if: "$get(ssoEnabled).value"
+                  then: "SSO Enabled"
+                  else: "SSO Disabled"
         - label: Create Knowledge Collections, Prompts, and User Groups
           type: radio
           id: postInstallOptions
@@ -503,13 +428,14 @@ system:
     value: "private-ai-storage-tls"
   - path: "private-ai-storage.config.postgresHost"
     value: "${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local"
-  - path: "rag.postgressHost"
+  - path: "rag.postgresHost"
     value: "${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local"
   - path: "private-ai-storage.config.postgresSecret"
     value: "${system.cluster.name}-private-ai-rag-postgresql"
-  - path: "rag.baseUrl"
+  - path: "rag.googleApiScopes"
+    value: "https://www.googleapis.com/auth/drive.readonly"
+  - path: "rag.apiBaseUrl"
     value: "storage.${system.hubCluster.ingressHostname}"
-
 
 output:
   - name: Open Web UI URL
