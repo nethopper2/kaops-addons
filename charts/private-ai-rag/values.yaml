@@ -57,7 +57,7 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: JWT_SECRET_KEY
-private-ai-storage:
+private-ai-rest:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
   image:
@@ -78,7 +78,7 @@ private-ai-storage:
           - path: /
             pathType: ImplementationSpecific
     tls:
-      - secretName: private-ai-storage-tls
+      - secretName: private-ai-rest-tls
         hosts:
   config:
     postgresHost: # system provided
