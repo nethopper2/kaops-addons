@@ -10,6 +10,8 @@ data:
   ALLOWED_CORS_ORIGIN: "https://{{ .Values.ingress.host | quote }}"
   NH_API_BASE_URL: {{ .Values.rag.apiBaseUrl | quote }}
   GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes | quote }}
+  {{ if .Values.rag.googleAllowedExtensions}}
   GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions | quote }}
+  {{ end }}
   #DATABASE_URL: Is this elsewhere? (same as open webui)
   #JWT_SECRET: Is this elsewhere? (same as open webui)
