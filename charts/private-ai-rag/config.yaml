@@ -108,7 +108,7 @@ variables:
       id: ssoEnabled
       value: false
   - slug: gDriveGoogleApplicationsCredentialsSecretRef
-    path: "rag.googleApplicationSecretRef"
+    path: "global.googleApplicationCredentialsSecretRef"
     forms: [default]
     ui:
       type: secret

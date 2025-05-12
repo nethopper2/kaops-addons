@@ -86,7 +86,6 @@ private-ai-storage:
 rag:
   apiBaseUrl: # system provided
   # googleAllowedExtensions: # user provided
-  googleApplicationSecretRef: # user provided
   gcsBucketName: # user provided
   googleApiScopes: # system provided
   postgresHost: # system provided
