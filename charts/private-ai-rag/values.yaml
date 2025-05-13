@@ -101,8 +101,8 @@ postgresql:
     initdb:
       scripts:
         01-create-dbs.sql: |
-          CREATE DATABASE open-webui WITH OWNER postgres;
-          CREATE DATABASE private-ai-rag WITH OWNER postgres;
+          CREATE DATABASE open-webui OWNER postgres;
+          CREATE DATABASE private-ai-rag OWNER postgres;
           CREATE DATABASE private-ai-rest OWNER postgres;
         02-privileges.sql: |
           GRANT ALL PRIVILEGES ON DATABASE open-webui TO postgres;
