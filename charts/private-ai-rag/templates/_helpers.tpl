@@ -60,3 +60,11 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create a random database password
+*/}}
+{{- define "private-ai.randomPassword" -}}
+{{- $password := randAlphaNum 16 }}
+{{- $password }}
+{{- end }}

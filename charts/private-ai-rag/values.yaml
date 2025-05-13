@@ -1,5 +1,11 @@
 global:
+  extraEnvVarsCM: shared-configmap-rag
+  extraEnvVarsSecret: shared-secrets-rag
   googleApplicationCredentialsSecretRef: # user provided
+  postgresql:
+    auth:
+      username: postgres
+      existingSecret: postgresql-password
 ingress:
   enabled: true
   oauth2Proxy:
@@ -92,7 +98,3 @@ rag:
 
 postInstall:
   chosenPostInstallOptions: ""
-
-gdrive-gcs-sync:
-  extraEnvVarsCM: shared-configmap-rag
-  extraEnvVarsSecret: shared-secrets-rag
