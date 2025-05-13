@@ -101,9 +101,9 @@ postgresql:
     initdb:
       scripts:
         01-init.sql: |
-          CREATE DATABASE IF NOT EXISTS "open-webui" WITH OWNER postgres;
-          CREATE DATABASE IF NOT EXISTS "private-ai-rag" WITH OWNER postgres;
-          CREATE DATABASE IF NOT EXISTS "private-ai-rest" WITH OWNER postgres;
+          CREATE DATABASE "open-webui" WITH OWNER postgres;
+          CREATE DATABASE "private-ai-rag" WITH OWNER postgres;
+          CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
 
 rag:
   apiBaseUrl: # system provided
