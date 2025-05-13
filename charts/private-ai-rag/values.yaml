@@ -100,14 +100,10 @@ postgresql:
   primary:
     initdb:
       scripts:
-        01-create-dbs.sql: |
-          CREATE DATABASE open-webui OWNER postgres;
-          CREATE DATABASE private-ai-rag OWNER postgres;
-          CREATE DATABASE private-ai-rest OWNER postgres;
-        02-privileges.sql: |
-          GRANT ALL PRIVILEGES ON DATABASE open-webui TO postgres;
-          GRANT ALL PRIVILEGES ON DATABASE private-ai-rag TO postgres;
-          GRANT ALL PRIVILEGES ON DATABASE private-ai-rest TO postgres;
+        01-init.sql: |
+          CREATE DATABASE IF NOT EXISTS "open-webui" WITH OWNER postgres;
+          CREATE DATABASE IF NOT EXISTS "private-ai-rag" WITH OWNER postgres;
+          CREATE DATABASE IF NOT EXISTS "private-ai-rest" WITH OWNER postgres;
 
 rag:
   apiBaseUrl: # system provided
