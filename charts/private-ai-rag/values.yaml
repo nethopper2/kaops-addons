@@ -63,9 +63,16 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: JWT_SECRET_KEY
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: shared-secrets-rag
+          key: DATABASE_URL
 private-ai-rest:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
+  postgresql:
+    database: private-ai-rest
   image:
     pullPolicy: Always
   ingress:
@@ -89,6 +96,19 @@ private-ai-rest:
   config:
     postgresHost: # system provided
     postgresSecret: # system provided
+postgresql:
+  primary:
+    initdb:
+      scripts:
+        01-create-dbs.sql: |
+          CREATE DATABASE open-webui WITH OWNER postgres;
+          CREATE DATABASE private-ai-rag WITH OWNER postgres;
+          CREATE DATABASE private-ai-rest OWNER postgres;
+        02-privileges.sql: |
+          GRANT ALL PRIVILEGES ON DATABASE open-webui TO postgres;
+          GRANT ALL PRIVILEGES ON DATABASE private-ai-rag TO postgres;
+          GRANT ALL PRIVILEGES ON DATABASE private-ai-rest TO postgres;
+
 rag:
   apiBaseUrl: # system provided
   # googleAllowedExtensions: # user provided
