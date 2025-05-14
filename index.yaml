@@ -548,6 +548,20 @@ entries:
   gdrive-gcs-sync:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-05-14T15:07:28.495724073Z"
+    dependencies:
+    - name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.24
+    description: A Helm chart for Kubernetes
+    digest: 75fd34cad29550e2a5dc7c21bf5913e2dedcb987eaae2296ab7e97e194dcf4bd
+    name: gdrive-gcs-sync
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/gdrive-gcs-sync-0.1.32/gdrive-gcs-sync-0.1.32.tgz
+    version: 0.1.32
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-05-14T11:40:55.754394261Z"
     dependencies:
     - name: gdrive-gcs-sync
@@ -6007,6 +6021,32 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: 5.25.0
+    created: "2025-05-14T15:07:28.667124615Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.13
+    - name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.24
+    description: KAOPS addon to install private-ai
+    digest: 5a65181c095f0e7d13efdd9b018aa290936e19e7074f7cc29de11ea28c513895
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.140/private-ai-rag-0.1.140.tgz
+    version: 0.1.140
+  - apiVersion: v2
+    appVersion: 5.25.0
     created: "2025-05-13T21:16:47.505719406Z"
     dependencies:
     - name: open-webui
@@ -7446,4 +7486,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-14T11:40:55.755912218Z"
+generated: "2025-05-14T15:07:28.667938414Z"
