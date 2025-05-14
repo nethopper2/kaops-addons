@@ -435,7 +435,7 @@ system:
   - path: "rag.googleApiScopes"
     value: "https://www.googleapis.com/auth/drive.readonly"
   - path: "rag.apiBaseUrl"
-    value: "storage.${system.hubCluster.ingressHostname}"
+    value: "https://storage.${system.hubCluster.ingressHostname}"
 
 output:
   - name: Open Web UI URL
