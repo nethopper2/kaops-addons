@@ -1,0 +1,131 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "question"
+            }
+          ]
+        }
+      },
+      "id": "5afbed14-6cc4-4c16-9455-9940a8ce4724",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        80,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.question }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Given the user query: '{}', determine the appropriate data source(s) to query.\n\nUse sql_db_call for structured data (e.g., employee records, salaries, database tables).\n\nUse vector_db_call for unstructured data (e.g., documents, text, images).\n\nIf both types are relevant, respond with: ['sql_db_call, 'vector_db_call']\n\nIf neither applies, respond with: ['no_data_source_needed']\n\nInstructions:\nReturn only the applicable key or comma-separated keys from the following list in an array format:\n['sql_db_call', 'vector_db_call', 'no_data_source_needed']\nDo not include any additional text in the response. Always respond with something, even if it' just ['no_data_source_needed']"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        300,
+        20
+      ],
+      "id": "4ae99465-74aa-44c6-abf4-1a24e2efdf6a",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:8b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        240,
+        220
+      ],
+      "id": "90ffc16b-5a49-46fb-8405-f6f3dfd70ef8",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "dKNYd7S839pRCaDp",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        -80
+      ],
+      "id": "1eb0a4b8-7add-4dfb-ab36-57ff69e00d22",
+      "name": "When chat message received",
+      "webhookId": "989b6799-7ac2-46b9-bb96-42c83ff6adb5"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\"sql_db_call\", \"vector_db_call\", \"no_data_source_needed\"]"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        240
+      ],
+      "id": "1a841d05-a567-4d6a-8368-4da31695e715",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8e262a17a52eb1f458b4574598eca5cd4decb487aa64a2983feca4e5906114f8"
+  }
+}

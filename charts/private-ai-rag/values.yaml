@@ -6,6 +6,8 @@ global:
     auth:
       username: postgres
       existingSecret: postgresql-password
+      secretKeys:
+        adminPasswordKey: postgres-password
 ingress:
   enabled: true
   oauth2Proxy:
