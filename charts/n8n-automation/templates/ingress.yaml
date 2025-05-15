@@ -20,7 +20,7 @@ spec:
         pathType: {{ .Values.ingress.pathType | default "Prefix" }}
         backend:
           service:
-            name: gcp-n8n-automation
+            name: n8n-automation
             port:
               name: http
   {{- if .Values.ingress.tls }}
