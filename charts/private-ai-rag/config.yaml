@@ -7,7 +7,7 @@ metadata:
   logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png"
   detailUrl: "https://addons.kaops.net/private-ai-rag/"
   externalUrl: "https://nethopper.io"
-  isProduction: false
+  isProduction: true
   isStaging: false
   installTargets:
     clusterMessage: Must be installed on clusters configured for Ingress.

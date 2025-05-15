@@ -9,6 +9,7 @@ metadata:
   installTargets:
     infoMessage: "Automate your workflows with n8n"
   categories: ['Automation']
+  isProduction: true
 
 forms:
   - slug: default
