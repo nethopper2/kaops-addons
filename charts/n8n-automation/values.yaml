@@ -5,10 +5,11 @@
 replicaCount: 1
 
 
-main:
-  persistence:
-    enabled: true
-    type: dynamic
+n8n:
+  main:
+    persistence:
+      enabled: true
+      type: dynamic
 
 image:
   repository: nginx
