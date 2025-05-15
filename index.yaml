@@ -2471,6 +2471,20 @@ entries:
   n8n-automation:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-05-15T11:54:37.81316849Z"
+    dependencies:
+    - name: n8n
+      repository: oci://8gears.container-registry.com/library
+      version: 1.0.6
+    description: A Helm chart for Kubernetes
+    digest: be9bc99be4744aee3d6deb7e90a0735604660af9b873a9149019875c76782cfb
+    name: n8n-automation
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/n8n-automation-0.1.6/n8n-automation-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-04-24T13:18:47.788282454Z"
     dependencies:
     - name: n8n
@@ -6021,6 +6035,32 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: 5.25.0
+    created: "2025-05-15T11:54:37.99103358Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.16
+    - name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.24
+    description: KAOPS addon to install private-ai
+    digest: 190fffa5eeb6473372eda997aea1e73a5f6c8699453287446032c2a97fdab795
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.145/private-ai-rag-0.1.145.tgz
+    version: 0.1.145
+  - apiVersion: v2
+    appVersion: 5.25.0
     created: "2025-05-14T21:44:47.44357657Z"
     dependencies:
     - name: open-webui
@@ -7590,4 +7630,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-14T21:44:47.444194812Z"
+generated: "2025-05-15T11:54:37.991991193Z"
