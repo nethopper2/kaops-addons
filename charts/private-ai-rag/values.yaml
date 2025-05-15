@@ -68,6 +68,11 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: DATABASE_URL
+    - name: NH_API_BASE_URL
+      valueFrom:
+        configMapKeyRef:
+          name: shared-configmap-rag
+          key: NH_API_BASE_URL
 private-ai-rest:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
