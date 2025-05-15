@@ -20,7 +20,7 @@ spec:
         pathType: {{ .Values.ingress.pathType | default "Prefix" }}
         backend:
           service:
-            name: n8n-automation
+            name: {{ include "n8n-automation.fullname" $ }}
             port:
               name: http
   {{- if .Values.ingress.tls }}
