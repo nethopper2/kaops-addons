@@ -4,11 +4,11 @@
 
 replicaCount: 1
 
-n8n-automation: 
-  main:
-    persistence:
-      enabled: true
-      type: dynamic
+
+main:
+  persistence:
+    enabled: true
+    type: dynamic
 
 image:
   repository: nginx
