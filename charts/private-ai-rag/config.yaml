@@ -436,6 +436,8 @@ system:
     value: "https://www.googleapis.com/auth/drive.readonly"
   - path: "rag.apiBaseUrl"
     value: "https://storage.${system.hubCluster.ingressHostname}"
+  - path: "rag.allowedCorsOrigin"
+    value: "https://chat.${system.hubCluster.ingressHostname}|https://oauth.${system.hubCluster.ingressHostname}"
 
 output:
   - name: Open Web UI URL

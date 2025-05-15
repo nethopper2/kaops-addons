@@ -52,6 +52,8 @@ open-webui:
       value: "true"
     - name: BYPASS_MODEL_ACCESS_CONTROL
       value: "true"
+    - name: USER_PERMISSIONS_WORKSPACE_KNOWLEDGE_ACCESS
+      value: "true"
     - name: WEBUI_AUTH
       value: "false"
     - name: ENV # allows access to the API /docs endpoint
@@ -112,6 +114,7 @@ postgresql:
 
 rag:
   apiBaseUrl: # system provided
+  allowedCorsOrigin: # system provided
   # googleAllowedExtensions: # user provided
   gcsBucketName: # user provided
   googleApiScopes: # system provided

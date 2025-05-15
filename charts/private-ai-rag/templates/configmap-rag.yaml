@@ -8,7 +8,7 @@ data:
   POSTGRES_HOST: {{ .Values.rag.postgresHost }}
   POSTGRES_USERNAME: {{ .Values.global.postgresql.auth.username }}
   GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName }}
-  ALLOWED_CORS_ORIGIN: "https://{{ .Values.ingress.host }}"
+  ALLOWED_CORS_ORIGIN: {{ .Values.rag.allowedCorsOrigin }}
   NH_API_BASE_URL: {{ .Values.rag.apiBaseUrl }}
   GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes }}
   {{- if .Values.rag.googleAllowedExtensions }}
