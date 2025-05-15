@@ -7,6 +7,7 @@ metadata:
   logoUrlLight: 'https://www.svgrepo.com/show/373924/nginx.svg'
   detailUrl: 'https://addons.kaops.net/ingresswarden/'
   externalUrl: 'https://kubernetes.github.io/ingress-nginx/how-it-works/'
+  isProduction: true
   installTargets:
     hub: true
     hubRequired: false
