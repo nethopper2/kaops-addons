@@ -26,5 +26,7 @@ variables:
       validation: base64
 
 system:
-  - path: "ingress.host"
+  - path: "n8n.ingress.hosts[0].host"
+    value: "n8n.${system.hubCluster.ingressHostname}"
+  - path: "n8n.ingress.tls[0].hosts[0]"
     value: "n8n.${system.hubCluster.ingressHostname}"

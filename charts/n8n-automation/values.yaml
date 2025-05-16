@@ -10,7 +10,32 @@ n8n:
     persistence:
       enabled: true
       type: dynamic
-
+    initContainers:
+      - name: import-default-workflows
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command: ["/bin/sh", "-c", "n8n import:workflow --separate --input=/workflows && n8n update:workflow --all --active=true"]
+        volumeMounts:
+          - name: default-workflows
+            mountPath: /workflows
+          - name: n8n-data
+            mountPath: /home/node/.n8n
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: http
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/tls-acme: "true"
+    className: nginx
+    hosts:
+      - host:
+        paths:
+          - /
+    tls:
+      - hosts:
+        secretName: n8n-tls
 image:
   repository: nginx
   pullPolicy: IfNotPresent
@@ -46,20 +71,6 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
-
-ingress:
-  enabled: true
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: http
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/tls-acme: "true"
-  host:
-  tls:
-    - hosts:
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
