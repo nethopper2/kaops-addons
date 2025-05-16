@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "n8n-automation.fullname" . }}-n8n-workflows
+  name: default-n8n-workflows
   labels:
     {{- include "n8n-automation.labels" . | nindent 4 }}
 data:

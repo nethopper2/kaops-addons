@@ -17,8 +17,12 @@ n8n:
         volumeMounts:
           - name: default-workflows
             mountPath: /workflows
-          - name: n8n-data
+          - name: data
             mountPath: /home/node/.n8n
+    extraVolumes:
+      - name: default-workflows
+        configMap:
+          name: default-n8n-workflows
   ingress:
     enabled: true
     annotations:
