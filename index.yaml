@@ -2489,6 +2489,20 @@ entries:
   n8n-automation:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-05-16T09:14:25.064744258Z"
+    dependencies:
+    - name: n8n
+      repository: oci://8gears.container-registry.com/library
+      version: 1.0.6
+    description: A Helm chart for Kubernetes
+    digest: 0c2e0124ac5127d4d4fe9b2943dab78b8e8e98fee48cfcfcfc33eafcdda3c038
+    name: n8n-automation
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/n8n-automation-0.1.16/n8n-automation-0.1.16.tgz
+    version: 0.1.16
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-05-16T09:06:51.468851337Z"
     dependencies:
     - name: n8n
@@ -7930,4 +7944,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-16T09:06:51.469534588Z"
+generated: "2025-05-16T09:14:25.065497972Z"
