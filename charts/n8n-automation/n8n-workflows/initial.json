@@ -1,4 +1,6 @@
 {
+  "name": "Query Data Source Resolver",
+  "active": false,
   "nodes": [
     {
       "parameters": {

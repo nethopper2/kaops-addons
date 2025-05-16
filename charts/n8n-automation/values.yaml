@@ -13,7 +13,7 @@ n8n:
     initContainers:
       - name: import-default-workflows
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-        command: ["/bin/sh", "-c", "n8n import:workflow --separate --input=/workflows && n8n update:workflow --all --active=true"]
+        command: ["/bin/sh", "-c", "n8n import:workflow --separate --input=/workflows"]
         volumeMounts:
           - name: default-workflows
             mountPath: /workflows
