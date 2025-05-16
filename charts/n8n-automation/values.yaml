@@ -34,9 +34,8 @@ n8n:
       nginx.ingress.kubernetes.io/tls-acme: "true"
     className: nginx
     hosts:
-      - host:
-        paths:
-          - /
+      - host: # system variable
+        paths: [] # system variable
     tls:
       - hosts:
         secretName: n8n-tls
