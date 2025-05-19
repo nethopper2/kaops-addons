@@ -7,4 +7,5 @@ metadata:
 data:
   PROMETHEUS_URL: {{ .Values.prometheus.url }}
   S3_BUCKET: {{ .Values.s3.bucket }}
+  S3_FOLDER: {{ .Values.s3.folder }}
   AWS_REGION: {{ .Values.s3.region }}

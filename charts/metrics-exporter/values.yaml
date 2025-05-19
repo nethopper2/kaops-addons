@@ -4,6 +4,7 @@ prometheus:
   url: # system input
 s3:
   bucket: # user input
+  folder: # user input
   region: # user input
   accessKeyId: # user input
   secretAccessKey: # user input
