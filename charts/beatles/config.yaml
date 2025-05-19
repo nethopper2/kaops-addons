@@ -1,6 +1,6 @@
 metadata:
-  slug: private-ai
-  name: Private AI
+  slug: beatles
+  name: Beatles
   description: Deploy generative AI while safeguarding corporate data and scaling into your own infrastructure.
   categories: [Artificial Intelligence]
   logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png"
