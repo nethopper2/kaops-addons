@@ -68,37 +68,7 @@ forms:
   - slug: defaultUpdate
     label: Configuration
 
-#baseFormData:
-#  - slug: extraEnvVars
-#    forms: [default]
-#    isCreateOnly: true
-#    data:
-#      open-webui:
-#        extraEnvVars:
-#          - name: ENABLE_SIGNUP
-#            value: 'true'
-#          - name: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-#            value: X-Forwarded-Email
-#          - name: WEBUI_AUTH_TRUSTED_NAME_HEADER
-#            value: X-Forwarded-User
-#          - name: ENABLE_OAUTH_SIGNUP
-#            value: 'true'
-#          - name: WEBUI_SESSION_COOKIE_SAME_SITE
-#            value: lax
-#          - name: WEBUI_AUTH_COOKIE_SAME_SITE
-#            value: lax
-#          - name: ENABLE_LOGIN_FORM
-#            value: 'true'
-
 variables:
-#  - slug: __baseFormDataExclusions
-#    forms: [default]
-#    ui:
-#      type: list
-#      children:
-#        - if: "$get(ssoEnabled).value != true"
-#          type: hidden
-#          value: extraEnvVars
   - slug: ssoEnabled
     path: ingress.oauth2Proxy.enabled
     forms: [default, defaultUpdate]
@@ -151,15 +121,6 @@ variables:
           value: google
         - label: Okta
           value: okta
-#        - label: Google
-#          # The values in the options are an array intentionally to merge with baseFormData.
-#          value:
-#            - name: OAUTH_PROVIDER_NAME
-#              value: google
-#        - label: Okta
-#          value:
-#            - name: OAUTH_PROVIDER_NAME
-#              value: okta
       validation: required
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
