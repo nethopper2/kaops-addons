@@ -10,6 +10,7 @@ global:
         adminPasswordKey: postgres-password
 ingress:
   enabled: true
+  oauthProviderName:
   oauth2Proxy:
     enabled: true
     adminEmail: "admin@nethopper.io"
@@ -39,6 +40,9 @@ open-webui:
         pull: []
     service:
       type: ClusterIP
+  extraEnvFrom:
+    - configMapRef:
+        name: shared-configmap-rag
   extraEnvVars:
     - name: WEBUI_NAME
       value: "Private AI"

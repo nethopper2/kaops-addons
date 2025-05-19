@@ -140,7 +140,7 @@ variables:
       help: An email for admin account of your private AI
       validation: email
   - slug: oauthProviderName
-    path: open-webui.extraEnvVars
+    path: ingress.oauthProviderName
     forms: [default]
     ui:
       type: select

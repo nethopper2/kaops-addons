@@ -14,3 +14,14 @@ data:
   {{- if .Values.rag.googleAllowedExtensions }}
   GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions }}
   {{- end }}
+
+  {{- if eq .Values.ingress.oauth2Proxy.enabled true }}
+  ENABLE_SIGNUP: 'true'
+  WEBUI_AUTH_TRUSTED_EMAIL_HEADER: X-Forwarded-Email
+  WEBUI_AUTH_TRUSTED_NAME_HEADER: X-Forwarded-User
+  ENABLE_OAUTH_SIGNUP: 'true'
+  WEBUI_SESSION_COOKIE_SAME_SITE: lax
+  WEBUI_AUTH_COOKIE_SAME_SITE: lax
+  ENABLE_LOGIN_FORM: 'true'
+  OAUTH_PROVIDER_NAME: {{ .Values.ingress.oauthProviderName }}
+  {{- end }}
