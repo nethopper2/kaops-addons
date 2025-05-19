@@ -17,7 +17,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: git-3aab393
+    tag: 0.6.2-alpha.7
     pullPolicy: Always
   ollama:
     persistentVolume:
