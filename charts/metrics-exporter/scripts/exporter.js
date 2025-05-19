@@ -8,6 +8,7 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 // Configuration from environment variables
 const PROMETHEUS_URL = process.env.PROMETHEUS_URL || "http://localhost:9090";
 const S3_BUCKET = process.env.S3_BUCKET || "nh-metrics-exporter";
+const S3_FOLDER = process.env.S3_FOLDER || "metrics";
 const AWS_REGION = process.env.AWS_REGION || "us-east-1";
 const QUERIES_FILE =
   process.env.QUERIES_FILE || path.join(__dirname, "queries.json");
@@ -316,8 +317,8 @@ async function runJob() {
       // Create filename based on the date (YYYY-MM-DD)
       const fileName = `${dateStr}.csv`;
 
-      // Create S3 key with query group name as directory
-      const s3Key = `${queryGroup.name}/${fileName}`;
+      // Create S3 key with the S3_FOLDER and query group name
+      const s3Key = `${S3_FOLDER}/${queryGroup.name}/${fileName}`;
 
       // Upload directly to S3
       await uploadDirectlyToS3(csvData, s3Key);
