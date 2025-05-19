@@ -7,7 +7,7 @@ metadata:
   logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/metrics-exporter/logo.png"
   detailUrl: "https://addons.kaops.net/metrics-exporter/"
   externalUrl: "https://prometheus.io"
-  isProduction: false
+  isProduction: true
   installTargets:
     clusterMessage: Must be installed on hub cluster with observability network feature.
 
