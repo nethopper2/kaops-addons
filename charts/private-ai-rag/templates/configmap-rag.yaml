@@ -14,7 +14,6 @@ data:
   {{- if .Values.rag.googleAllowedExtensions }}
   GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions }}
   {{- end }}
-
   {{- if eq .Values.ingress.oauth2Proxy.enabled true }}
   ENABLE_SIGNUP: 'true'
   WEBUI_AUTH_TRUSTED_EMAIL_HEADER: X-Forwarded-Email
