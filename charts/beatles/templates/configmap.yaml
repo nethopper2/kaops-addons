@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "private-ai.fullname" . }}-postinstall-scripts
+  labels: 
+    {{- include "private-ai.labels" . | nindent 4 }}
+data:
+  createAssets.js: |-
+{{ (.Files.Get "scripts/post-install/createAssets.js") | indent 4 }}
+  assets.json: |-
+{{ (.Files.Get "scripts/post-install/assets.json") | indent 4 }}
+  package.json: |-
+{{ (.Files.Get "scripts/post-install/package.json") | indent 4 }}

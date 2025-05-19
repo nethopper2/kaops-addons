@@ -1,0 +1,981 @@
+{
+    "__inputs": [
+      {
+        "name": "DS_INFLUXDB",
+        "label": "InfluxDB",
+        "description": "",
+        "type": "datasource",
+        "pluginId": "influxdb",
+        "pluginName": "InfluxDB"
+      }
+    ],
+    "__elements": {},
+    "__requires": [
+      {
+        "type": "panel",
+        "id": "bargauge",
+        "name": "Bar gauge",
+        "version": ""
+      },
+      {
+        "type": "grafana",
+        "id": "grafana",
+        "name": "Grafana",
+        "version": "11.5.0"
+      },
+      {
+        "type": "datasource",
+        "id": "influxdb",
+        "name": "InfluxDB",
+        "version": "1.0.0"
+      },
+      {
+        "type": "panel",
+        "id": "stat",
+        "name": "Stat",
+        "version": ""
+      },
+      {
+        "type": "panel",
+        "id": "text",
+        "name": "Text",
+        "version": ""
+      },
+      {
+        "type": "panel",
+        "id": "timeseries",
+        "name": "Time series",
+        "version": ""
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "A complete, opensource dashboard that shows consumption and usage of Open WebUI.",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": null,
+    "links": [],
+    "panels": [
+      {
+        "gridPos": {
+          "h": 6,
+          "w": 3,
+          "x": 0,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "<a href=\"https://openwebui.com/\" target=\"_blank\"><img src=\"https://openwebui.com/user.png\" alt=\"drawing\" width=\"200\"/></a>",
+          "mode": "markdown"
+        },
+        "pluginVersion": "11.5.0",
+        "transparent": true,
+        "type": "text"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "description": "Displays key usage statistics for Open WebUI, including model count, evaluation counts, average response tokens, and average processing time, aiding in monitoring and optimization.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "dark-purple",
+              "mode": "fixed"
+            },
+            "fieldMinMax": false,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "A"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Models Used"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "B"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Total Prompt Tokens"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "C"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Average Tokens/s"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "D"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "ms"
+                },
+                {
+                  "id": "displayName",
+                  "value": "Average Duration"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 21,
+          "x": 3,
+          "y": 0
+        },
+        "id": 1,
+        "options": {
+          "colorMode": "background_solid",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "last"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "value_and_name",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.5.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            },
+            "hide": false,
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> keep(columns: [\"model\"])\r\n  |> distinct(column: \"model\")\r\n  |> group()\r\n  |> count()",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            },
+            "hide": false,
+            "query": "evalCountSum = from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"evalCount\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> group(columns: [])\r\n  |> sum()\r\n\r\npromptEvalCountSum = from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"promptEvalCount\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> group(columns: [])\r\n  |> sum()\r\n\r\nunion(tables: [evalCountSum, promptEvalCountSum])\r\n  |> group(columns: [])\r\n  |> sum()",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            },
+            "hide": false,
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"responseTokens\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> group(columns: [])\r\n  |> mean()",
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            },
+            "hide": false,
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"approximateTotalMS\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> group(columns: [])\r\n  |> mean()",
+            "refId": "D"
+          }
+        ],
+        "title": "Open WebUI Usage Overview",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "description": "Displays token usage across models, highlighting consumption levels for Open WebUI in an intuitive bar gauge format.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "dark-blue",
+              "mode": "shades"
+            },
+            "fieldMinMax": false,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 6
+        },
+        "id": 3,
+        "options": {
+          "displayMode": "lcd",
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "maxVizHeight": 300,
+          "minVizHeight": 16,
+          "minVizWidth": 0,
+          "namePlacement": "top",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": true
+          },
+          "showUnfilled": true,
+          "sizing": "auto",
+          "valueMode": "color"
+        },
+        "pluginVersion": "11.5.0",
+        "targets": [
+          {
+            "hide": false,
+            "query": "evalCountSum = from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"evalCount\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> group(columns: [\"model\"])  \r\n  |> sum()\r\n\r\npromptEvalCountSum = from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"promptEvalCount\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> group(columns: [\"model\"]) \r\n  |> sum()\r\n\r\nunion(tables: [evalCountSum, promptEvalCountSum])\r\n  |> group(columns: [\"model\"])\r\n  |> sum()\r\n  |> filter(fn: (r) => r[\"_value\"] > 0)\r\n  |> rename(columns: {\"_value\": \"\"})\r\n  |> yield(name: \"filtered_tokens_by_model\")",
+            "refId": "A",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            }
+          }
+        ],
+        "title": "Token Usage by Model",
+        "type": "bargauge"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "description": "This panel illustrates the usage patterns of various LLM models in Open WebUI by tracking and displaying evaluation counts over time.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisGridShow": true,
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 30,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "fieldMinMax": false,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 6
+        },
+        "id": 4,
+        "maxDataPoints": 10000,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.5.0",
+        "targets": [
+          {
+            "hide": false,
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"evalCount\")\r\n  |> filter(fn: (r) => r[\"model\"] != \"unknown\")\r\n  |> filter(fn: (r) => r[\"_value\"] > 0)\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> group(columns: [\"model\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+            "refId": "A",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            }
+          }
+        ],
+        "title": "Model Evaluation Counts",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "description": "Displays the count of LLM tokens, helping to monitor the usage trends of different models over time.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "fixed"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisGridShow": true,
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 25,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "displayName": "Tokens",
+            "fieldMinMax": false,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "A"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-blue",
+                    "mode": "shades"
+                  }
+                },
+                {
+                  "id": "displayName",
+                  "value": "Prompt Tokens"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "B"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-purple",
+                    "mode": "shades"
+                  }
+                },
+                {
+                  "id": "displayName",
+                  "value": "Response Tokens"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 14
+        },
+        "id": 5,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.5.0",
+        "targets": [
+          {
+            "hide": false,
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"evalCount\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> aggregateWindow(every: 1m, fn: sum, createEmpty: false)\r\n  |> filter(fn: (r) => r[\"_value\"] > 0)\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> yield(name: \"tokens_per_minute\")\r\n",
+            "refId": "A",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            }
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            },
+            "hide": false,
+            "query": "from(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"promptEvalCount\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> aggregateWindow(every: 1m, fn: sum, createEmpty: false)\r\n  |> filter(fn: (r) => r[\"_value\"] > 0)\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> yield(name: \"tokens_per_minute\")\r\n",
+            "refId": "B"
+          }
+        ],
+        "title": "LLM Response Historical",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "description": "Monitors the rate of prompt token usage per second in Open WebUI, helping track real-time consumption and efficiency of different models.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "fixed"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisGridShow": true,
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 25,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "displayName": "Tokens",
+            "fieldMinMax": false,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "A"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-blue",
+                    "mode": "shades"
+                  }
+                },
+                {
+                  "id": "displayName",
+                  "value": "Prompt Tokens/s"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 0,
+          "y": 22
+        },
+        "id": 7,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.5.0",
+        "targets": [
+          {
+            "hide": false,
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"promptTokens\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false) \r\n  |> filter(fn: (r) => r[\"_value\"] > 0)\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> yield(name: \"tokens_per_second\")\r\n",
+            "refId": "A",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            }
+          }
+        ],
+        "title": "Prompt Tokens per Second",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "description": "Monitors the rate at which response tokens are generated by Open WebUI models, helping identify trends in performance and token usage over time.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "fixed"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisGridShow": true,
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 25,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "displayName": "Tokens",
+            "fieldMinMax": false,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "A"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "dark-purple",
+                    "mode": "shades"
+                  }
+                },
+                {
+                  "id": "displayName",
+                  "value": "Prompt Tokens/s"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 8,
+          "y": 22
+        },
+        "id": 6,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.5.0",
+        "targets": [
+          {
+            "hide": false,
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"responseTokens\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false) \r\n  |> filter(fn: (r) => r[\"_value\"] > 0)\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> yield(name: \"tokens_per_second\")\r\n",
+            "refId": "A",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            }
+          }
+        ],
+        "title": "Response Tokens per Second",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "description": "Displays the average duration of tasks or processes in Open WebUI, helping users assess performance over time by aggregating data for better insight.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "fixed"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisGridShow": true,
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 25,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "displayName": "Tokens",
+            "fieldMinMax": false,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "ms"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byFrameRefID",
+                "options": "A"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#949494",
+                    "mode": "shades"
+                  }
+                },
+                {
+                  "id": "displayName",
+                  "value": "Response Duration"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 16,
+          "y": 22
+        },
+        "id": 8,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.5.0",
+        "targets": [
+          {
+            "hide": false,
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"approximateTotalMS\")\r\n  |> filter(fn: (r) => r[\"model\"] =~ /${model:regex}/)\r\n  |> filter(fn: (r) => r[\"_value\"] > 0)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> yield(name: \"mean_duration\")\r\n",
+            "refId": "A",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_INFLUXDB}"
+            }
+          }
+        ],
+        "title": "Average Duration",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "",
+    "schemaVersion": 40,
+    "tags": [
+      "genAI",
+      "AI",
+      "Open WebUI",
+      "Llama",
+      "DeepSeek",
+      "Qwen"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allowCustomValue": false,
+          "current": {},
+          "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"model\"] != \"\")\r\n  |> filter(fn: (r) => r[\"model\"] != \"unknown\")\r\n  |> keep(columns: [\"model\"])\r\n  |> distinct(column: \"model\")\r\n  |> group()",
+          "description": "",
+          "includeAll": true,
+          "label": "LLM Model",
+          "multi": true,
+          "name": "model",
+          "options": [],
+          "query": {
+            "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"openwebui_stats\")\r\n  |> filter(fn: (r) => r[\"model\"] != \"\")\r\n  |> filter(fn: (r) => r[\"model\"] != \"unknown\")\r\n  |> keep(columns: [\"model\"])\r\n  |> distinct(column: \"model\")\r\n  |> group()"
+          },
+          "refresh": 2,
+          "regex": "",
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "2025-01-11T16:36:00.428Z",
+      "to": "2025-02-15T16:44:17.552Z"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Grafana Dashboard for Open WebUI",
+    "uid": "fecylffjmsflse",
+    "version": 17,
+    "weekStart": "",
+    "gnetId": 22867
+  }
