@@ -63,6 +63,21 @@ entries:
   beatles:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-05-19T13:06:12.27274696Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com
+      version: 5.25.0
+    description: Iconic British rock band that revolutionized music and culture in
+      the 1960s
+    digest: 7302b0803b4c550ed2fae1743a54d89556de5f4a754b0d49584f1b3e380c03a3
+    name: beatles
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/beatles-0.1.53/beatles-0.1.53.tgz
+    version: 0.1.53
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-05-19T11:46:08.254807983Z"
     dependencies:
     - name: open-webui
@@ -8203,4 +8218,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-19T12:13:55.905492104Z"
+generated: "2025-05-19T13:06:12.486895352Z"
