@@ -45,7 +45,7 @@ open-webui:
     - name: BYPASS_MODEL_ACCESS_CONTROL
       value: "true"
     - name: WEBUI_AUTH
-      value: "false"
+      value: "true"
     - name: ENV # allows access to the API /docs endpoint
       value: dev
     - name: API_KEY_ALLOWED_ENDPOINTS
