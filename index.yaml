@@ -63,6 +63,21 @@ entries:
   beatles:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-05-19T10:41:18.67826004Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com
+      version: 5.25.0
+    description: Iconic British rock band that revolutionized music and culture in
+      the 1960s
+    digest: 9e6bc6a39ab6d710de2f17cb7a074fef1bf7ed4a645da92c197a6168b7b74468
+    name: beatles
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/beatles-0.1.50/beatles-0.1.50.tgz
+    version: 0.1.50
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-05-19T09:56:32.691540008Z"
     dependencies:
     - name: open-webui
@@ -4052,6 +4067,23 @@ entries:
   private-ai:
   - apiVersion: v2
     appVersion: 5.26.0
+    created: "2025-05-19T10:41:18.928361561Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.0
+    description: KAOPS addon to install private-ai
+    digest: a2a9a2a8491b1e37dbf514d39e210d933c2be246c72900ba8e265024a4d78157
+    name: private-ai
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-0.1.113/private-ai-0.1.113.tgz
+    version: 0.1.113
+  - apiVersion: v2
+    appVersion: 5.26.0
     created: "2025-05-08T20:08:04.809271644Z"
     dependencies:
     - name: open-webui
@@ -6266,6 +6298,32 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: 5.25.0
+    created: "2025-05-19T10:41:19.162978327Z"
+    dependencies:
+    - name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 5.25.0
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.18
+    - name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.25
+    description: KAOPS addon to install private-ai
+    digest: 856d6ca93385035882cbd9fc34e3b42cf149ecabed703f7e5476d1871b09904d
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.154/private-ai-rag-0.1.154.tgz
+    version: 0.1.154
+  - apiVersion: v2
+    appVersion: 5.25.0
     created: "2025-05-16T21:19:43.895274832Z"
     dependencies:
     - name: open-webui
@@ -8069,4 +8127,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-05-19T09:56:32.693407261Z"
+generated: "2025-05-19T10:41:19.16430918Z"
