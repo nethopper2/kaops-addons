@@ -14,6 +14,16 @@ data:
   {{- if .Values.rag.googleAllowedExtensions }}
   GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions }}
   {{- end }}
+  {{- if eq .Values.ingress.oauth2Proxy.enabled false }}
+  ENABLE_SIGNUP: 'false'
+  WEBUI_AUTH_TRUSTED_EMAIL_HEADER: ''
+  WEBUI_AUTH_TRUSTED_NAME_HEADER: ''
+  ENABLE_OAUTH_SIGNUP: 'false'
+  WEBUI_SESSION_COOKIE_SAME_SITE: 'strict'
+  WEBUI_AUTH_COOKIE_SAME_SITE: 'strict'
+  ENABLE_LOGIN_FORM: 'true'
+  OAUTH_PROVIDER_NAME: ''
+  {{- end }}
   {{- if eq .Values.ingress.oauth2Proxy.enabled true }}
   ENABLE_SIGNUP: 'true'
   WEBUI_AUTH_TRUSTED_EMAIL_HEADER: X-Forwarded-Email
