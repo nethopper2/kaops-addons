@@ -76,51 +76,6 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: DATABASE_URL
-    - name: NH_API_BASE_URL
-      valueFrom:
-        configMapKeyRef:
-          name: shared-configmap-rag
-          key: NH_API_BASE_URL
-#    - name: ENABLE_SIGNUP
-#      valueFrom:
-#        configMapKeyRef:
-#          name: shared-configmap-rag
-#          key: ENABLE_SIGNUP
-#    - name: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-#      valueFrom:
-#        configMapKeyRef:
-#          name: shared-configmap-rag
-#          key: WEBUI_AUTH_TRUSTED_EMAIL_HEADER
-#    - name: WEBUI_AUTH_TRUSTED_NAME_HEADER
-#      valueFrom:
-#        configMapKeyRef:
-#          name: shared-configmap-rag
-#          key: WEBUI_AUTH_TRUSTED_NAME_HEADER
-#    - name: ENABLE_OAUTH_SIGNUP
-#      valueFrom:
-#        configMapKeyRef:
-#          name: shared-configmap-rag
-#          key: ENABLE_OAUTH_SIGNUP
-#    - name: WEBUI_SESSION_COOKIE_SAME_SITE
-#      valueFrom:
-#        configMapKeyRef:
-#          name: shared-configmap-rag
-#          key: WEBUI_SESSION_COOKIE_SAME_SITE
-#    - name: WEBUI_AUTH_COOKIE_SAME_SITE
-#      valueFrom:
-#        configMapKeyRef:
-#          name: shared-configmap-rag
-#          key: WEBUI_AUTH_COOKIE_SAME_SITE
-#    - name: ENABLE_LOGIN_FORM
-#      valueFrom:
-#        configMapKeyRef:
-#          name: shared-configmap-rag
-#          key: ENABLE_LOGIN_FORM
-#    - name: OAUTH_PROVIDER_NAME
-#      valueFrom:
-#        configMapKeyRef:
-#          name: shared-configmap-rag
-#          key: OAUTH_PROVIDER_NAME
 private-ai-rest:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
