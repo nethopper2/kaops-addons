@@ -10,19 +10,20 @@ global:
         adminPasswordKey: postgres-password
 ingress:
   enabled: true
+  class: nginx
   oauthProviderName:
   oauth2Proxy:
     enabled: true
     adminEmail: "admin@nethopper.io"
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/backend-protocol: http
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/tls-acme: "true"
   host:
+  additionalHosts: []
   tls:
     - hosts:
 open-webui:

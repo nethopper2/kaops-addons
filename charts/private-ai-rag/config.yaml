@@ -24,6 +24,7 @@ forms:
           - ssoEnabled
           - gpuEnabled
           - modelsToPull
+          - additionalHosts
         ui:
           label: Details
       - slug: gDrive
@@ -130,6 +131,15 @@ variables:
       label: Use GPU
       help: Install the oAuth2 Proxy Addon to use SSO.
       value: false
+  - slug: additionalHosts
+    path: ingress.additionalHosts
+    forms: [default]
+    ui:
+      type: taglist
+      label: Additional Hosts
+      help: "Add additional hosts to the ingress resource."
+      popover: true
+      allowNewValues: true
   - slug: modelsToPull
     path: open-webui.ollama.ollama.models.pull
     forms: [default]
