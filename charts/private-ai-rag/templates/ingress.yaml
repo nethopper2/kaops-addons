@@ -3,7 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "private-ai.name" . }}
-  namespace: {{ include "private-ai.namespace" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
   annotations:
