@@ -1,6 +1,6 @@
 metadata:
   slug: metrics-exporter
-  name: metrics-exporter
+  name: Metrics Exporter
   description: A tool to export metrics from Prometheus to S3.
   categories: [Data Management]
   logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/metrics-exporter/logo.png"
