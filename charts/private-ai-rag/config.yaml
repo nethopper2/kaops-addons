@@ -47,7 +47,7 @@ forms:
           - gDriveApiScopes
           - gDriveAllowedExtensions
         ui:
-          if: "$get(gdriveGcsSync).value == true"
+          if: "$get(dependencies).value == false || $get(gdriveGcsSync).value"
           label: GDrive
       - slug: sso
         isCreateOnly: true
