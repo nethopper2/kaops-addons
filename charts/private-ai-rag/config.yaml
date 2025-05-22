@@ -276,8 +276,8 @@ variables:
     ui:
       if: "$get(ssoEnabled).value !== true"
       type: url
-      label: Auth Screen Background Image URL
-      help: Background image on the login screen.
+      label: Auth Screen Background Movie URL
+      help: Background movie on the login screen.
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
