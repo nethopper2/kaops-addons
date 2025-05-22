@@ -28,7 +28,6 @@ forms:
         ui:
           label: Details
       - slug: dependencies
-        isCreateOnly: true
         variableSlugs:
           - openWebui
           - postgresql
@@ -62,6 +61,10 @@ forms:
           - postInstallOptions
           - postInstallGroupsSuggested
           # - postInstallKnowledgeBasesSuggested
+          - postInstallSector
+          - noSsoOpenWebUiLogo
+          - noSsoOpenWebUiBgImageAuth
+          - noSsoOpenWebUiBgMovieAuth
         ui:
           label: Options
       - slug: groups
@@ -231,12 +234,50 @@ variables:
           options:
             - label: Create Assets
               value: suggested
+              # TODO: clean this and the related inputs up if we wont allow custom entry.
             # - label: Custom
             #   value: custom
             - label: I'll do this later
               value: none
           value: suggested
           # help: All settings here may be changed inside the addon.
+  - slug: postInstallSector
+    path: open-webui.extraEnvVars.NH_WEBUI_CUSTOM.sector
+    forms: [default]
+    ui:
+      if: "$get(ssoEnabled).value !== true"
+      type: select
+      label: Sector
+      options:
+        - label: Default
+          value: default
+        - label: Investment Banking
+          value: investmentBanking
+      value: default
+  - slug: noSsoOpenWebUiLogo
+    path: open-webui.extraEnvVars.NH_WEBUI_CUSTOM.logo
+    forms: [default]
+    ui:
+      if: "$get(ssoEnabled).value !== true"
+      type: url
+      label: Auth Screen Logo Image URL
+      help: Logo shown on the login screen.
+  - slug: noSsoOpenWebUiBgImageAuth
+    path: open-webui.extraEnvVars.NH_WEBUI_CUSTOM.bgImageAuth
+    forms: [default]
+    ui:
+      if: "$get(ssoEnabled).value !== true"
+      type: url
+      label: Auth Screen Background Image URL
+      help: Background image on the login screen.
+  - slug: noSsoOpenWebUiBgMovieAuth
+    path: open-webui.extraEnvVars.NH_WEBUI_CUSTOM.bgMovieAuth
+    forms: [default]
+    ui:
+      if: "$get(ssoEnabled).value !== true"
+      type: url
+      label: Auth Screen Background Image URL
+      help: Background image on the login screen.
   - slug: postInstallGroupsSuggested
     path: postInstall.groups
     forms: [default]
