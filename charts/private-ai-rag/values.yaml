@@ -29,7 +29,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: 0.6.5-alpha.12
+    tag: 0.6.5-alpha.13
     pullPolicy: Always
   ollama:
     persistentVolume:
@@ -77,6 +77,9 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: DATABASE_URL
+    # refactor name to be NH_SECTOR_NAME
+    - name: SECTOR_NAME
+      value: "investment_banking"
 private-ai-rest:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
