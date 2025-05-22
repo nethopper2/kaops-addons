@@ -25,8 +25,20 @@ forms:
           - gpuEnabled
           - modelsToPull
           - additionalHosts
+          - dependencies
         ui:
           label: Details
+      - slug: dependencies
+        isCreateOnly: true
+        variableSlugs:
+          - openWebui
+          - postgresql
+          - qdrant
+          - privateAiRest
+          - gdriveGcsSync
+        ui:
+          if: "$get(dependencies).value"
+          label: Dependencies
       - slug: gDrive
         isCreateOnly: true
         variableSlugs:
@@ -35,6 +47,7 @@ forms:
           - gDriveApiScopes
           - gDriveAllowedExtensions
         ui:
+          if: "$get(gdriveGcsSync).value"
           label: GDrive
       - slug: sso
         isCreateOnly: true
@@ -131,6 +144,49 @@ variables:
       label: Use GPU
       help: Install the oAuth2 Proxy Addon to use SSO.
       value: false
+  - slug: dependencies
+    forms: [default, defaultUpdate]
+    ui:
+      type: toggle
+      label: Enable/Disable Dependencies
+      id: dependencies
+      value: false
+  - slug: openWebui
+    path: open-webui.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: open-webui
+      value: true
+  - slug: postgresql
+    path: postgresql.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: postgresql
+      value: true
+  - slug: qdrant
+    path: qdrant.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: qdrant
+      value: true
+  - slug: privateAiRest
+    path: private-ai-rest.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: private-ai-rest
+      value: true
+  - slug: gdriveGcsSync
+    path: gdrive-gcs-sync.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: gdrive-gcs-sync
+      id: gdriveGcsSync
+      value: true
   - slug: additionalHosts
     path: ingress.additionalHosts
     forms: [default]
