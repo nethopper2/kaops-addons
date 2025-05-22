@@ -20,7 +20,6 @@ forms:
       - slug: details
         isCreateOnly: true
         variableSlugs:
-          - __baseFormDataExclusions
           - ssoEnabled
           - gpuEnabled
           - modelsToPull
