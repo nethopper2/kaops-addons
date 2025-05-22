@@ -36,7 +36,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ include "open-webui.name" . }}
+            name: open-webui
             port:
               name: http
   {{- range .Values.ingress.additionalHosts }}
@@ -47,7 +47,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ include "open-webui.name" $ }}
+            name: open-webui
             port:
               name: http
   {{- end }}
