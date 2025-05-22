@@ -7,7 +7,7 @@ global:
       username: postgres
       existingSecret: postgresql-password
       secretKeys:
-        adminPasswordKey: postgres-password
+        adminPasswordKey: postgresPassword
 ingress:
   enabled: true
   class: nginx
