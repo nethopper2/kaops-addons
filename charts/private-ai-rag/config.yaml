@@ -285,7 +285,7 @@ variables:
       el: div
       key: "$: 'postInstallCreateAssets-' + $get(postInstallOptions).value"
       attrs:
-        class: text-neutral-500
+        class: text-neutral-500 pb-4
       children:
         - el: div
           if: "$get(postInstallOptions).value == 'suggested' && $get(ssoEnabled).value == true"
