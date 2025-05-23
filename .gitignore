@@ -23,3 +23,4 @@ test-values.yaml
 
 # Chart dependencies files
 Chart.lock
+charts/*/charts/*
