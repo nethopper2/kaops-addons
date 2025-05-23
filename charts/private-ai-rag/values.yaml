@@ -114,7 +114,7 @@ postgresql:
           CREATE DATABASE "private-ai-rag" WITH OWNER postgres;
           CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
 rag:
-  secretArgocdHook: skip
+  secretArgocdHook: PreSync
   custom: {}
     # logo: # user provided
     # bgImageAuth: # user provided
