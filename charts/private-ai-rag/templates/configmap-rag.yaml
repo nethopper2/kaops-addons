@@ -11,6 +11,7 @@ data:
   ALLOWED_CORS_ORIGIN: {{ .Values.rag.allowedCorsOrigin }}
   NH_API_BASE_URL: {{ .Values.rag.apiBaseUrl }}
   GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes }}
+  NH_WEBUI_CUSTOM: {{ .Values.rag.custom | toJson }}
   {{- if .Values.rag.googleAllowedExtensions }}
   GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions }}
   {{- end }}

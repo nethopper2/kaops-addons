@@ -77,12 +77,6 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: DATABASE_URL
-    - name: NH_WEBUI_CUSTOM
-      value:
-        logo: # user provided
-        bgImageAuth: # user provided
-        bgMovieAuth: # user provided
-        sector:  # user provided
 private-ai-rest:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
@@ -119,8 +113,12 @@ postgresql:
           CREATE DATABASE "open-webui" WITH OWNER postgres;
           CREATE DATABASE "private-ai-rag" WITH OWNER postgres;
           CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
-
 rag:
+  custom: {}
+    # logo: # user provided
+    # bgImageAuth: # user provided
+    # bgMovieAuth: # user provided
+    # sector:  # user provided
   apiBaseUrl: # system provided
   allowedCorsOrigin: # system provided
   # googleAllowedExtensions: # user provided

@@ -242,7 +242,7 @@ variables:
           value: suggested
           # help: All settings here may be changed inside the addon.
   - slug: postInstallSector
-    path: open-webui.extraEnvVars.NH_WEBUI_CUSTOM.sector
+    path: rag.custom.sector
     forms: [default]
     ui:
       if: "$get(ssoEnabled).value !== true"
@@ -255,7 +255,7 @@ variables:
           value: investmentBanking
       value: default
   - slug: noSsoOpenWebUiLogo
-    path: open-webui.extraEnvVars.NH_WEBUI_CUSTOM.logo
+    path: rag.custom.logo
     forms: [default]
     ui:
       if: "$get(ssoEnabled).value !== true"
@@ -263,7 +263,7 @@ variables:
       label: Auth Screen Logo Image URL
       help: Logo shown on the login screen.
   - slug: noSsoOpenWebUiBgImageAuth
-    path: open-webui.extraEnvVars.NH_WEBUI_CUSTOM.bgImageAuth
+    path: rag.custom.bgImageAuth
     forms: [default]
     ui:
       if: "$get(ssoEnabled).value !== true"
@@ -271,7 +271,7 @@ variables:
       label: Auth Screen Background Image URL
       help: Background image on the login screen.
   - slug: noSsoOpenWebUiBgMovieAuth
-    path: open-webui.extraEnvVars.NH_WEBUI_CUSTOM.bgMovieAuth
+    path: rag.custom.bgMovieAuth
     forms: [default]
     ui:
       if: "$get(ssoEnabled).value !== true"
