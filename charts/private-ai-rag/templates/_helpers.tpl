@@ -60,3 +60,15 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+Create the CORS origins string
+*/}}
+{{- define "private-ai.corsOrigins" -}}
+{{- $cors := splitList "|" .Values.rag.allowedCorsOrigin }}
+{{- range .Values.ingress.additionalHosts }}
+  {{- $cors = append $cors (printf "https://%s" .) }}
+{{- end }}
+{{- join "|" $cors }}
+{{- end }}
