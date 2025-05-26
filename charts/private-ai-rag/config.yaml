@@ -1,6 +1,6 @@
 metadata:
   slug: private-ai-rag
-  name: Private AI RAG
+  name: Private AI
   description: Deploy generative AI while safeguarding corporate data and scaling into your own infrastructure.
   categories: [Artificial Intelligence]
   logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png"
@@ -18,7 +18,7 @@ forms:
     label: Configuration
     steps:
       - slug: details
-        isCreateOnly: true
+#        isCreateOnly: true
         variableSlugs:
           - ssoEnabled
           - gpuEnabled
@@ -38,7 +38,7 @@ forms:
           if: "$get(dependencies).value"
           label: Dependencies
       - slug: gDrive
-        isCreateOnly: true
+#        isCreateOnly: true
         variableSlugs:
           - gDriveGoogleApplicationsCredentialsSecretRef
           - gDriveGcsBucketName
@@ -48,7 +48,7 @@ forms:
           if: "$get(gdriveGcsSync).value !== false"
           label: GDrive
       - slug: sso
-        isCreateOnly: true
+#        isCreateOnly: true
         variableSlugs:
           - systemAdmin
           - oauthProviderName
@@ -56,38 +56,38 @@ forms:
           if: $get(ssoEnabled).value
           label: SSO
       - slug: postInstall
-        isCreateOnly: true
+#        isCreateOnly: true
         variableSlugs:
           - postInstallOptions
           - postInstallGroupsSuggested
-          # - postInstallKnowledgeBasesSuggested
+#          - postInstallKnowledgeBasesSuggested
           - postInstallSector
           - noSsoOpenWebUiLogo
           - noSsoOpenWebUiBgImageAuth
           - noSsoOpenWebUiBgMovieAuth
         ui:
           label: Options
-      - slug: groups
-        isCreateOnly: true
-        variableSlugs:
-          - postInstallGroupsCustom
-        ui:
-          if: "$get(postInstallOptions).value == 'custom'"
-          label: Groups
-      - slug: knowledge
-        isCreateOnly: true
-        variableSlugs:
-          - postInstallKnowledgeBasesCustom
-        ui:
-          if: "$get(postInstallOptions).value == 'custom'"
-          label: Knowledge
-  - slug: defaultUpdate
-    label: Configuration
+#      - slug: groups
+#        isCreateOnly: true
+#        variableSlugs:
+#          - postInstallGroupsCustom
+#        ui:
+#          if: "$get(postInstallOptions).value == 'custom'"
+#          label: Groups
+#      - slug: knowledge
+#        isCreateOnly: true
+#        variableSlugs:
+#          - postInstallKnowledgeBasesCustom
+#        ui:
+#          if: "$get(postInstallOptions).value == 'custom'"
+#          label: Knowledge
+#  - slug: defaultUpdate
+#    label: Configuration
 
 variables:
   - slug: ssoEnabled
     path: ingress.oauth2Proxy.enabled
-    forms: [default, defaultUpdate]
+    forms: [default]
     ui:
       type: toggle
       label: Use Single Sign On
@@ -147,7 +147,7 @@ variables:
       help: Install the oAuth2 Proxy Addon to use SSO.
       value: false
   - slug: dependencies
-    forms: [default, defaultUpdate]
+    forms: [default]
     ui:
       type: toggle
       label: Enable/Disable Dependencies
@@ -316,167 +316,167 @@ variables:
             definitions.
 
         # NOTE: The remaining options are currently not used. They are the original form ideas that did not make MVP.
-        - if: "$get(postInstallOptions).value == 'not-used-disabled'"
-          type: checkbox
-          name: groups
-          id: postInstallGroupsSuggested
-          options:
-            - label: Engineering Team
-              value:
-                name: Engineering Team
-                description: A group for software engineers
-              help: A group for software engineers
-            - label: Product Management
-              value:
-                name: Product Management
-                description: A group for product managers
-              help: A group for product managers
-            - label: Marketing Team
-              value:
-                name: Marketing Team
-                description: A group for marketing professionals
-              help: A group for marketing professionals
-            - label: Customer Support
-              value:
-                name: Customer Support
-                description: A group for customer support representatives
-              help: A group for customer support representatives
-          value:
-            - name: Engineering Team
-              description: A group for software engineers
-            - name: Product Management
-              description: A group for product managers
-            - name: Marketing Team
-              description: A group for marketing professionals
-            - name: Customer Support
-              description: A group for customer support representatives
-        - if: "$get(postInstallOptions).value == 'custom'"
-          el: div
-          children: You prefer to define a few of your own groups and knowledge bases in the following steps.
-  - slug: postInstallGroupsCustom
-    path: postInstall.groups
-    forms: [default]
-    ui:
-      type: repeater
-      label: Groups
-      id: postInstallGroupsCustom
-      addButton: false
-      insertControl: true
-      upControl: false
-      downControl: false
-      min: 1
-      help: The installation process will automatically create these groups. You can change the names & details anytime inside the application itself.
-      children:
-        - label: Name
-          type: text
-          name: name
-          value: ""
-          validation: required
-        - label: Description
-          type: text
-          name: description
-          value: ""
-          validation: required
-  - slug: postInstallKnowledgeBasesSuggested
-    path: postInstall.knowledgeBases
-    isStatic: true
-    forms: [default]
-    ui:
-      if: "$get(postInstallOptions).value == 'suggested'"
-      type: list
-      children:
-        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Engineering Team'))"
-          type: group
-          children:
-            - type: hidden
-              name: name
-              value: Best Practices for Code Reviews
-            - type: hidden
-              name: description
-              value: This guide outlines the key steps for effective code reviews.
-            - type: list
-              name: groups
-              children:
-                - type: hidden
-                  value: Engineering Team
-        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Marketing Team'))"
-          type: group
-          children:
-            - type: hidden
-              name: name
-              value: Social Media Strategy For This Year
-            - type: hidden
-              name: description
-              value: An overview of our social media approach for the upcoming year.
-            - type: list
-              name: groups
-              children:
-                - type: hidden
-                  value: Marketing Team
-        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Product Management'))"
-          type: group
-          children:
-            - type: hidden
-              name: name
-              value: Agile Project Management Tips
-            - type: hidden
-              name: description
-              value: Key insights for managing agile projects effectively.
-            - type: list
-              name: groups
-              children:
-                - type: hidden
-                  value: Product Management
-        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Customer Support'))"
-          type: group
-          children:
-            - type: hidden
-              name: name
-              value: Handling Difficult Customers
-            - type: hidden
-              name: description
-              value: Techniques and strategies for resolving challenging customer situations.
-            - type: list
-              name: groups
-              children:
-                - type: hidden
-                  value: Customer Support
-  - slug: postInstallKnowledgeBasesCustom
-    path: postInstall.knowledgeBases
-    forms: [default]
-    ui:
-      type: repeater
-      label: Knowledge Bases
-      addButton: false
-      insertControl: true
-      upControl: false
-      downControl: false
-      min: 1
-      help: The installation process will automatically create these knowledge bases. You can change the names & details anytime inside the application itself.
-      children:
-        - label: Name
-          type: text
-          name: name
-          help: What are you working on?
-          value: ""
-          validation: required
-        - label: Description
-          type: text
-          name: description
-          help: What are you trying to achieve?
-          value: ""
-          validation: required
-        - label: Groups
-          type: taglist
-          name: groups
-          key: "$: 'knowledgeBaseGroups-' $index + '-' + $get(postInstallGroupsCustom).value.length"
-          options: "$u.map($get(postInstallGroupsCustom).value, 'name')"
-          disableDragAndDrop: true
-          popover: true
-          openOnClick: true
-          closeOnSelect: false
-          help: Select groups with write access to this knowledge base
-          value: []
+#        - if: "$get(postInstallOptions).value == 'not-used-disabled'"
+#          type: checkbox
+#          name: groups
+#          id: postInstallGroupsSuggested
+#          options:
+#            - label: Engineering Team
+#              value:
+#                name: Engineering Team
+#                description: A group for software engineers
+#              help: A group for software engineers
+#            - label: Product Management
+#              value:
+#                name: Product Management
+#                description: A group for product managers
+#              help: A group for product managers
+#            - label: Marketing Team
+#              value:
+#                name: Marketing Team
+#                description: A group for marketing professionals
+#              help: A group for marketing professionals
+#            - label: Customer Support
+#              value:
+#                name: Customer Support
+#                description: A group for customer support representatives
+#              help: A group for customer support representatives
+#          value:
+#            - name: Engineering Team
+#              description: A group for software engineers
+#            - name: Product Management
+#              description: A group for product managers
+#            - name: Marketing Team
+#              description: A group for marketing professionals
+#            - name: Customer Support
+#              description: A group for customer support representatives
+#        - if: "$get(postInstallOptions).value == 'custom'"
+#          el: div
+#          children: You prefer to define a few of your own groups and knowledge bases in the following steps.
+#  - slug: postInstallGroupsCustom
+#    path: postInstall.groups
+#    forms: [default]
+#    ui:
+#      type: repeater
+#      label: Groups
+#      id: postInstallGroupsCustom
+#      addButton: false
+#      insertControl: true
+#      upControl: false
+#      downControl: false
+#      min: 1
+#      help: The installation process will automatically create these groups. You can change the names & details anytime inside the application itself.
+#      children:
+#        - label: Name
+#          type: text
+#          name: name
+#          value: ""
+#          validation: required
+#        - label: Description
+#          type: text
+#          name: description
+#          value: ""
+#          validation: required
+#  - slug: postInstallKnowledgeBasesSuggested
+#    path: postInstall.knowledgeBases
+#    isStatic: true
+#    forms: [default]
+#    ui:
+#      if: "$get(postInstallOptions).value == 'suggested'"
+#      type: list
+#      children:
+#        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Engineering Team'))"
+#          type: group
+#          children:
+#            - type: hidden
+#              name: name
+#              value: Best Practices for Code Reviews
+#            - type: hidden
+#              name: description
+#              value: This guide outlines the key steps for effective code reviews.
+#            - type: list
+#              name: groups
+#              children:
+#                - type: hidden
+#                  value: Engineering Team
+#        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Marketing Team'))"
+#          type: group
+#          children:
+#            - type: hidden
+#              name: name
+#              value: Social Media Strategy For This Year
+#            - type: hidden
+#              name: description
+#              value: An overview of our social media approach for the upcoming year.
+#            - type: list
+#              name: groups
+#              children:
+#                - type: hidden
+#                  value: Marketing Team
+#        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Product Management'))"
+#          type: group
+#          children:
+#            - type: hidden
+#              name: name
+#              value: Agile Project Management Tips
+#            - type: hidden
+#              name: description
+#              value: Key insights for managing agile projects effectively.
+#            - type: list
+#              name: groups
+#              children:
+#                - type: hidden
+#                  value: Product Management
+#        - if: "$u.find($get(postInstallGroupsSuggested).value, $u.matchesProperty('name', 'Customer Support'))"
+#          type: group
+#          children:
+#            - type: hidden
+#              name: name
+#              value: Handling Difficult Customers
+#            - type: hidden
+#              name: description
+#              value: Techniques and strategies for resolving challenging customer situations.
+#            - type: list
+#              name: groups
+#              children:
+#                - type: hidden
+#                  value: Customer Support
+#  - slug: postInstallKnowledgeBasesCustom
+#    path: postInstall.knowledgeBases
+#    forms: [default]
+#    ui:
+#      type: repeater
+#      label: Knowledge Bases
+#      addButton: false
+#      insertControl: true
+#      upControl: false
+#      downControl: false
+#      min: 1
+#      help: The installation process will automatically create these knowledge bases. You can change the names & details anytime inside the application itself.
+#      children:
+#        - label: Name
+#          type: text
+#          name: name
+#          help: What are you working on?
+#          value: ""
+#          validation: required
+#        - label: Description
+#          type: text
+#          name: description
+#          help: What are you trying to achieve?
+#          value: ""
+#          validation: required
+#        - label: Groups
+#          type: taglist
+#          name: groups
+#          key: "$: 'knowledgeBaseGroups-' $index + '-' + $get(postInstallGroupsCustom).value.length"
+#          options: "$u.map($get(postInstallGroupsCustom).value, 'name')"
+#          disableDragAndDrop: true
+#          popover: true
+#          openOnClick: true
+#          closeOnSelect: false
+#          help: Select groups with write access to this knowledge base
+#          value: []
 
 system:
   - path: "ingress.host"
