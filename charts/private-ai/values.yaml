@@ -46,8 +46,6 @@ open-webui:
       value: "true"
     - name: WEBUI_AUTH
       value: "true"
-    - name: ENV # allows access to the API /docs endpoint
-      value: dev
     - name: API_KEY_ALLOWED_ENDPOINTS
       value: /api/v1/knowledge/,/api/v1/knowledge/list
 private-ai-rest:
