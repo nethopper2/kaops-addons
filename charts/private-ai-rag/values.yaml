@@ -29,7 +29,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: 0.6.5-alpha.22
+    tag: 0.6.5-alpha.23
     pullPolicy: Always
   ollama:
     persistentVolume:
@@ -61,6 +61,8 @@ open-webui:
       value: "true"
     - name: USER_PERMISSIONS_WORKSPACE_KNOWLEDGE_ACCESS
       value: "true"
+    - name: USER_PERMISSIONS_CHAT_CONTROLS
+      value: "false"
     - name: WEBUI_AUTH
       value: "true"
     - name: API_KEY_ALLOWED_ENDPOINTS
