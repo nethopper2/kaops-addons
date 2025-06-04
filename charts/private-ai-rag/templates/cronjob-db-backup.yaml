@@ -1,0 +1,61 @@
+{{- if .Values.backups.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "private-ai.fullname" . }}-pg-backup
+  labels: 
+    {{- include "private-ai.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.backups.schedule }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: pg-backup
+            image: google/cloud-sdk:524.0.0-slim
+            env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /secrets/gcp/key.json
+            - name: PGHOST
+              value: {{ .Values.rag.postgresHost }}
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              value: {{ .Values.global.postgresql.auth.username }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgresql.auth.existingSecret }}
+                  key: {{ .Values.global.postgresql.auth.secretKeys.adminPasswordKey }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS_BASE64
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.backups.googleApplicationCredentialsSecretRef | default .Values.global.googleApplicationCredentialsSecretRef }}
+                  key: GOOGLE_APPLICATION_CREDENTIALS_BASE64
+            - name: BACKUP_BUCKET
+              value: {{ .Values.backups.gcsBucketName }}
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+              apt-get update && apt-get install -y curl gnupg2 lsb-release && \
+              echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+              curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg && \
+              apt-get update && apt-get install -y postgresql-client-17 && \
+              echo "Decoding Google credentials..." && \
+              mkdir -p $(dirname $GOOGLE_APPLICATION_CREDENTIALS) && \
+              echo $GOOGLE_APPLICATION_CREDENTIALS_BASE64 | base64 -d > $GOOGLE_APPLICATION_CREDENTIALS 2>/dev/null || echo "Continue..." && \
+              chmod 600 $GOOGLE_APPLICATION_CREDENTIALS || true && \
+              echo "Google credentials saved to $GOOGLE_APPLICATION_CREDENTIALS" && \
+              echo "Authenticating with Google Cloud…" && \
+              gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS && \
+              TS=$(date +%Y%m%d_%H%M%S) && \
+              echo "Dumping all DBs…" && \
+              pg_dumpall --host=$PGHOST --port=$PGPORT --username=$PGUSER \
+                | gzip \
+                | gsutil cp - gs://$BACKUP_BUCKET/postgres/$TS/all_dbs.sql.gz && \
+              echo "Upload complete: gs://$BACKUP_BUCKET/postgres/$TS/all_dbs.sql.gz"
+{{- end }}
