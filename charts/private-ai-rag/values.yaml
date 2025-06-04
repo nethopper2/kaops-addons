@@ -129,7 +129,7 @@ postInstall:
   chosenPostInstallOptions: ""
 
 backups: 
-  enabled: true
+  enabled: false
   schedule: "0 */8 * * *"
-  gcsBucketName: private-ai-backups
+  # gcsBucketName: # user provided
   # googleApplicationCredentialsSecretRef: defaults to global.googleApplicationCredentialsSecretRef
