@@ -6442,6 +6442,37 @@ entries:
     version: 0.1.9
   private-ai-rag:
   - apiVersion: v2
+    appVersion: 0.6.5-alpha.24
+    created: "2025-06-04T20:34:44.766007646Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 6.5.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - condition: private-ai-rest.enabled
+      name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.18
+    - condition: gdrive-gcs-sync.enabled
+      name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.25
+    description: KAOPS addon to install private-ai
+    digest: 74cb2d2673de5cf5f9708353cb53fc8163be5b1bb20c1a3ae9950aeae4f9c5b8
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.203/private-ai-rag-0.1.203.tgz
+    version: 0.1.203
+  - apiVersion: v2
     appVersion: 0.6.5-alpha.23
     created: "2025-06-04T17:43:22.699366936Z"
     dependencies:
@@ -9700,4 +9731,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-06-04T17:43:22.700214725Z"
+generated: "2025-06-04T20:34:44.767511255Z"
