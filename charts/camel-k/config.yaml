@@ -25,7 +25,7 @@ forms:
           - operatorLogLevel
           - platformEnabled
           - platformProfile
-          - platformTraits
+          - monitoringEnabled
         ui:
           label: Basic
       - slug: registry
@@ -35,13 +35,13 @@ forms:
           - registryOrganization
         ui:
           if: $get(registryEnabled).value
-          label: Container Registry
+          label: Registry
       - slug: monitoring
         variableSlugs:
-          - monitoringEnabled
           - prometheusEnabled
           - jaegerEnabled
         ui:
+          if: $get(monitoringEnabled).value
           label: Observability
       - slug: resources
         variableSlugs:
@@ -84,6 +84,7 @@ variables:
     forms: [default]
     ui:
       type: toggle
+      id: platformEnabled
       label: Create Integration Platform
       value: true
       help: Automatically create an IntegrationPlatform resource
@@ -92,6 +93,7 @@ variables:
     path: camel-k.platform.profile
     forms: [default]
     ui:
+      if: $get(platformEnabled).value
       type: select
       label: Platform Profile
       options:
@@ -102,17 +104,7 @@ variables:
         - label: Knative
           value: Knative
       value: Kubernetes
-      help: Platform profile determines the runtime behavior
-
-  - slug: platformTraits
-    path: camel-k.platform.traits
-    forms: [default]
-    ui:
-      type: transferlist
-      label: Platform Traits
-      help: Default traits to apply to all integrations (e.g., prometheus.enabled=true)
-      allowNewValues: true
-      placeholder: "Add trait configurations"
+      help: Platform profile determines runtime behavior and available features
 
   - slug: registryEnabled
     path: camel-k.registry.enabled
@@ -155,6 +147,7 @@ variables:
     forms: [default]
     ui:
       type: toggle
+      id: monitoringEnabled
       label: Enable Monitoring
       value: false
       help: Enable monitoring and observability features
