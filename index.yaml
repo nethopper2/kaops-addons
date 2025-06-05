@@ -664,6 +664,23 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/beatles-0.1.0/beatles-0.1.0.tgz
     version: 0.1.0
+  camel-k:
+  - apiVersion: v2
+    appVersion: 2.6.0
+    created: "2025-06-05T20:07:32.637007267Z"
+    dependencies:
+    - condition: camel-k.enabled
+      name: camel-k
+      repository: https://apache.github.io/camel-k/charts/
+      version: 2.6.0
+    description: A Helm chart for Apache Camel K - a lightweight integration platform
+      for Kubernetes
+    digest: e830fe09600b53c96c4aa847ec6d8e53faf39ef78a5a5b45e7ff4aaf04fe03bf
+    name: camel-k
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/camel-k-0.1.1/camel-k-0.1.1.tgz
+    version: 0.1.1
   gdrive-gcs-sync:
   - apiVersion: v2
     appVersion: 1.0.0
@@ -9731,4 +9748,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-06-04T20:34:44.767511255Z"
+generated: "2025-06-05T20:07:32.637845461Z"
