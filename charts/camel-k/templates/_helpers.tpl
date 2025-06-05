@@ -66,12 +66,39 @@ Create the name of the service account to use
 Return the proper image name for the operator
 */}}
 {{- define "camel-k.operatorImage" -}}
+{{- if .Values.camel-k.operator.image }}
+{{- if .Values.camel-k.operator.image.repository }}
 {{- printf "%s:%s" .Values.camel-k.operator.image.repository (.Values.camel-k.operator.image.tag | default .Chart.AppVersion) }}
+{{- else }}
+{{- printf "apache/camel-k:%s" (.Values.camel-k.operator.image.tag | default .Chart.AppVersion) }}
+{{- end }}
+{{- else }}
+{{- printf "apache/camel-k:%s" .Chart.AppVersion }}
+{{- end }}
 {{- end }}
 
 {{/*
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "camel-k.imagePullSecrets" -}}
-{{- include "common.images.pullSecrets" (dict "images" (list .Values.camel-k.operator.image) "global" .Values.global) }}
+{{- if .Values.global.imagePullSecrets }}
+imagePullSecrets:
+{{- range .Values.global.imagePullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Get the operator namespace
+*/}}
+{{- define "camel-k.operatorNamespace" -}}
+{{- default .Release.Namespace .Values.camel-k.operator.namespace }}
+{{- end }}
+
+{{/*
+Get the platform name
+*/}}
+{{- define "camel-k.platformName" -}}
+{{- default (include "camel-k.fullname" .) .Values.camel-k.platform.name }}
 {{- end }}
