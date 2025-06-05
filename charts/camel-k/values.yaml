@@ -1,14 +1,70 @@
-camel-k:
-  enabled: true
+# Direct upstream camel-k chart values (no wrapper)
+enabled: true
 
-  # These values will be passed directly to the upstream chart
-  operator:
-    namespace: camel-k-system
-    logLevel: info
+# Operator configuration
+operator:
+  namespace: camel-k-system
+  logLevel: info
 
-  platform:
-    enabled: true
-    profile: Kubernetes
+  image:
+    repository: apache/camel-k
+    tag: "2.6.0"
+    pullPolicy: IfNotPresent
 
-  monitoring:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+# Platform configuration
+platform:
+  # Don't use 'enabled: true' - this field doesn't exist in the CRD
+  # The platform is created automatically when the chart is installed
+  profile: Kubernetes
+
+  build:
+    strategy: routine
+    timeout: 10m
+
+  runtime:
+    version: "3.22.0"
+    provider: main
+
+# Registry configuration
+registry:
+  enabled: false
+  # address: ""
+  # secret: ""
+  # organization: ""
+
+# Monitoring configuration
+monitoring:
+  enabled: false
+
+  prometheus:
     enabled: false
+    serviceMonitor:
+      enabled: false
+      # namespace: "monitoring"
+      # labels: {}
+
+  jaeger:
+    enabled: false
+    # endpoint: ""
+
+# RBAC
+rbac:
+  create: true
+
+# CRDs
+crds:
+  install: true
+
+# Global settings
+global:
+  imagePullSecrets: []
+  labels: {}
+  annotations: {}
