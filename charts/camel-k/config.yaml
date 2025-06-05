@@ -1,0 +1,263 @@
+metadata:
+  slug: camel-k
+  name: Apache Camel K
+  description: Lightweight integration platform for Kubernetes providing cloud-native integration capabilities built on Apache Camel
+  categories: [Automation]
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/camel-k/logo-dark.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/camel-k/logo-light.png"
+  detailUrl: "https://addons.kaops.net/camel-k/"
+  externalUrl: "https://camel.apache.org/camel-k/"
+  isProduction: false
+  isStaging: false
+  useSafeDelete: true
+  installTargets:
+    clusterMessage: Must be installed on clusters with sufficient RBAC permissions for operator deployment.
+    infoMessage: Camel K requires cluster-admin permissions to install CRDs and operators.
+
+forms:
+  - slug: default
+    label: Configuration
+    steps:
+      - slug: basic
+        variableSlugs:
+          - registryEnabled
+          - operatorEnabled
+          - operatorLogLevel
+          - platformEnabled
+          - platformProfile
+          - platformTraits
+        ui:
+          label: Basic
+      - slug: registry
+        variableSlugs:
+          - registryAddress
+          - registrySecret
+          - registryOrganization
+        ui:
+          if: $get(registryEnabled).value
+          label: Container Registry
+      - slug: monitoring
+        variableSlugs:
+          - monitoringEnabled
+          - prometheusEnabled
+          - jaegerEnabled
+        ui:
+          label: Observability
+      - slug: resources
+        variableSlugs:
+          - resourceLimitsCpu
+          - resourceLimitsMemory
+          - resourceRequestsCpu
+          - resourceRequestsMemory
+        ui:
+          label: Resources
+
+variables:
+  - slug: operatorEnabled
+    path: camel-k.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Enable Camel K Operator
+      value: true
+      help: Install the Camel K operator to manage integrations
+
+  - slug: operatorLogLevel
+    path: camel-k.operator.logLevel
+    forms: [default]
+    ui:
+      type: select
+      label: Operator Log Level
+      options:
+        - label: Error
+          value: error
+        - label: Warn
+          value: warn
+        - label: Info
+          value: info
+        - label: Debug
+          value: debug
+      value: info
+
+  - slug: platformEnabled
+    path: camel-k.platform.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Create Integration Platform
+      value: true
+      help: Automatically create an IntegrationPlatform resource
+
+  - slug: platformProfile
+    path: camel-k.platform.profile
+    forms: [default]
+    ui:
+      type: select
+      label: Platform Profile
+      options:
+        - label: Kubernetes
+          value: Kubernetes
+        - label: OpenShift
+          value: OpenShift
+        - label: Knative
+          value: Knative
+      value: Kubernetes
+      help: Platform profile determines the runtime behavior
+
+  - slug: platformTraits
+    path: camel-k.platform.traits
+    forms: [default]
+    ui:
+      type: transferlist
+      label: Platform Traits
+      help: Default traits to apply to all integrations (e.g., prometheus.enabled=true)
+      allowNewValues: true
+      placeholder: "Add trait configurations"
+
+  - slug: registryEnabled
+    path: camel-k.registry.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Configure Container Registry
+      id: registryEnabled
+      value: false
+      help: Configure a custom container registry for integration images
+
+  - slug: registryAddress
+    path: camel-k.registry.address
+    forms: [default]
+    ui:
+      type: text
+      label: Registry Address
+      help: Container registry address (e.g., docker.io, gcr.io)
+      placeholder: "docker.io"
+
+  - slug: registrySecret
+    path: camel-k.registry.secret
+    forms: [default]
+    ui:
+      type: secret
+      label: Registry Secret
+      help: Secret containing registry credentials
+
+  - slug: registryOrganization
+    path: camel-k.registry.organization
+    forms: [default]
+    ui:
+      type: text
+      label: Registry Organization
+      help: Organization/namespace in the registry
+      placeholder: "my-org"
+
+  - slug: monitoringEnabled
+    path: camel-k.monitoring.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Enable Monitoring
+      value: false
+      help: Enable monitoring and observability features
+
+  - slug: prometheusEnabled
+    path: camel-k.monitoring.prometheus.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Enable Prometheus Metrics
+      value: false
+      help: Enable Prometheus metrics collection
+
+  - slug: jaegerEnabled
+    path: camel-k.monitoring.jaeger.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Enable Jaeger Tracing
+      value: false
+      help: Enable distributed tracing with Jaeger
+
+  - slug: resourceLimitsCpu
+    path: camel-k.operator.resources.limits.cpu
+    forms: [default]
+    ui:
+      type: text
+      label: CPU Limit
+      help: CPU limit for the operator pod
+      placeholder: "500m"
+
+  - slug: resourceLimitsMemory
+    path: camel-k.operator.resources.limits.memory
+    forms: [default]
+    ui:
+      type: text
+      label: Memory Limit
+      help: Memory limit for the operator pod
+      placeholder: "512Mi"
+
+  - slug: resourceRequestsCpu
+    path: camel-k.operator.resources.requests.cpu
+    forms: [default]
+    ui:
+      type: text
+      label: CPU Request
+      help: CPU request for the operator pod
+      placeholder: "100m"
+
+  - slug: resourceRequestsMemory
+    path: camel-k.operator.resources.requests.memory
+    forms: [default]
+    ui:
+      type: text
+      label: Memory Request
+      help: Memory request for the operator pod
+      placeholder: "256Mi"
+
+system:
+  # Namespace management
+  - path: "camel-k.operator.namespace"
+    value: "${system.cluster.name}-camel-k"
+  - path: "camel-k.operator.watchNamespace"
+    value: "${system.cluster.namespace}"
+
+  # Platform configuration
+  - path: "camel-k.platform.name"
+    value: "${system.cluster.name}-camel-k-platform"
+
+  # Monitoring integration
+  - path: "camel-k.monitoring.prometheus.serviceMonitor.namespace"
+    value: "${system.cluster.namespace}"
+  - path: "camel-k.monitoring.prometheus.serviceMonitor.additionalLabels.release"
+    value: "${system.observabilityInfo.releaseName}"
+  - path: "camel-k.monitoring.prometheus.internal.serviceName"
+    value: "${system.observabilityInfo.prometheusServiceName}"
+
+  # Jaeger integration
+  - path: "camel-k.monitoring.jaeger.endpoint"
+    value: "http://jaeger-collector.${system.cluster.namespace}:14268/api/traces"
+
+output:
+  - name: Camel K Operator Status
+    description: Check the status of the Camel K operator
+    value: "kubectl get pods -n ${system.cluster.name}-camel-k"
+    type: command
+    slug: default
+  - name: Integration Platform Status
+    description: Check the IntegrationPlatform status
+    value: "kubectl get integrationplatform -n ${system.cluster.name}-camel-k"
+    type: command
+    slug: default
+  - name: Camel K Documentation
+    description: Access Camel K documentation
+    value: "https://camel.apache.org/camel-k/2.6.x/"
+    type: url
+    slug: default
+
+dependencies:
+  networkFeatures:
+    - slug: 'prometheus'
+      name: 'Prometheus'
+      required: false
+    - slug: 'jaeger'
+      name: 'Jaeger'
+      required: false

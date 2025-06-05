@@ -1,0 +1,149 @@
+# Default values for camel-k addon
+# This is a YAML-formatted file.
+
+camel-k:
+  enabled: true
+
+  operator:
+    # Namespace where the operator will be installed
+    namespace: camel-k-system
+
+    # Namespace(s) the operator should watch (empty for cluster-wide)
+    watchNamespace: ""
+
+    # Operator log level
+    logLevel: info
+
+    # Operator image configuration
+    image:
+      repository: apache/camel-k
+      tag: "2.6.0"
+      pullPolicy: IfNotPresent
+
+    # Resource configuration for the operator
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+    # Node selector for operator pod
+    nodeSelector: {}
+
+    # Tolerations for operator pod
+    tolerations: []
+
+    # Affinity for operator pod
+    affinity: {}
+
+    # Security context
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 1000
+
+    # Service account configuration
+    serviceAccount:
+      create: true
+      annotations: {}
+      name: ""
+
+  platform:
+    # Whether to create an IntegrationPlatform resource
+    enabled: true
+
+    # Name of the IntegrationPlatform
+    name: camel-k
+
+    # Platform profile (Kubernetes, OpenShift, Knative)
+    profile: Kubernetes
+
+    # Default traits for integrations
+    traits: {}
+
+    # Build configuration
+    build:
+      # Build strategy (routine, pod, spectrum)
+      strategy: routine
+
+      # Maven settings
+      maven:
+        repositories: []
+        settings: {}
+
+      # Build timeout
+      timeout: 10m
+
+    # Runtime configuration
+    runtime:
+      # Runtime version
+      version: "3.22.0"
+
+      # Runtime provider
+      provider: main
+
+  registry:
+    # Enable custom registry configuration
+    enabled: false
+
+    # Registry address
+    address: ""
+
+    # Registry secret name
+    secret: ""
+
+    # Registry organization/namespace
+    organization: ""
+
+    # Insecure registry
+    insecure: false
+
+  monitoring:
+    # Enable monitoring features
+    enabled: false
+
+    prometheus:
+      # Enable Prometheus metrics
+      enabled: false
+
+      # Prometheus operator integration
+      operator: false
+
+      # Service monitor configuration
+      serviceMonitor:
+        enabled: false
+        namespace: ""
+        labels: {}
+
+    jaeger:
+      # Enable Jaeger tracing
+      enabled: false
+
+      # Jaeger endpoint
+      endpoint: ""
+
+      # Jaeger sampler
+      sampler:
+        type: const
+        param: 1
+
+  # RBAC configuration
+  rbac:
+    create: true
+
+  # CRD configuration
+  crds:
+    install: true
+
+  # Global configuration
+  global:
+    # Image pull secrets
+    imagePullSecrets: []
+
+    # Global labels
+    labels: {}
+
+    # Global annotations
+    annotations: {}

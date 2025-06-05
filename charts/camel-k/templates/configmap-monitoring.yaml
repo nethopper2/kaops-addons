@@ -1,0 +1,29 @@
+{{- if .Values.camel-k.monitoring.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "camel-k.fullname" . }}-monitoring
+  namespace: {{ .Values.camel-k.operator.namespace }}
+  labels:
+    {{- include "camel-k.labels" . | nindent 4 }}
+data:
+  monitoring.yaml: |
+    {{- if .Values.camel-k.monitoring.prometheus.enabled }}
+    prometheus:
+      enabled: true
+      {{- if .Values.camel-k.monitoring.prometheus.operator }}
+      operator: true
+      {{- end }}
+    {{- end }}
+    {{- if .Values.camel-k.monitoring.jaeger.enabled }}
+    jaeger:
+      enabled: true
+      {{- if .Values.camel-k.monitoring.jaeger.endpoint }}
+      endpoint: {{ .Values.camel-k.monitoring.jaeger.endpoint }}
+      {{- end }}
+      {{- if .Values.camel-k.monitoring.jaeger.sampler }}
+      sampler:
+        {{- toYaml .Values.camel-k.monitoring.jaeger.sampler | nindent 8 }}
+      {{- end }}
+    {{- end }}
+  {{- end }}

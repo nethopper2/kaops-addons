@@ -1,0 +1,38 @@
+1. Get the Camel K operator status by running:
+   kubectl get pods -n {{ .Values.camel-k.operator.namespace }}
+
+2. Check the IntegrationPlatform status:
+   kubectl get integrationplatform -n {{ .Values.camel-k.operator.namespace }}
+
+3. Create your first integration:
+   kubectl apply -f - <<EOF
+   apiVersion: camel.apache.org/v1
+   kind: Integration
+   metadata:
+     name: hello-world
+     namespace: {{ .Values.camel-k.operator.namespace }}
+   spec:
+     sources:
+     - content: |
+         from('timer:hello?period=2000')
+           .setBody().constant('Hello World from Camel K!')
+           .to('log:info')
+       name: hello.java
+   EOF
+
+4. Watch your integration:
+   kubectl logs -f integration/hello-world -n {{ .Values.camel-k.operator.namespace }}
+
+{{- if .Values.camel-k.monitoring.enabled }}
+
+5. Monitoring is enabled. Access metrics at:
+   {{- if .Values.camel-k.monitoring.prometheus.enabled }}
+   - Prometheus metrics: Available on operator pods at /metrics endpoint
+   {{- end }}
+   {{- if .Values.camel-k.monitoring.jaeger.enabled }}
+   - Jaeger tracing: {{ .Values.camel-k.monitoring.jaeger.endpoint | default "Check your Jaeger installation" }}
+   {{- end }}
+{{- end }}
+
+For more information on using Camel K, visit:
+https://camel.apache.org/camel-k/2.6.x/
