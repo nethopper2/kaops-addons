@@ -3,7 +3,7 @@ camel-k:
 
   # These values will be passed directly to the upstream chart
   operator:
-    namespace: camel-k-system
+    namespace: nh-addons
     logLevel: info
 
   # Platform configuration
