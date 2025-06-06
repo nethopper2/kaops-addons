@@ -2,6 +2,8 @@ ingress-nginx:
   controller:
     extraArgs:
       enable-ssl-passthrough: true
+    admissionWebhooks:
+      enabled: false
 cert-manager:
   crds:
     enabled: true
