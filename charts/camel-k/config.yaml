@@ -201,10 +201,6 @@ system:
   - path: "camel-k.operator.watchNamespace"
     value: "${system.cluster.namespace}"
 
-  # Platform configuration
-  - path: "camel-k.platform.name"
-    value: "${system.cluster.name}-camel-k-platform"
-
   # Monitoring integration
   - path: "camel-k.monitoring.prometheus.serviceMonitor.namespace"
     value: "${system.cluster.namespace}"
