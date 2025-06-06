@@ -298,17 +298,17 @@ variables:
 
 system:
   - path: "ingress.host"
-    value: "chat.${system.hubCluster.ingressHostname}"
+    value: "chat.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "ingress.oauth2Proxy.authSignin"
-    value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
+    value: "https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
   - path: "ingress.oauth2Proxy.authUrl"
-    value: "https://oauth.${system.hubCluster.ingressHostname}/oauth2/auth"
+    value: "https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}/oauth2/auth"
   - path: "ingress.oauth2Proxy.authResponseHeaders"
     value: "authorization"
   - path: "private-ai-rest.ingress.hosts[0].host"
-    value: "storage.${system.hubCluster.ingressHostname}"
+    value: "storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "private-ai-rest.ingress.tls[0].hosts[0]"
-    value: "storage.${system.hubCluster.ingressHostname}"
+    value: "storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "private-ai-rest.ingress.hosts[0].paths[0].path"
     value: "/"
   - path: "private-ai-rest.ingress.hosts[0].paths[0].pathType"
@@ -324,13 +324,13 @@ system:
   - path: "rag.googleApiScopes"
     value: "https://www.googleapis.com/auth/drive.readonly"
   - path: "rag.apiBaseUrl"
-    value: "https://storage.${system.hubCluster.ingressHostname}"
+    value: "https://storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "rag.allowedCorsOrigin"
-    value: "https://chat.${system.hubCluster.ingressHostname}|https://oauth.${system.hubCluster.ingressHostname}"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}|https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
 
 output:
   - name: Open Web UI URL
     description: The URL to access Open WebUI
-    value: "https://chat.${system.hubCluster.ingressHostname}"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}"
     type: url
     slug: default
