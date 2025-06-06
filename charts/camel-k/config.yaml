@@ -53,7 +53,7 @@ forms:
 
 variables:
   - slug: operatorEnabled
-    path: enabled
+    path: camel-k.enabled
     forms: [default]
     ui:
       type: toggle
@@ -62,7 +62,7 @@ variables:
       help: Install the Camel K operator to manage integrations
 
   - slug: operatorLogLevel
-    path: operator.logLevel
+    path: camel-k.operator.logLevel
     forms: [default]
     ui:
       type: select
@@ -79,7 +79,7 @@ variables:
       value: info
 
   - slug: platformProfile
-    path: platform.profile
+    path: camel-k.platform.profile
     forms: [default]
     ui:
       type: select
@@ -95,7 +95,7 @@ variables:
       help: Platform profile determines runtime behavior and available features
 
   - slug: registryEnabled
-    path: registry.enabled
+    path: camel-k.registry.enabled
     forms: [default]
     ui:
       type: toggle
@@ -105,7 +105,7 @@ variables:
       help: Configure a custom container registry for integration images
 
   - slug: registryAddress
-    path: registry.address
+    path: camel-k.registry.address
     forms: [default]
     ui:
       type: text
@@ -114,7 +114,7 @@ variables:
       placeholder: "docker.io"
 
   - slug: registrySecret
-    path: registry.secret
+    path: camel-k.registry.secret
     forms: [default]
     ui:
       type: secret
@@ -122,7 +122,7 @@ variables:
       help: Secret containing registry credentials
 
   - slug: registryOrganization
-    path: registry.organization
+    path: camel-k.registry.organization
     forms: [default]
     ui:
       type: text
@@ -131,7 +131,7 @@ variables:
       placeholder: "my-org"
 
   - slug: monitoringEnabled
-    path: monitoring.enabled
+    path: camel-k.monitoring.enabled
     forms: [default]
     ui:
       type: toggle
@@ -141,7 +141,7 @@ variables:
       help: Enable monitoring and observability features
 
   - slug: prometheusEnabled
-    path: monitoring.prometheus.enabled
+    path: camel-k.monitoring.prometheus.enabled
     forms: [default]
     ui:
       type: toggle
@@ -150,7 +150,7 @@ variables:
       help: Enable Prometheus metrics collection
 
   - slug: jaegerEnabled
-    path: monitoring.jaeger.enabled
+    path: camel-k.monitoring.jaeger.enabled
     forms: [default]
     ui:
       type: toggle
@@ -159,7 +159,7 @@ variables:
       help: Enable distributed tracing with Jaeger
 
   - slug: resourceLimitsCpu
-    path: operator.resources.limits.cpu
+    path: camel-k.operator.resources.limits.cpu
     forms: [default]
     ui:
       type: text
@@ -168,7 +168,7 @@ variables:
       placeholder: "500m"
 
   - slug: resourceLimitsMemory
-    path: operator.resources.limits.memory
+    path: camel-k.operator.resources.limits.memory
     forms: [default]
     ui:
       type: text
@@ -177,7 +177,7 @@ variables:
       placeholder: "512Mi"
 
   - slug: resourceRequestsCpu
-    path: operator.resources.requests.cpu
+    path: camel-k.operator.resources.requests.cpu
     forms: [default]
     ui:
       type: text
@@ -186,7 +186,7 @@ variables:
       placeholder: "100m"
 
   - slug: resourceRequestsMemory
-    path: operator.resources.requests.memory
+    path: camel-k.operator.resources.requests.memory
     forms: [default]
     ui:
       type: text
@@ -195,25 +195,25 @@ variables:
       placeholder: "256Mi"
 
 system:
-  # Remove the camel-k wrapper prefix
-  - path: "operator.namespace"
+  # Operator configuration
+  - path: "camel-k.operator.namespace"
     value: "${system.cluster.name}-camel-k"
-  - path: "operator.watchNamespace"
+  - path: "camel-k.operator.watchNamespace"
     value: "${system.cluster.namespace}"
 
   # Platform configuration
-  - path: "platform.name"
+  - path: "camel-k.platform.name"
     value: "${system.cluster.name}-camel-k-platform"
 
   # Monitoring integration
-  - path: "monitoring.prometheus.serviceMonitor.namespace"
+  - path: "camel-k.monitoring.prometheus.serviceMonitor.namespace"
     value: "${system.cluster.namespace}"
-  - path: "monitoring.prometheus.serviceMonitor.labels.release"
+  - path: "camel-k.monitoring.prometheus.serviceMonitor.labels.release"
     value: "${system.observabilityInfo.releaseName}"
 
   # Jaeger integration
-  - path: "monitoring.jaeger.endpoint"
-    value: "http://jaeger-collector.${system.cluster.namespace}:14268/api/traces"
+#  - path: "camel-k.monitoring.jaeger.endpoint"
+#    value: "http://jaeger-collector.${system.cluster.namespace}:14268/api/traces"
 
 output:
   - name: Camel K Operator Status
@@ -234,9 +234,10 @@ output:
 
 dependencies:
   networkFeatures:
-    - slug: 'prometheus'
-      name: 'Prometheus'
+    # This network feature includes prometheus
+    - slug: 'grafana'
+      name: 'Grafana'
       required: false
-    - slug: 'jaeger'
-      name: 'Jaeger'
-      required: false
+#    - slug: 'jaeger'
+#      name: 'Jaeger'
+#      required: false
