@@ -82,6 +82,7 @@ variables:
     ui:
       type: toggle
       label: Enable Idempotency
+      id: idempotencyEnabled
       value: true
       help: Prevent concurrent syncs for the same user
 
@@ -93,7 +94,7 @@ variables:
       type: select
       label: Idempotency Repository
       help: Storage type for tracking sync operations
-      value: "memory"
+      value: memory
       options:
         - value: "memory"
           label: "In-Memory (not persistent)"
