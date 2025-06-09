@@ -10,5 +10,9 @@ camel-k:
   platform:
     profile: Kubernetes
 
+    # Disable kamelets due to K8s 1.32 schema compatibility
+    kamelet:
+      repositories: []
+
   monitoring:
     enabled: false
