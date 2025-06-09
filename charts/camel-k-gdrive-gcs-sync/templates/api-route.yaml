@@ -84,11 +84,6 @@ spec:
                     required: false
                     type: string
                     dataType: string
-                  - name: userFolder
-                    description: "Optional user-specific folder in GCS bucket (defaults to 'user-{userId}' if not provided)"
-                    required: false
-                    type: string
-                    dataType: string
                 to: "direct:process-sync-request"
 
         # Route for handling sync requests
@@ -112,18 +107,10 @@ spec:
                   name: "allowedExtensions"
                   jsonpath: "$.allowedExtensions"
 
-              # Set userFolder based on userId (auto-derive or use provided value)
-              - choice:
-                  when:
-                    - jsonpath: "$[?(@.userFolder)]"
-                    - setHeader:
-                        name: "userFolder"
-                        jsonpath: "$.userFolder"
-                  otherwise:
-                    # Auto-derive userFolder from userId if not explicitly provided
-                    - setHeader:
-                        name: "userFolder"
-                        simple: "user-${header.userId}"
+              # Always derive userFolder from userId
+              - setHeader:
+                  name: "userFolder"
+                  simple: "user-${header.userId}"
 
               - setHeader:
                   name: "bucketName"

@@ -47,24 +47,10 @@ curl -X POST \
     "accessToken": "ya29.a0AfB_...",
     "refreshToken": "1//04u_...",
     "allowedExtensions": "pdf,docx,xlsx"
-    # userFolder will be automatically set to "user-123"
   }'
 ```
 
-Or with a custom folder name:
-
-```bash
-curl -X POST \
-  "http://<service-url>/sync/gdrive" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userId": "123",
-    "accessToken": "ya29.a0AfB_...",
-    "refreshToken": "1//04u_...",
-    "allowedExtensions": "pdf,docx,xlsx",
-    "userFolder": "custom-folder-structure/123"
-  }'
-```
+Files will automatically be stored in the GCS bucket under the folder `user-123`.
 
 ### Request Parameters
 
@@ -72,7 +58,8 @@ curl -X POST \
 - **accessToken**: (Required) Google Drive OAuth2 access token
 - **refreshToken**: (Required) Google Drive OAuth2 refresh token
 - **allowedExtensions**: (Optional) Comma-separated list of file extensions to filter
-- **userFolder**: (Optional) User-specific folder within the GCS bucket - will be automatically derived as `user-{userId}` if not provided
+
+Files will automatically be stored in a folder named `user-{userId}` within the GCS bucket.
 
 ## Implementation Details
 

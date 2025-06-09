@@ -161,8 +161,8 @@ output:
           "accessToken": "<GOOGLE_ACCESS_TOKEN>",
           "refreshToken": "<GOOGLE_REFRESH_TOKEN>",
           "allowedExtensions": "pdf,docx,xlsx"
-          # userFolder will automatically be set to "user-<USER_ID>"
         }'
+    # Note: Files will automatically be stored in "user-<USER_ID>" folder in the GCS bucket
     type: string
     slug: default
 
