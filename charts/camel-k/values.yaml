@@ -19,15 +19,12 @@ camel-k:
     profile: Kubernetes
     build:
       timeout: 5m
+      # Configure registry at platform level
+      registry:
+        address: "docker.io"
     # Explicitly disable Kamelet catalog
     kamelet:
       repositories: []
-
-  # Configure registry for image building
-  registry:
-    address: "docker.io"
-    organization: "camelk"
-    # Use default registry credentials from the cluster
 
   # Explicitly disable all monitoring and optional features
   monitoring:
