@@ -27,6 +27,15 @@ forms:
           - monitoringEnabled
         ui:
           label: Basic
+      - slug: gdrivegcs
+        variableSlugs:
+          - enableGdriveGcsSync
+          - googleCredentialsSecret
+          - gcsBucketName
+          - allowedFileExtensions
+          - syncIntervalSeconds
+        ui:
+          label: Google Drive to GCS Sync
       - slug: registry
         variableSlugs:
           - registryAddress
@@ -52,6 +61,57 @@ forms:
           label: Resources
 
 variables:
+  - slug: enableGdriveGcsSync
+    path: camel-k.integrations.gdrivegcs.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Enable Google Drive to GCS Sync
+      id: enableGdriveGcsSync
+      value: false
+      help: Sync files from Google Drive to Google Cloud Storage
+
+  - slug: googleCredentialsSecret
+    path: camel-k.integrations.gdrivegcs.googleCredentialsSecret
+    forms: [default]
+    ui:
+      type: secret
+      label: Google Credentials
+      help: Base64 encoded Google service account credentials JSON file with access to Google Drive and GCS
+      validation: required
+      if: $get(enableGdriveGcsSync).value
+
+  - slug: gcsBucketName
+    path: camel-k.integrations.gdrivegcs.gcsBucketName
+    forms: [default]
+    ui:
+      type: text
+      label: GCS Bucket Name
+      help: Name of the Google Cloud Storage bucket to store files
+      validation: required
+      if: $get(enableGdriveGcsSync).value
+
+  - slug: allowedFileExtensions
+    path: camel-k.integrations.gdrivegcs.allowedFileExtensions
+    forms: [default]
+    ui:
+      type: text
+      label: Allowed File Extensions
+      help: Comma-separated list of file extensions to sync (without dots, e.g. pdf,docx,txt)
+      placeholder: "pdf,docx,txt,xlsx,pptx"
+      if: $get(enableGdriveGcsSync).value
+
+  - slug: syncIntervalSeconds
+    path: camel-k.integrations.gdrivegcs.syncIntervalSeconds
+    forms: [default]
+    ui:
+      type: text
+      label: Sync Interval (seconds)
+      help: Interval in seconds between sync operations
+      value: "3600"
+      validation: required
+      if: $get(enableGdriveGcsSync).value
+
   - slug: operatorEnabled
     path: camel-k.enabled
     forms: [default]
@@ -222,6 +282,18 @@ output:
     value: "kubectl get integrationplatform -n ${system.cluster.name}-camel-k"
     type: command
     slug: default
+  - name: GDrive to GCS Integration Status
+    description: Check the Google Drive to GCS integration status
+    value: "kubectl get integration gdrivegcs-sync -n ${system.cluster.namespace}"
+    type: command
+    slug: gdrivegcs
+    if: $get(enableGdriveGcsSync).value
+  - name: GDrive to GCS Integration Logs
+    description: View the Google Drive to GCS integration logs
+    value: "kubectl logs -l integration=gdrivegcs -n ${system.cluster.namespace} -f"
+    type: command
+    slug: gdrivegcs
+    if: $get(enableGdriveGcsSync).value
   - name: Camel K Documentation
     description: Access Camel K documentation
     value: "https://camel.apache.org/camel-k/2.6.x/"

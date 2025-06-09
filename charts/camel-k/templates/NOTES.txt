@@ -1,0 +1,19 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Apache Camel K is now running in your cluster in the {{ .Values.camel-k.operator.namespace }} namespace.
+
+{{- if .Values.camel-k.integrations.gdrivegcs.enabled }}
+
+Google Drive to GCS Sync Integration is enabled.
+The integration will sync files from Google Drive to your GCS bucket: {{ .Values.camel-k.integrations.gdrivegcs.gcsBucketName }}
+Sync interval: {{ .Values.camel-k.integrations.gdrivegcs.syncIntervalSeconds }} seconds
+Allowed file extensions: {{ .Values.camel-k.integrations.gdrivegcs.allowedFileExtensions }}
+
+To check the status of the integration:
+  kubectl get integration gdrivegcs-sync -n {{ .Values.camel-k.operator.watchNamespace }}
+
+To view logs:
+  kubectl logs -l integration=gdrivegcs -n {{ .Values.camel-k.operator.watchNamespace }} -f
+{{- end }}
+
+For more information about Camel K, visit: https://camel.apache.org/camel-k/
