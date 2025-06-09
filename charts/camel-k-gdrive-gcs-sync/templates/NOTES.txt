@@ -1,13 +1,11 @@
 Google Drive to GCS Sync has been installed!
 
-{{ if .Values.enabled }}
 The Google Drive to GCS sync API endpoint is available at:
   http://{{ .Release.Name }}-gdrivegcs-api.{{ .Values.camelK.watchNamespace }}.svc.cluster.local:{{ .Values.endpoint.port }}{{ .Values.endpoint.path }}
 
 {{ if eq .Values.idempotency.repository "redis" }}
 Using shared Redis configuration from configmap: {{ .Values.redisConfigMapName }}
 Note: Make sure the Redis addon is installed and the shared configmap is available
-{{ else }}
 {{ else }}
 Using in-memory idempotency repository (not persistent across restarts)
 {{ end }}
@@ -16,6 +14,3 @@ To test, use the curl command shown in the addon outputs section.
 
 For more information and troubleshooting, check the integration logs:
   kubectl logs -l integration=gdrivegcs-api -n {{ .Values.camelK.watchNamespace }} -f
-{{ else }}
-The addon is currently disabled. Set 'enabled: true' to activate it.
-{{ end }}
