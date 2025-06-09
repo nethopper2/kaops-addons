@@ -8,6 +8,7 @@ metadata:
   detailUrl: 'https://addons.kaops.net/ingresswarden/'
   externalUrl: 'https://kubernetes.github.io/ingress-nginx/how-it-works/'
   isProduction: true
+  serverSideDiff: false
   installTargets:
     hub: true
     hubRequired: false
