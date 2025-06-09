@@ -10,16 +10,11 @@ camel-k:
         value: "false"
       - name: KAMEL_KAMELET_CATALOG_ENABLED
         value: "false"
-      - name: KAMEL_OPERATOR_HEALTH_PORT
-        value: "8081"
 
   # Platform configuration with explicit Kamelet disabling
   # due to K8s 1.32 schema compatibility
   platform:
     profile: Kubernetes
-    traits:
-      kamelet:
-        enabled: false
     build:
       timeout: 5m
 
@@ -29,13 +24,13 @@ camel-k:
 
   # We need to install CRDs for basic Camel K functionality,
   # but Kamelet CRDs are the problematic ones (disabled above)
-  installCRDs: true
+#  installCRDs: true
 
   # Resource limits to avoid issues
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
+#  resources:
+#    limits:
+#      cpu: 500m
+#      memory: 512Mi
+#    requests:
+#      cpu: 100m
+#      memory: 256Mi
