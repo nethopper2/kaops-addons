@@ -667,6 +667,22 @@ entries:
   camel-k:
   - apiVersion: v2
     appVersion: 2.6.0
+    created: "2025-06-09T18:00:30.7024699Z"
+    dependencies:
+    - condition: camel-k.enabled
+      name: camel-k
+      repository: https://apache.github.io/camel-k/charts/
+      version: 2.6.0
+    description: A Helm chart for Apache Camel K - a lightweight integration platform
+      for Kubernetes
+    digest: 6dfad6dcf51a6f9164e252bee727e63a1ada5dd5a73e6cce71394a190add0e47
+    name: camel-k
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/camel-k-0.1.17/camel-k-0.1.17.tgz
+    version: 0.1.17
+  - apiVersion: v2
+    appVersion: 2.6.0
     created: "2025-06-09T16:27:51.307182408Z"
     dependencies:
     - condition: camel-k.enabled
@@ -10055,4 +10071,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-06-09T16:27:51.3079537Z"
+generated: "2025-06-09T18:00:30.703334359Z"
