@@ -5,32 +5,27 @@ camel-k:
     namespace: nh-addons
     logLevel: info
     env:
-      # Multiple ways to disable Kamelets
+      # Disable Kamelets completely
       - name: KAMEL_INSTALL_DEFAULT_KAMELETS
         value: "false"
       - name: KAMEL_KAMELET_CATALOG_ENABLED
         value: "false"
+      # Skip Kamelet installation entirely
+      - name: KAMEL_KAMELET_CATALOG_REPO
+        value: ""
 
-  # Platform configuration with explicit Kamelet disabling
-  # due to K8s 1.32 schema compatibility
+  # Platform configuration - disable Kamelet catalog at platform level
   platform:
     profile: Kubernetes
     build:
       timeout: 5m
+    # Explicitly disable Kamelet catalog
+    kamelet:
+      repositories: []
 
   # Explicitly disable all monitoring and optional features
   monitoring:
     enabled: false
 
-  # We need to install CRDs for basic Camel K functionality,
-  # but Kamelet CRDs are the problematic ones (disabled above)
+  # Install basic Camel K CRDs (but skip Kamelets)
   installCRDs: true
-
-  # Resource limits to avoid issues
-#  resources:
-#    limits:
-#      cpu: 500m
-#      memory: 512Mi
-#    requests:
-#      cpu: 100m
-#      memory: 256Mi
