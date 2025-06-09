@@ -15,9 +15,32 @@ spec:
       - name: google-credentials
         secret:
           secretName: {{ .Release.Name }}-gdrivegcs-credentials
+      - name: config
+        configMap:
+          name: {{ .Release.Name }}-gdrivegcs-config
+      {{- if eq .Values.idempotency.repository "redis" }}
+      - name: redis-config
+        configMap:
+          name: {{ .Values.redisConfigMapName }}
+      {{- end }}
+      {{- if and (eq .Values.idempotency.repository "redis") .Values.idempotency.redis.secretRef }}
+      - name: redis-secret
+        secret:
+          secretName: {{ .Values.idempotency.redis.secretRef }}
+      {{- end }}
       mounts:
       - name: google-credentials
         path: /etc/google-credentials
+      - name: config
+        path: /etc/gdrivegcs
+      {{- if eq .Values.idempotency.repository "redis" }}
+      - name: redis-config
+        path: /etc/redis
+      {{- end }}
+      {{- if and (eq .Values.idempotency.repository "redis") .Values.idempotency.redis.secretRef }}
+      - name: redis-secret
+        path: /etc/redis-secret
+      {{- end }}
     service:
       type: ClusterIP
       port: {{ .Values.endpoint.port }}
@@ -160,8 +183,9 @@ spec:
             - name: idempotencyRepo
               type: org.apache.camel.component.redis.processor.idempotent.RedisIdempotentRepository
               properties:
-                host: redis
-                port: 6379
+                # Use configuration from the shared Redis configmap (from environment variables)
+                host: ${env:REDIS_HOST:redis}
+                port: ${env:REDIS_PORT:6379}
                 expiry: {{ .Values.idempotency.expiration }}
         {{- else }}
             - name: idempotencyRepo

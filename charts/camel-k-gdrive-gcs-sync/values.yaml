@@ -15,6 +15,13 @@ idempotency:
   enabled: true
   repository: "memory" # Options: memory, redis
   expiration: 600000 # Time in ms to prevent duplicate syncs (10 minutes)
+  redis:
+    # Redis configuration (used when repository is "redis")
+    host: "redis" # Default Redis host
+    port: 6379    # Default Redis port
+
+# Shared Redis configuration - fixed name that will be provided by Redis addon
+redisConfigMapName: "shared-configmap-redis"
 
 # Service account credentials path (mounted from secret)
 credentialsPath: "/etc/google-credentials/google-credentials.json"

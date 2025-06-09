@@ -30,6 +30,7 @@ This chart uses Apache Camel K Kamelets to implement a flexible and efficient sy
 
 - **idempotency.enabled**: Enable/disable idempotent processing
 - **idempotency.repository**: Storage type for idempotency (memory or redis)
+  - When set to 'redis', the addon will automatically use the shared Redis configuration from the Redis addon
 - **idempotency.expiration**: Lock time in milliseconds (default: 600000 = 10 minutes)
 - **camelK.replicas**: Number of integration instances to run
 
@@ -94,4 +95,5 @@ Multiple users can sync simultaneously, but each user can only have one active s
 
 - Apache Camel K operator must be installed in the cluster
 - Google service account with GCS access
-- (Optional) Redis if using redis idempotency repository
+- (Optional) Redis addon if using redis idempotency repository
+  - When Redis is selected as the idempotency repository, the addon will automatically use the Redis configuration from the shared ConfigMap (`shared-configmap-redis`) provided by the Redis addon
