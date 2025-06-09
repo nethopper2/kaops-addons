@@ -5,14 +5,14 @@ camel-k:
   operator:
     namespace: nh-addons
     logLevel: info
+    env:
+      # Disable kamelets due to K8s 1.32 schema compatibility
+      - name: KAMEL_INSTALL_DEFAULT_KAMELETS
+        value: "false"
 
   # Platform configuration
   platform:
     profile: Kubernetes
-
-    # Disable kamelets due to K8s 1.32 schema compatibility
-    kamelet:
-      repositories: []
 
   monitoring:
     enabled: false
