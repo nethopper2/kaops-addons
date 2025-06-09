@@ -20,7 +20,6 @@ forms:
     steps:
       - slug: basic
         variableSlugs:
-          - enabled
           - googleCredentialsSecret
           - gcsBucketName
           - allowedFileExtensions
@@ -36,14 +35,6 @@ forms:
           label: Advanced
 
 variables:
-  - slug: enabled
-    path: enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: Enable Google Drive to GCS Sync
-      value: true
-      help: Enable synchronization of files from Google Drive to GCS
 
   - slug: googleCredentialsSecret
     path: googleCredentialsSecret

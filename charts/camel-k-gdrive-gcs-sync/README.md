@@ -16,7 +16,6 @@ This chart uses Apache Camel K Kamelets to implement a flexible and efficient sy
 
 ### Basic Configuration
 
-- **enabled**: Enable/disable the integration
 - **googleCredentialsSecret**: Base64-encoded Google service account credentials with GCS access
 - **gcsBucketName**: Name of the GCS bucket to store files
 - **allowedFileExtensions**: Optional file extensions to filter (e.g., .pdf, .docx)

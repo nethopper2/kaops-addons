@@ -1,4 +1,3 @@
-{{- if .Values.enabled }}
 apiVersion: camel.apache.org/v1alpha1
 kind: Kamelet
 metadata:
@@ -55,4 +54,3 @@ spec:
         # Log successful upload
         - log:
             message: "Uploaded ${header.fileName} to GCS bucket: ${header.bucketName}"
-{{- end }}

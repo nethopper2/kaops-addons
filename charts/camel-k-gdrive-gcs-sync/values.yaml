@@ -1,5 +1,3 @@
-enabled: true
-
 # Google Drive and GCS configuration
 googleCredentialsSecret: ""
 gcsBucketName: ""
