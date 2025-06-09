@@ -1,3 +1,26 @@
+enabled: true
+
+# Google Drive and GCS configuration
+googleCredentialsSecret: ""
+gcsBucketName: ""
+allowedFileExtensions: ""
+
+# Endpoint configuration (fixed, not configurable)
+endpoint:
+  path: "/sync/gdrive"
+  port: 8080
+
+# Idempotency settings
+idempotency:
+  enabled: true
+  repository: "memory" # Options: memory, redis
+  expiration: 600000 # Time in ms to prevent duplicate syncs (10 minutes)
+
+# Service account credentials path (mounted from secret)
+credentialsPath: "/etc/google-credentials/google-credentials.json"
+
+# Camel K integration settings
 camelK:
   namespace: ""
   watchNamespace: ""
+  replicas: 2

@@ -1,0 +1,170 @@
+{{- if .Values.enabled }}
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: gdrivegcs-api
+  namespace: {{ .Values.camelK.watchNamespace }}
+  labels:
+    app: {{ .Release.Name }}
+    integration: gdrivegcs-api
+spec:
+  replicas: {{ .Values.camelK.replicas }}
+  traits:
+    mount:
+      volumes:
+      - name: google-credentials
+        secret:
+          secretName: {{ .Release.Name }}-gdrivegcs-credentials
+      mounts:
+      - name: google-credentials
+        path: /etc/google-credentials
+    service:
+      type: ClusterIP
+      port: {{ .Values.endpoint.port }}
+  sources:
+    - name: "gdrivegcs-api-integration.yaml"
+      content: |
+        # Camel K REST API with webhook endpoint for Google Drive to GCS sync
+        - rest:
+            path: "/"
+            bindingMode: json
+            produces: application/json
+            consumes: application/json
+            enableCORS: true
+            # API documentation
+            apiDocs:
+              path: /api-doc
+              version: 1.0.0
+              title: Google Drive to GCS Sync API
+            # Define the endpoint for triggering sync
+            post:
+              - path: "{{ .Values.endpoint.path }}"
+                description: "Trigger Google Drive to GCS synchronization for a user"
+                param:
+                  - name: userId
+                    description: "Unique user identifier"
+                    required: true
+                    type: string
+                    dataType: string
+                  - name: accessToken
+                    description: "Google Drive access token"
+                    required: true
+                    type: string
+                    dataType: string
+                  - name: refreshToken
+                    description: "Google Drive refresh token"
+                    required: true
+                    type: string
+                    dataType: string
+                  - name: allowedExtensions
+                    description: "Optional comma-separated list of file extensions to filter"
+                    required: false
+                    type: string
+                    dataType: string
+                  - name: userFolder
+                    description: "Optional user-specific folder in GCS bucket (defaults to 'user-{userId}' if not provided)"
+                    required: false
+                    type: string
+                    dataType: string
+                to: "direct:process-sync-request"
+
+        # Route for handling sync requests
+        - from:
+            uri: "direct:process-sync-request"
+            steps:
+              # Log the incoming request
+              - log:
+                  message: "Received sync request for user: ${body[userId]}"
+              # Extract parameters from request body
+              - setHeader:
+                  name: "userId"
+                  jsonpath: "$.userId"
+              - setHeader:
+                  name: "accessToken"
+                  jsonpath: "$.accessToken"
+              - setHeader:
+                  name: "refreshToken"
+                  jsonpath: "$.refreshToken"
+              - setHeader:
+                  name: "allowedExtensions"
+                  jsonpath: "$.allowedExtensions"
+
+              # Set userFolder based on userId (auto-derive or use provided value)
+              - choice:
+                  when:
+                    - jsonpath: "$[?(@.userFolder)]"
+                    - setHeader:
+                        name: "userFolder"
+                        jsonpath: "$.userFolder"
+                  otherwise:
+                    # Auto-derive userFolder from userId if not explicitly provided
+                    - setHeader:
+                        name: "userFolder"
+                        simple: "user-${header.userId}"
+
+              - setHeader:
+                  name: "bucketName"
+                  constant: "{{ .Values.gcsBucketName }}"
+              - setHeader:
+                  name: "credentialsPath"
+                  constant: "{{ .Values.credentialsPath }}"
+
+              # Idempotent consumer pattern to prevent concurrent syncs for same user
+            {{- if .Values.idempotency.enabled }}
+              - idempotentConsumer:
+                  expression:
+                    header: "userId"
+                  messageIdRepositoryRef: idempotencyRepo
+                  eager: false
+                  skipDuplicate: true
+                  removeOnFailure: true
+                  steps:
+            {{- end }}
+                    # Call the sync process route
+                    - to: "direct:execute-gdrive-sync"
+                    # Return success response
+                    - setBody:
+                        constant: '{"status":"success","message":"Sync process started"}
+'
+
+        # Route for executing the actual sync
+        - from:
+            uri: "direct:execute-gdrive-sync"
+            steps:
+              # Call the Google Drive Kamelet to list files
+              - to: "kamelet:user-gdrive-source?userId=${header.userId}&accessToken=${header.accessToken}&refreshToken=${header.refreshToken}&allowedExtensions=${header.allowedExtensions}"
+              # For each file ID, retrieve the content from Google Drive
+              - split:
+                  body: ${body}
+                  steps:
+                    # Get file content from Google Drive using the file ID
+                    - setHeader:
+                        name: "CamelGoogleDrive.fileId"
+                        simple: "${body}"
+                    - setHeader:
+                        name: "CamelGoogleDrive.accessToken"
+                        simple: "${header.accessToken}"
+                    - to: "google-drive://drive-files/get?inBody=fileId"
+                    # Send file to GCS sink
+                    - to: "kamelet:user-gcs-sink?bucketName=${header.bucketName}&credentialsPath=${header.credentialsPath}&userFolder=${header.userFolder}"
+
+        # Define the idempotency repository
+        - beans:
+        {{- if eq .Values.idempotency.repository "memory" }}
+            - name: idempotencyRepo
+              type: org.apache.camel.processor.idempotent.MemoryIdempotentRepository
+              properties:
+                cacheSize: 1000
+                maxCacheSize: 10000
+        {{- else if eq .Values.idempotency.repository "redis" }}
+            - name: idempotencyRepo
+              type: org.apache.camel.component.redis.processor.idempotent.RedisIdempotentRepository
+              properties:
+                host: redis
+                port: 6379
+                expiry: {{ .Values.idempotency.expiration }}
+        {{- else }}
+            - name: idempotencyRepo
+              type: org.apache.camel.processor.idempotent.MemoryIdempotentRepository
+        {{- end }}
+{{- end }}

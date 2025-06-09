@@ -1,0 +1,66 @@
+{{- if .Values.enabled }}
+apiVersion: camel.apache.org/v1alpha1
+kind: Kamelet
+metadata:
+  name: user-gdrive-source
+  namespace: {{ .Values.camelK.watchNamespace }}
+  labels:
+    app: {{ .Release.Name }}
+    integration: gdrivegcs
+spec:
+  definition:
+    title: "User Google Drive Source"
+    description: "Retrieve files from Google Drive using user-provided tokens"
+    required:
+      - userId
+    properties:
+      userId:
+        title: User ID
+        description: Unique identifier for the user to prevent concurrent syncs
+        type: string
+      accessToken:
+        title: Google Drive Access Token
+        description: OAuth2 Access Token for Google Drive API
+        type: string
+      refreshToken:
+        title: Google Drive Refresh Token
+        description: OAuth2 Refresh Token for Google Drive API
+        type: string
+      allowedExtensions:
+        title: Allowed File Extensions
+        description: Comma-separated list of file extensions to filter (e.g. pdf,docx)
+        type: string
+        default: ""
+  template:
+    from:
+      uri: "direct:gdrive-source"
+      steps:
+        # Log start of processing for this user
+        - log:
+            message: "Processing Google Drive sync for user: ${header.userId}"
+        # Custom processor to list Google Drive files
+        - bean:
+            ref: "#class:org.apache.camel.component.google.drive.GoogleDriveFileLister"
+        # Filter by file extensions if specified
+        - choice:
+            when:
+              - simple: "${header.allowedExtensions} != ''"
+              - split:
+                  jsonpath: "$"
+                  steps:
+                    - filter:
+                        simple: "${body.fileExtension} contains one of ${header.allowedExtensions}"
+        # Set metadata for each file
+        - split:
+            jsonpath: "$"
+            steps:
+              - setHeader:
+                  name: "fileName"
+                  simple: "${body.name}"
+              - setHeader:
+                  name: "fileId"
+                  simple: "${body.id}"
+              # Return the file ID as the body for downstream processing
+              - setBody:
+                  simple: "${body.id}"
+{{- end }}

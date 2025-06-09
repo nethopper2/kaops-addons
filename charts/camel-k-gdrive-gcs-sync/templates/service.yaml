@@ -1,0 +1,19 @@
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-gdrivegcs-api
+  namespace: {{ .Values.camelK.watchNamespace }}
+  labels:
+    app: {{ .Release.Name }}
+    integration: gdrivegcs-api
+spec:
+  selector:
+    camel.apache.org/integration: gdrivegcs-api
+  ports:
+  - port: {{ .Values.endpoint.port }}
+    targetPort: {{ .Values.endpoint.port }}
+    protocol: TCP
+    name: http
+  type: ClusterIP
+{{- end }}

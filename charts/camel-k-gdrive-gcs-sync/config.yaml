@@ -17,6 +17,23 @@ metadata:
 forms:
   - slug: default
     label: Configuration
+    steps:
+      - slug: basic
+        variableSlugs:
+          - enabled
+          - googleCredentialsSecret
+          - gcsBucketName
+          - allowedFileExtensions
+        ui:
+          label: Basic
+      - slug: advanced
+        variableSlugs:
+          - idempotencyEnabled
+          - idempotencyRepository
+          - idempotencyExpiration
+          - camelReplicas
+        ui:
+          label: Advanced
 
 variables:
   - slug: enabled
@@ -56,17 +73,56 @@ variables:
       popover: true
       allowNewValues: true
 
-  - slug: syncIntervalSeconds
-    path: syncIntervalSeconds
+  # Advanced settings
+
+  # Advanced settings
+  - slug: idempotencyEnabled
+    path: idempotency.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Enable Idempotency
+      value: true
+      help: Prevent concurrent syncs for the same user
+
+  - slug: idempotencyRepository
+    path: idempotency.repository
+    forms: [default]
+    ui:
+      if: $get(idempotencyEnabled).value
+      type: select
+      label: Idempotency Repository
+      help: Storage type for tracking sync operations
+      value: "memory"
+      options:
+        - value: "memory"
+          label: "In-Memory (not persistent)"
+        - value: "redis"
+          label: "Redis (requires Redis installation)"
+
+
+  - slug: idempotencyExpiration
+    path: idempotency.expiration
+    forms: [default]
+    ui:
+      if: $get(idempotencyEnabled).value
+      type: number
+      label: Idempotency Lock Time (ms)
+      help: Time in milliseconds to prevent duplicate sync operations
+      value: 600000
+      min: 30000
+      max: 3600000
+
+  - slug: camelReplicas
+    path: camelK.replicas
     forms: [default]
     ui:
       type: number
-      label: Sync Interval (seconds)
-      help: Interval in seconds between sync operations
-      value: 3600
-      min: 300
-      max: 86400
-      validation: required
+      label: Number of Replicas
+      help: Number of integration instances to run
+      value: 2
+      min: 1
+      max: 10
 
 system:
   - path: "camelK.namespace"
@@ -75,15 +131,38 @@ system:
     value: "${system.cluster.namespace}"
 
 output:
+  - name: API Endpoint
+    description: API Endpoint for triggering Google Drive sync
+    value: "http://{{ .Release.Name }}-gdrivegcs-api.${system.cluster.namespace}.svc.cluster.local:8080/sync/gdrive"
+    type: string
+    slug: default
+
   - name: Integration Status
-    description: Check the status of the Google Drive to GCS integration
-    value: "kubectl get integration gdrivegcs-sync -n ${system.cluster.namespace}"
+    description: Check the status of the Google Drive to GCS API integration
+    value: "kubectl get integration gdrivegcs-api -n ${system.cluster.namespace}"
     type: command
     slug: default
+
   - name: Integration Logs
-    description: View the Google Drive to GCS integration logs
-    value: "kubectl logs -l integration=gdrivegcs -n ${system.cluster.namespace} -f"
+    description: View the Google Drive to GCS API logs
+    value: "kubectl logs -l integration=gdrivegcs-api -n ${system.cluster.namespace} -f"
     type: command
+    slug: default
+
+  - name: Sample Curl Command
+    description: Example curl command to trigger a sync (replace values in <>)
+    value: |
+      curl -X POST \
+        "http://{{ .Release.Name }}-gdrivegcs-api.${system.cluster.namespace}.svc.cluster.local:8080/sync/gdrive" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "userId": "<USER_ID>",
+          "accessToken": "<GOOGLE_ACCESS_TOKEN>",
+          "refreshToken": "<GOOGLE_REFRESH_TOKEN>",
+          "allowedExtensions": "pdf,docx,xlsx"
+          # userFolder will automatically be set to "user-<USER_ID>"
+        }'
+    type: string
     slug: default
 
 dependencies:
