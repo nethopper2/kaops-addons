@@ -23,6 +23,12 @@ camel-k:
     kamelet:
       repositories: []
 
+  # Configure registry for image building
+  registry:
+    address: "docker.io"
+    organization: "camelk"
+    # Use default registry credentials from the cluster
+
   # Explicitly disable all monitoring and optional features
   monitoring:
     enabled: false
