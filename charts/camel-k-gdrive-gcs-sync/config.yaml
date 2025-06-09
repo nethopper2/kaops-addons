@@ -1,11 +1,11 @@
 metadata:
-  slug: camel-k-gdrive-sync
+  slug: camel-k-gdrive-gcs-sync
   name: Google Drive to GCS Sync
   description: Synchronize files from Google Drive to Google Cloud Storage using Apache Camel K
   categories: [Integration, Storage]
-  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/camel-k-gdrive-sync/logo-dark.png"
-  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/camel-k-gdrive-sync/logo-light.png"
-  detailUrl: "https://addons.kaops.net/camel-k-gdrive-sync/"
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/camel-k-gdrive-gcs-sync/logo-dark.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/camel-k-gdrive-gcs-sync/logo-light.png"
+  detailUrl: "https://addons.kaops.net/camel-k-gdrive-gcs-sync/"
   externalUrl: "https://camel.apache.org/camel-k/"
   isProduction: false
   isStaging: false
