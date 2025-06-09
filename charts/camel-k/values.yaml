@@ -24,7 +24,7 @@ camel-k:
 
   # We need to install CRDs for basic Camel K functionality,
   # but Kamelet CRDs are the problematic ones (disabled above)
-#  installCRDs: true
+  installCRDs: true
 
   # Resource limits to avoid issues
 #  resources:
