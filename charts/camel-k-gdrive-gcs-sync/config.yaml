@@ -1,0 +1,93 @@
+metadata:
+  slug: camel-k-gdrive-sync
+  name: Google Drive to GCS Sync
+  description: Synchronize files from Google Drive to Google Cloud Storage using Apache Camel K
+  categories: [Integration, Storage]
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/camel-k-gdrive-sync/logo-dark.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/camel-k-gdrive-sync/logo-light.png"
+  detailUrl: "https://addons.kaops.net/camel-k-gdrive-sync/"
+  externalUrl: "https://camel.apache.org/camel-k/"
+  isProduction: false
+  isStaging: false
+  useSafeDelete: true
+  installTargets:
+    clusterMessage: Must be installed on clusters with Camel K operator already running.
+    infoMessage: This addon requires the Camel K addon to be installed first.
+
+forms:
+  - slug: default
+    label: Configuration
+
+variables:
+  - slug: enabled
+    path: enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: Enable Google Drive to GCS Sync
+      value: true
+      help: Enable synchronization of files from Google Drive to GCS
+
+  - slug: googleCredentialsSecret
+    path: googleCredentialsSecret
+    forms: [default]
+    ui:
+      type: secret
+      label: Google Credentials
+      help: Base64 encoded Google service account credentials JSON file with access to Google Drive and GCS
+      validation: required
+
+  - slug: gcsBucketName
+    path: gcsBucketName
+    forms: [default]
+    ui:
+      type: text
+      label: GCS Bucket Name
+      help: Name of the Google Cloud Storage bucket to store files
+      validation: required
+
+  - slug: allowedFileExtensions
+    path: allowedFileExtensions
+    forms: [default]
+    ui:
+      type: taglist
+      label: Allowed File Extensions
+      help: File extensions to sync (e.g. .pdf) If not provided, ALL files will be synced!
+      popover: true
+      allowNewValues: true
+
+  - slug: syncIntervalSeconds
+    path: syncIntervalSeconds
+    forms: [default]
+    ui:
+      type: number
+      label: Sync Interval (seconds)
+      help: Interval in seconds between sync operations
+      value: 3600
+      min: 300
+      max: 86400
+      validation: required
+
+system:
+  - path: "camelK.namespace"
+    value: "${system.cluster.namespace}"
+  - path: "camelK.watchNamespace"
+    value: "${system.cluster.namespace}"
+
+output:
+  - name: Integration Status
+    description: Check the status of the Google Drive to GCS integration
+    value: "kubectl get integration gdrivegcs-sync -n ${system.cluster.namespace}"
+    type: command
+    slug: default
+  - name: Integration Logs
+    description: View the Google Drive to GCS integration logs
+    value: "kubectl logs -l integration=gdrivegcs -n ${system.cluster.namespace} -f"
+    type: command
+    slug: default
+
+dependencies:
+  addons:
+    - slug: 'camel-k'
+      name: 'Apache Camel K'
+      required: true

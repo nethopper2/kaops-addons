@@ -1,14 +1,6 @@
 camel-k:
   enabled: true
 
-  integrations:
-    gdrivegcs:
-      enabled: false
-      googleCredentialsSecret: ""
-      gcsBucketName: ""
-      allowedFileExtensions: "pdf,docx,txt,xlsx,pptx"
-      syncIntervalSeconds: "3600"
-
   operator:
     namespace: nh-addons
     logLevel: info
