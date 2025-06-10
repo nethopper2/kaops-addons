@@ -10,10 +10,14 @@ camel-k:
         value: "false"
       - name: KAMEL_KAMELET_CATALOG_ENABLED
         value: "false"
+      - name: KAMEL_OPERATOR_RESOURCES
+        value: "false"
 
   # Platform configuration without Kamelet catalog
   platform:
     profile: Kubernetes
+    resources:
+      kamelets: false
     build:
       timeout: 5m
       # Configure registry at platform level
