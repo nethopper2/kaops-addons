@@ -20,14 +20,15 @@ spec:
     - type: secret
       value: {{ .Release.Name }}-gdrivegcs-credentials
   traits:
-    mount:
+    container:
+      volumeMounts:
+        - name: google-credentials
+          mountPath: /etc/google-credentials
+    kubernetes:
       volumes:
         - name: google-credentials
           secret:
             secretName: {{ .Release.Name }}-gdrivegcs-credentials
-      volumeMounts:
-        - name: google-credentials
-          mountPath: /etc/google-credentials
   sources:
     - name: "api.yaml"
       content: |
