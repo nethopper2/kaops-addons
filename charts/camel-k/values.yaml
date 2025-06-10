@@ -21,8 +21,9 @@ camel-k:
       # Configure registry at platform level
       registry:
         address: "docker.io"
-    # Disable kamelet catalog directly in platform config
-    kameletsCatalogEnabled: false
+    catalog:
+      kamelets:
+        enabled: false
 
   # Explicitly disable all monitoring and optional features
   monitoring:
