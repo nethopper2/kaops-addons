@@ -667,6 +667,22 @@ entries:
   camel-k:
   - apiVersion: v2
     appVersion: 2.6.0
+    created: "2025-06-10T15:06:48.428753282Z"
+    dependencies:
+    - condition: camel-k.enabled
+      name: camel-k
+      repository: https://apache.github.io/camel-k/charts/
+      version: 2.6.0
+    description: A Helm chart for Apache Camel K - a lightweight integration platform
+      for Kubernetes
+    digest: 240a8573f97f2940069f3e0e34c51a96ef70d2a99a36848c38f3107a97cf3e9e
+    name: camel-k
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/camel-k-0.1.30/camel-k-0.1.30.tgz
+    version: 0.1.30
+  - apiVersion: v2
+    appVersion: 2.6.0
     created: "2025-06-10T09:45:37.750463086Z"
     dependencies:
     - condition: camel-k.enabled
@@ -1400,6 +1416,16 @@ entries:
     - https://github.com/nethopper2/kaops-addons/releases/download/camel-k-gdrive-sync-0.1.0/camel-k-gdrive-sync-0.1.0.tgz
     version: 0.1.0
   foobar:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-06-10T15:06:48.574715839Z"
+    description: Minimal Google Drive to Google Cloud Storage sync using Camel K Kamelets
+    digest: 374c0b10509927120683349369d5700cb886571e70d3a730e8079981c2581c61
+    name: foobar
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/foobar-0.1.4/foobar-0.1.4.tgz
+    version: 0.1.4
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2025-06-10T14:37:44.604597813Z"
@@ -10605,4 +10631,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-06-10T14:37:44.605599889Z"
+generated: "2025-06-10T15:06:48.576580322Z"
