@@ -1,6 +1,6 @@
-apiVersion: camel.apache.org/v1
-kind: Kamelet
-metadata:
+  apiVersion: camel.apache.org/v1
+  kind: Kamelet
+  metadata:
   name: user-gcs-sink
   namespace: {{ .Values.camelK.namespace }}
   labels:

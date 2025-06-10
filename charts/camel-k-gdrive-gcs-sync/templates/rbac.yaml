@@ -19,8 +19,11 @@ metadata:
     integration: gdrivegcs
 rules:
 - apiGroups: [""]
-  resources: ["secrets", "configmaps"]
+  resources: ["secrets", "configmaps", "pods", "services"]
   verbs: ["get", "list", "watch"]
+- apiGroups: ["camel.apache.org"]
+  resources: ["integrations", "kamelets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
 ---
 # RoleBinding to assign the role to the service account
 apiVersion: rbac.authorization.k8s.io/v1

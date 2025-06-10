@@ -16,9 +16,20 @@ spec:
     - "camel:bean"
     - "camel:direct"
     - "camel:rest"
+    - "kamelet:user-gdrive-source"
+    - "kamelet:user-gcs-sink"
   configuration:
     - type: secret
       value: {{ .Release.Name }}-gdrivegcs-credentials
+  traits:
+    mount:
+      volumes:
+        - name: google-credentials
+          secret:
+            secretName: {{ .Release.Name }}-gdrivegcs-credentials
+      mounts:
+        - name: google-credentials
+          path: /etc/google-credentials
   sources:
     - name: "api.yaml"
       content: |
@@ -72,11 +83,7 @@ spec:
                   expression:
                     simple: "${exchangeProperty.userId}"
                   # Choose repository type
-                  {{- if eq .Values.idempotency.repository "redis" }}
-                  repositoryRef: "redisIdempotentRepository"
-                  {{- else }}
                   memoryDimension: 100
-                  {{- end }}
                   # Eager remove completed exchanges
                   removeOnFailure: true
                   removeOnCompletion: true
@@ -88,10 +95,10 @@ spec:
                   message: "Processing Google Drive sync for user: ${exchangeProperty.userId}"
               # Setup GCS credentials and bucket name
               - setHeader:
-                  name: "bucketName"
+                  name: "gcs.bucket"
                   constant: "{{ .Values.gcsBucketName }}"
               - setHeader:
-                  name: "credentialsPath"
+                  name: "gcs.credentials"
                   constant: "{{ .Values.credentialsPath }}"
               - setHeader:
                   name: "userFolder"
@@ -142,28 +149,16 @@ spec:
                     # Upload to GCS
                     - setHeader:
                         name: "CamelGoogleStorage.bucketName"
-                        simple: "${header.bucketName}"
+                        simple: "${header.gcs.bucket}"
                     - setHeader:
                         name: "CamelGoogleStorage.serviceAccountKey"
-                        simple: "${header.credentialsPath}"
+                        simple: "${header.gcs.credentials}"
                     - setHeader:
                         name: "CamelGoogleStorage.objectName"
                         simple: "${header.userFolder}/${header.fileName}"
-                    - to: "google-storage:${header.bucketName}"
+                    - to: "google-storage:${header.gcs.bucket}"
                     - log:
-                        message: "Uploaded ${header.fileName} to GCS bucket: ${header.bucketName} in folder: ${header.userFolder}"
+                        message: "Uploaded ${header.fileName} to GCS bucket: ${header.gcs.bucket} in folder: ${header.userFolder}"
               # Return success response
               - setBody:
                   constant: "{\"status\": \"success\", \"message\": \"Google Drive sync initiated successfully\"}"
-
-        {{- if and .Values.idempotency.enabled (eq .Values.idempotency.repository "redis") }}
-        # Redis-based idempotent repository setup
-        - beans:
-            - name: redisIdempotentRepository
-              type: org.apache.camel.processor.idempotent.redis.RedisIdempotentRepository
-              properties:
-                host: {{ .Values.idempotency.redis.host }}
-                port: {{ .Values.idempotency.redis.port }}
-                # Use userId as the key in Redis
-                processorName: user-gdrive-sync
-        {{- end }}

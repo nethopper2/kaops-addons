@@ -1,6 +1,6 @@
-apiVersion: camel.apache.org/v1
-kind: Kamelet
-metadata:
+  apiVersion: camel.apache.org/v1
+  kind: Kamelet
+  metadata:
   name: user-gdrive-source
   namespace: {{ .Values.camelK.namespace }}
   labels:

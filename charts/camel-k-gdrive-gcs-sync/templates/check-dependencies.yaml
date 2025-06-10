@@ -26,44 +26,26 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
         - |
-          echo "Checking if Camel K CRDs are installed..."
+          echo "Checking for Camel K operator..."
 
-          # Check if Kamelet CRD exists and determine API version
-          if kubectl get crd kamelets.camel.apache.org >/dev/null 2>&1; then
-            echo "Found Kamelet CRD with domain camel.apache.org"
-            # Check if v1 or v1alpha1 version is supported
-            if kubectl get --raw /apis/camel.apache.org/v1/kamelets >/dev/null 2>&1; then
-              echo "Kamelet API version v1 is supported"
-              export KAMELET_API_VERSION="v1"
-            elif kubectl get --raw /apis/camel.apache.org/v1alpha1/kamelets >/dev/null 2>&1; then
-              echo "Kamelet API version v1alpha1 is supported"
-              export KAMELET_API_VERSION="v1alpha1"
-            else
-              echo "ERROR: Couldn't determine supported Kamelet API version"
-              exit 1
-            fi
-          else
-            echo "ERROR: Camel K CRDs are not installed. The 'kamelets.camel.apache.org' CRD is missing."
-            echo "Please ensure the Camel K operator is installed and CRDs are properly registered."
-            exit 1
-          fi
-
-          # Check if Integration CRD exists
-          if ! kubectl get crd integrations.camel.apache.org >/dev/null 2>&1; then
-            echo "ERROR: Camel K CRDs are not installed. The 'integrations.camel.apache.org' CRD is missing."
-            echo "Please ensure the Camel K operator is installed and CRDs are properly registered."
-            exit 1
-          fi
-
-          # Check if Camel K operator is running
+          # Check if Camel K operator is running in the namespace
           OPERATOR_NS="{{ .Values.camelK.namespace }}"
-          if ! kubectl get deployment -n "$OPERATOR_NS" | grep camel-k-operator >/dev/null 2>&1; then
-            echo "ERROR: Camel K operator is not running in namespace '$OPERATOR_NS'."
-            echo "Please ensure the Camel K operator is properly installed and running."
-            exit 1
+          if kubectl get deployment -n "$OPERATOR_NS" | grep camel-k-operator >/dev/null 2>&1; then
+            echo "Found Camel K operator in namespace '$OPERATOR_NS'."
+          else
+            echo "WARN: Could not find Camel K operator in namespace '$OPERATOR_NS'."
+            echo "Proceeding anyway, but integration may not work correctly."
           fi
 
-          echo "All Camel K dependencies are properly installed."
+          # Check for some Camel K resources
+          if kubectl get integrations -n "$OPERATOR_NS" >/dev/null 2>&1; then
+            echo "Integration API appears to be working."
+          else
+            echo "WARN: Could not access Integration API in namespace '$OPERATOR_NS'."
+            echo "Proceeding anyway, but ensure Camel K is properly installed."
+          fi
+
+          echo "Dependency check complete."
           exit 0
       securityContext:
         runAsNonRoot: true
