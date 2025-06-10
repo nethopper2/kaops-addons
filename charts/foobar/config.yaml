@@ -38,8 +38,8 @@ variables:
 
 
 system:
-  - path: "camelK.namespace"
-    value: "${system.cluster.namespace}"
+#  - path: "camelK.namespace"
+#    value: "${system.cluster.namespace}"
 
 output:
   - name: Integration Status
