@@ -38,15 +38,8 @@ variables:
 
 
 system:
-#  - path: "camelK.namespace"
-#    value: "${system.cluster.namespace}"
 
 output:
-  - name: Integration Status
-    description: Check the status of the Google Drive to GCS integration
-    value: "kubectl get integration {{ .Release.Name }}-gdrive-gcs-sync -n ${system.cluster.namespace}"
-    type: command
-    slug: default
 
 dependencies:
   addons:

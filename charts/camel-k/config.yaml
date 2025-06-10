@@ -196,12 +196,6 @@ variables:
       placeholder: "256Mi"
 
 system:
-  # Operator configuration
-  - path: "camel-k.operator.namespace"
-    value: "${system.cluster.name}-camel-k"
-  - path: "camel-k.operator.watchNamespace"
-    value: "${system.cluster.namespace}"
-
   # Monitoring integration
   - path: "camel-k.monitoring.prometheus.serviceMonitor.namespace"
     value: "${system.cluster.namespace}"

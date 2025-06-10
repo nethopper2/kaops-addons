@@ -3,6 +3,7 @@ camel-k:
 
   operator:
     namespace: nh-addons
+    watchNamespace: nh-addons
     logLevel: info
     env:
       # Disable Kamelets completely
