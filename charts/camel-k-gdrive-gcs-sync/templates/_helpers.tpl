@@ -4,20 +4,7 @@ Expand the name of the chart.
 {{- define "camel-k-gdrive-gcs-sync.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
-{{/*
-Determine the correct API version for Kamelets
-*/}}
-{{- define "camel-k.kameletApiVersion" -}}
-{{- if .Values.apiVersions -}}
-{{- if .Values.apiVersions.kamelet -}}
-camel.apache.org/{{ .Values.apiVersions.kamelet }}
-{{- else -}}
-camel.apache.org/v1
-{{- end -}}
-{{- else -}}
-camel.apache.org/v1
-{{- end -}}
-{{- end -}}
+{{/* Helper functions can be defined here */}}
 
 {{/*
 Determine the correct API version for Integrations

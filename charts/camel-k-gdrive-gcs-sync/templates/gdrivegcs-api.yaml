@@ -16,8 +16,6 @@ spec:
     - "camel:bean"
     - "camel:direct"
     - "camel:rest"
-    - "kamelet:user-gdrive-source"
-    - "kamelet:user-gcs-sink"
   configuration:
     - type: secret
       value: {{ .Release.Name }}-gdrivegcs-credentials
@@ -27,9 +25,9 @@ spec:
         - name: google-credentials
           secret:
             secretName: {{ .Release.Name }}-gdrivegcs-credentials
-      mounts:
+      volumeMounts:
         - name: google-credentials
-          path: /etc/google-credentials
+          mountPath: /etc/google-credentials
   sources:
     - name: "api.yaml"
       content: |
