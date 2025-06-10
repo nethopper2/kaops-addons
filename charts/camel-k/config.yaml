@@ -29,7 +29,6 @@ forms:
           label: Basic
       - slug: registry
         variableSlugs:
-          - gcrProjectId
           - registryAddress
           - registrySecret
           - registryOrganization
@@ -53,16 +52,6 @@ forms:
           label: Resources
 
 variables:
-  - slug: gcrProjectId
-    path: gcr.projectId
-    forms: [default]
-    ui:
-      type: text
-      label: GCR Project ID
-      help: Google Cloud Project ID for Container Registry (gcr.io)
-      placeholder: "your-project-id"
-      validation: required
-
   - slug: operatorEnabled
     path: camel-k.enabled
     forms: [default]
@@ -116,13 +105,14 @@ variables:
       help: Configure a custom container registry for integration images
 
   - slug: registryAddress
-    path: camel-k.registry.address
+    path: camel-k.platform.build.registry.address
     forms: [default]
     ui:
       type: text
       label: Registry Address
-      help: Container registry address (e.g., docker.io, gcr.io)
+      help: Container registry address (e.g., docker.io, gcr.io/your-project-id)
       placeholder: "docker.io"
+      validation: required
 
   - slug: registrySecret
     path: camel-k.registry.secret
