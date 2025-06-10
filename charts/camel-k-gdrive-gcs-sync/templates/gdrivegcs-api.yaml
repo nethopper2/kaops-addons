@@ -19,16 +19,6 @@ spec:
   configuration:
     - type: secret
       value: {{ .Release.Name }}-gdrivegcs-credentials
-  traits:
-    container:
-      volumeMounts:
-        - name: google-credentials
-          mountPath: /etc/google-credentials
-    kubernetes:
-      volumes:
-        - name: google-credentials
-          secret:
-            secretName: {{ .Release.Name }}-gdrivegcs-credentials
   sources:
     - name: "api.yaml"
       content: |
@@ -97,6 +87,9 @@ spec:
                   name: "gcs.bucket"
                   constant: "{{ .Values.gcsBucketName }}"
               - setHeader:
+                  name: "gcs.credentials.key"
+                  constant: "google-credentials.json"
+              - setHeader:
                   name: "userFolder"
                   simple: "user-${exchangeProperty.userId}"
               # Call GDrive listing with user tokens
@@ -149,6 +142,9 @@ spec:
                     - setHeader:
                         name: "CamelGoogleStorage.objectName"
                         simple: "${header.userFolder}/${header.fileName}"
+                    - setHeader:
+                        name: "CamelGoogleStorage.serviceAccountKey"
+                        simple: "RAW(${exchangeProperty[${header.gcs.credentials.key}]})"
                     - to: "google-storage:${header.gcs.bucket}"
                     - log:
                         message: "Uploaded ${header.fileName} to GCS bucket: ${header.gcs.bucket} in folder: ${header.userFolder}"
