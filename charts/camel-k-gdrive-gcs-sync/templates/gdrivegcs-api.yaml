@@ -1,0 +1,6 @@
+traits:
+    mount:
+      configs: |-
+        - mountPath: "/etc/google-credentials/"
+          name: {{ .Release.Name }}-gdrivegcs-credentials
+          type: secret
