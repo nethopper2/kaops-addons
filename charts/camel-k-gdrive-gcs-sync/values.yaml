@@ -1,5 +1,5 @@
 # Google Drive and GCS configuration
-googleCredentialsSecret: ""
+googleCredentialsSecret: "" # Base64-encoded Google service account credentials JSON
 gcsBucketName: ""
 allowedFileExtensions: ""
 

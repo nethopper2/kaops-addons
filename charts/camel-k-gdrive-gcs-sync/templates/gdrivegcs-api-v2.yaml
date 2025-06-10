@@ -8,30 +8,17 @@ metadata:
     integration: gdrivegcs-api
 spec:
   replicas: {{ .Values.camelK.replicas }}
-  # Use built-in Kamelets
   dependencies:
     - "camel:jackson"
     - "camel:google-drive"
     - "camel:google-storage"
     - "camel:platform-http"
-    - "camel:core"
     - "camel:bean"
     - "camel:direct"
     - "camel:rest"
-  traits:
-    container:
-      serviceAccount: {{ .Release.Name }}-sa
-    mount:
-      volumes:
-        - name: google-credentials
-          secret:
-            secretName: {{ .Release.Name }}-gdrivegcs-credentials
-      mounts:
-        - name: google-credentials
-          path: /etc/google-credentials
-    service:
-      enabled: true
-      type: ClusterIP
+  configuration:
+    - type: secret
+      value: {{ .Release.Name }}-gdrivegcs-credentials
   sources:
     - name: "api.yaml"
       content: |
@@ -40,12 +27,10 @@ spec:
             produces: "application/json"
             consumes: "application/json"
             enableCORS: true
-            bindingMode: auto
-            configuration:
-              contextPath: /
-              apiComponent: platform-http
-              apiHost: 0.0.0.0
-              apiPort: {{ .Values.endpoint.port }}
+            bindingMode: json
+            componentName: platform-http
+            host: 0.0.0.0
+            port: {{ .Values.endpoint.port }}
             path: "/"
             post:
               path: "{{ .Values.endpoint.path }}"

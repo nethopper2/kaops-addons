@@ -42,7 +42,7 @@ variables:
     ui:
       type: secret
       label: Google Credentials
-      help: Base64 encoded Google service account credentials JSON file with access to Google Drive and GCS
+      help: Google service account credentials JSON file with access to Google Drive and GCS (will be automatically base64-encoded)
       validation: required
 
   - slug: gcsBucketName
