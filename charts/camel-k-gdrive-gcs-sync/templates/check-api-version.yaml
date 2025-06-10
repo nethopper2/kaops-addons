@@ -1,0 +1,77 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-api-version-check
+  namespace: {{ .Values.camelK.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    component: api-version-check
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: api-version-check
+    spec:
+      serviceAccountName: {{ .Release.Name }}-sa
+      restartPolicy: Never
+      containers:
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          set -e
+
+          echo "Detecting Camel K API versions..."
+
+          # Check for Kamelets API version
+          if kubectl get --raw /apis/camel.apache.org/v1/kamelets 2>/dev/null; then
+            echo "Kamelet API v1 is available"
+            export KAMELET_API="v1"
+          elif kubectl get --raw /apis/camel.apache.org/v1alpha1/kamelets 2>/dev/null; then
+            echo "Kamelet API v1alpha1 is available"
+            export KAMELET_API="v1alpha1"
+          else
+            echo "ERROR: No Kamelet API version found!"
+            kubectl get crd | grep camel.apache.org
+            exit 1
+          fi
+
+          # Check for Integration API version
+          if kubectl get --raw /apis/camel.apache.org/v1/integrations 2>/dev/null; then
+            echo "Integration API v1 is available"
+            export INTEGRATION_API="v1"
+          elif kubectl get --raw /apis/camel.apache.org/v1alpha1/integrations 2>/dev/null; then
+            echo "Integration API v1alpha1 is available"
+            export INTEGRATION_API="v1alpha1"
+          else
+            echo "ERROR: No Integration API version found!"
+            kubectl get crd | grep camel.apache.org
+            exit 1
+          fi
+
+          echo "API Versions detected:"
+          echo "- Kamelet: $KAMELET_API"
+          echo "- Integration: $INTEGRATION_API"
+
+          # Create a ConfigMap with the detected versions
+          cat <<EOF | kubectl apply -f -
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: {{ .Release.Name }}-camel-api-versions
+            namespace: {{ .Values.camelK.namespace }}
+            labels:
+              app: {{ .Release.Name }}
+          data:
+            KAMELET_API_VERSION: "$KAMELET_API"
+            INTEGRATION_API_VERSION: "$INTEGRATION_API"
+          EOF
+
+          echo "Created ConfigMap with API versions"

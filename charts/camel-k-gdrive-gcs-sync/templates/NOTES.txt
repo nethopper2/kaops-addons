@@ -14,3 +14,28 @@ To test, use the curl command shown in the addon outputs section.
 
 For more information and troubleshooting, check the integration logs:
   kubectl logs -l integration=gdrivegcs-api -n {{ .Values.camelK.watchNamespace }} -f
+Apache Camel K Google Drive to GCS Sync has been deployed successfully!
+
+The integration will provide an API endpoint at:
+  http://{{ .Release.Name }}-gdrivegcs-api.{{ .Values.camelK.watchNamespace }}.svc.cluster.local:{{ .Values.endpoint.port }}{{ .Values.endpoint.path }}
+
+To test the integration, you can use:
+
+curl -X POST \
+  "http://{{ .Release.Name }}-gdrivegcs-api.{{ .Values.camelK.watchNamespace }}.svc.cluster.local:{{ .Values.endpoint.port }}{{ .Values.endpoint.path }}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": "YOUR_USER_ID",
+    "accessToken": "GOOGLE_ACCESS_TOKEN",
+    "refreshToken": "GOOGLE_REFRESH_TOKEN",
+    "allowedExtensions": "{{ .Values.allowedFileExtensions }}"
+  }'
+
+Files will be stored in the GCS bucket: {{ .Values.gcsBucketName }}
+Each user's files will be stored in a subfolder named "user-{userId}"
+
+To view the integration logs:
+  kubectl logs -l integration=gdrivegcs-api -n {{ .Values.camelK.watchNamespace }} -f
+
+To check integration status:
+  kubectl get integration gdrivegcs-api -n {{ .Values.camelK.watchNamespace }}

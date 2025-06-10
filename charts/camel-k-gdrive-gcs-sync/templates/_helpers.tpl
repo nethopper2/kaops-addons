@@ -4,7 +4,42 @@ Expand the name of the chart.
 {{- define "camel-k-gdrive-gcs-sync.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
+{{/*
+Determine the correct API version for Kamelets
+*/}}
+{{- define "camel-k.kameletApiVersion" -}}
+{{- if .Values.apiVersions -}}
+{{- if .Values.apiVersions.kamelet -}}
+camel.apache.org/{{ .Values.apiVersions.kamelet }}
+{{- else -}}
+camel.apache.org/v1
+{{- end -}}
+{{- else -}}
+camel.apache.org/v1
+{{- end -}}
+{{- end -}}
 
+{{/*
+Determine the correct API version for Integrations
+*/}}
+{{- define "camel-k.integrationApiVersion" -}}
+{{- if .Values.apiVersions -}}
+{{- if .Values.apiVersions.integration -}}
+camel.apache.org/{{ .Values.apiVersions.integration }}
+{{- else -}}
+camel.apache.org/v1
+{{- end -}}
+{{- else -}}
+camel.apache.org/v1
+{{- end -}}
+{{- end -}}
+
+{{/*
+Global Camel K namespace
+*/}}
+{{- define "camel-k.namespace" -}}
+{{- .Values.camelK.namespace -}}
+{{- end -}}
 {{/*
 Create a default fully qualified app name.
 */}}

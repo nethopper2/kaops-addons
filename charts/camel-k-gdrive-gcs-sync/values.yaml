@@ -29,3 +29,8 @@ camelK:
   namespace: "nh-addons"
   watchNamespace: ""
   replicas: 2
+
+# API versions - auto-detected but can be overridden
+apiVersions:
+  kamelet: "v1"
+  integration: "v1"
