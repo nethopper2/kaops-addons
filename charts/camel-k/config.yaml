@@ -20,7 +20,7 @@ forms:
     steps:
       - slug: basic
         variableSlugs:
-          - registryEnabled
+#          - registryEnabled
           - operatorEnabled
           - operatorLogLevel
           - platformProfile
@@ -33,7 +33,7 @@ forms:
           - registrySecret
           - registryOrganization
         ui:
-          if: $get(registryEnabled).value
+#          if: $get(registryEnabled).value
           label: Registry
       - slug: monitoring
         variableSlugs:
@@ -94,15 +94,15 @@ variables:
       value: Kubernetes
       help: Platform profile determines runtime behavior and available features
 
-  - slug: registryEnabled
-    path: camel-k.registry.enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: Configure Container Registry
-      id: registryEnabled
-      value: false
-      help: Configure a custom container registry for integration images
+#  - slug: registryEnabled
+#    path: camel-k.registry.enabled
+#    forms: [default]
+#    ui:
+#      type: toggle
+#      label: Configure Container Registry
+#      id: registryEnabled
+#      value: false
+#      help: Configure a custom container registry for integration images
 
   - slug: registryAddress
     path: camel-k.platform.build.registry.address
