@@ -5,42 +5,66 @@ metadata:
   namespace: {{ .Values.camelK.watchNamespace }}
   labels:
     app: {{ .Release.Name }}
-    component: dependency-check
+    integration: gdrivegcs
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
 spec:
+  backoffLimit: 1
   template:
     metadata:
+      name: {{ .Release.Name }}-dependency-check
       labels:
         app: {{ .Release.Name }}
-        component: dependency-check
     spec:
+      serviceAccountName: {{ .Release.Name }}-sa
       restartPolicy: Never
-      serviceAccountName: default
       containers:
-        - name: check-dependencies
-          image: bitnami/kubectl:latest
-          command:
-            - "sh"
-            - "-c"
-            - |
-              # Check if Camel K CRDs exist
-              if ! kubectl get crd kamelets.camel.apache.org > /dev/null 2>&1; then
-                echo "ERROR: Camel K CRDs not found. Please install the Camel K addon first."
-                exit 1
-              fi
+      - name: dependency-check
+        image: bitnami/kubectl:latest
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          echo "Checking if Camel K CRDs are installed..."
 
-              # Check if Camel K operator is running
-              if ! kubectl get deployment -n {{ .Values.camelK.namespace }} camel-k-operator > /dev/null 2>&1; then
-                echo "ERROR: Camel K operator not found in namespace {{ .Values.camelK.namespace }}."
-                exit 1
-              fi
+          # Check if Kamelet CRD exists and determine API version
+          if kubectl get crd kamelets.camel.apache.org >/dev/null 2>&1; then
+            echo "Found Kamelet CRD with domain camel.apache.org"
+            # Check if v1 or v1alpha1 version is supported
+            if kubectl get --raw /apis/camel.apache.org/v1/kamelets >/dev/null 2>&1; then
+              echo "Kamelet API version v1 is supported"
+              export KAMELET_API_VERSION="v1"
+            elif kubectl get --raw /apis/camel.apache.org/v1alpha1/kamelets >/dev/null 2>&1; then
+              echo "Kamelet API version v1alpha1 is supported"
+              export KAMELET_API_VERSION="v1alpha1"
+            else
+              echo "ERROR: Couldn't determine supported Kamelet API version"
+              exit 1
+            fi
+          else
+            echo "ERROR: Camel K CRDs are not installed. The 'kamelets.camel.apache.org' CRD is missing."
+            echo "Please ensure the Camel K operator is installed and CRDs are properly registered."
+            exit 1
+          fi
 
-              echo "Camel K dependencies verified successfully."
-              exit 0
+          # Check if Integration CRD exists
+          if ! kubectl get crd integrations.camel.apache.org >/dev/null 2>&1; then
+            echo "ERROR: Camel K CRDs are not installed. The 'integrations.camel.apache.org' CRD is missing."
+            echo "Please ensure the Camel K operator is installed and CRDs are properly registered."
+            exit 1
+          fi
+
+          # Check if Camel K operator is running
+          OPERATOR_NS="{{ .Values.camelK.namespace }}"
+          if ! kubectl get deployment -n "$OPERATOR_NS" | grep camel-k-operator >/dev/null 2>&1; then
+            echo "ERROR: Camel K operator is not running in namespace '$OPERATOR_NS'."
+            echo "Please ensure the Camel K operator is properly installed and running."
+            exit 1
+          fi
+
+          echo "All Camel K dependencies are properly installed."
+          exit 0
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
-  backoffLimit: 1
