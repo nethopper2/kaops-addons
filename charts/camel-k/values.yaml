@@ -1,6 +1,6 @@
 # GCR configuration
 gcr:
-  projectId: "" # Set this via --set gcr.projectId=your-project-id
+  projectId: ""
 
 camel-k:
   enabled: true
