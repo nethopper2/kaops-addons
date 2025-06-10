@@ -110,25 +110,25 @@ variables:
     ui:
       type: text
       label: Registry Address
-      help: Container registry address (e.g., docker.io, gcr.io/your-project-id)
+      help: Container registry address. For GCR, use format 'gcr.io/your-project-id'. For Artifact Registry, use '<location>-docker.pkg.dev/<project-id>/<repository-name>'.
       placeholder: "docker.io"
       validation: required
 
   - slug: registrySecret
-    path: camel-k.registry.secret
+    path: camel-k.platform.build.registry.secret
     forms: [default]
     ui:
       type: secret
       label: Registry Secret
-      help: Secret containing registry credentials
+      help: Secret containing registry credentials. For GCR, use the same Google service account credentials as your GCS access.
 
   - slug: registryOrganization
-    path: camel-k.registry.organization
+    path: camel-k.platform.build.registry.organization
     forms: [default]
     ui:
       type: text
       label: Registry Organization
-      help: Organization/namespace in the registry
+      help: Organization/namespace in the registry. For GCR this is optional.
       placeholder: "my-org"
 
   - slug: monitoringEnabled
