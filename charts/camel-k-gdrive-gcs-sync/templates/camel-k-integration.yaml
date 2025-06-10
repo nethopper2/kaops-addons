@@ -1,0 +1,111 @@
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: gdrivegcs-api
+  namespace: {{ .Values.camelK.watchNamespace }}
+  labels:
+    app: {{ .Release.Name }}
+    integration: gdrivegcs-api
+spec:
+  replicas: {{ .Values.camelK.replicas }}
+  traits:
+    container:
+      configuration:
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+    mount:
+      configs:
+        # Mount Google Credentials
+        - name: {{ .Release.Name }}-gdrivegcs-credentials
+          mountPath: /etc/google-credentials/
+          type: secret
+  flows:
+    # Main API flow to expose REST endpoint
+    - rest:
+        id: gdrive-gcs-sync-api
+        produces: application/json
+        bindingMode: json
+        enableCors: true
+        path: {{ .Values.endpoint.path }}
+        post:
+          id: sync-gdrive-to-gcs
+          description: Sync Google Drive to GCS
+          to: direct:process-sync-request
+    # Flow to process sync requests
+    - from:
+        id: process-sync-request
+        uri: direct:process-sync-request
+        steps:
+          # Validate required fields
+          - validate:
+              expression:
+                simple: "${body[userId]} != null && ${body[accessToken]} != null && ${body[refreshToken]} != null"
+              error-message: "Missing required fields: userId, accessToken, or refreshToken"
+          # Set up idempotency key based on userId
+          - setHeader:
+              name: "IdempotentKey"
+              simple: "user-${body[userId]}"
+
+          # Check for idempotency (prevent concurrent syncs for same user)
+          {{- if .Values.idempotency.enabled }}
+          - idempotentConsumer:
+              {{- if eq .Values.idempotency.repository "redis" }}
+              repository-type: "redis"
+              expression: "${header.IdempotentKey}"
+              redis-host: "{{ .Values.idempotency.redis.host }}"
+              redis-port: "{{ .Values.idempotency.redis.port }}"
+              {{- else }}
+              repository-type: "memory"
+              expression: "${header.IdempotentKey}"
+              {{- end }}
+              completion-timeout: "{{ .Values.idempotency.expiration }}"
+              in-completion-only: "true"
+              eager-load-cache: "false"
+              remove-on-failure: "true"
+          {{- end }}
+
+          # Extract request parameters
+          - setHeader:
+              name: "UserId"
+              simple: "${body[userId]}"
+          - setHeader:
+              name: "AccessToken"
+              simple: "${body[accessToken]}"
+          - setHeader:
+              name: "RefreshToken"
+              simple: "${body[refreshToken]}"
+
+          # Set up allowed extensions filter if provided
+          - choice:
+              when:
+                - simple: "${body[allowedExtensions]} != null"
+                - setHeader:
+                    name: "AllowedExtensions"
+                    simple: "${body[allowedExtensions]}"
+              otherwise:
+                - setHeader:
+                    name: "AllowedExtensions"
+                    simple: "{{ .Values.allowedFileExtensions }}"
+
+          # Set up GCS bucket and credentials
+          - setHeader:
+              name: "bucketName"
+              constant: "{{ .Values.gcsBucketName }}"
+          - setHeader:
+              name: "credentialsPath"
+              constant: "{{ .Values.credentialsPath }}"
+          - setHeader:
+              name: "userFolder"
+              simple: "user-${header.UserId}"
+
+          # Send to user-specific folder in GCS bucket
+          - to: "kamelet:user-gdrive-source?accessToken=${header.AccessToken}&refreshToken=${header.RefreshToken}&allowedExtensions=${header.AllowedExtensions}"
+
+          # Return success response
+          - setBody:
+              constant: '{"status":"success","message":"Sync started successfully"}'

@@ -1,4 +1,3 @@
-{{- if .Values.enabled }}
 apiVersion: camel.apache.org/v1alpha1
 kind: Kamelet
 metadata:
@@ -10,57 +9,90 @@ metadata:
 spec:
   definition:
     title: "User Google Drive Source"
-    description: "Retrieve files from Google Drive using user-provided tokens"
+    description: "Pull files from Google Drive using user OAuth tokens"
     required:
-      - userId
+      - accessToken
+      - refreshToken
     properties:
-      userId:
-        title: User ID
-        description: Unique identifier for the user to prevent concurrent syncs
-        type: string
       accessToken:
-        title: Google Drive Access Token
-        description: OAuth2 Access Token for Google Drive API
+        title: Access Token
+        description: OAuth access token for Google Drive
         type: string
       refreshToken:
-        title: Google Drive Refresh Token
-        description: OAuth2 Refresh Token for Google Drive API
+        title: Refresh Token
+        description: OAuth refresh token for Google Drive
         type: string
       allowedExtensions:
         title: Allowed File Extensions
-        description: Comma-separated list of file extensions to filter (e.g. pdf,docx)
+        description: Comma-separated list of file extensions to filter
         type: string
-        default: ""
   template:
     from:
-      uri: "direct:gdrive-source"
+      uri: "google-drive:files/list"
+      parameters:
+        accessToken: "{{`{{accessToken}}`}}"
+        refreshToken: "{{`{{refreshToken}}`}}"
+        applicationName: "CamelK-GDrive-GCS-Sync"
       steps:
-        # Log start of processing for this user
         - log:
-            message: "Processing Google Drive sync for user: ${header.userId}"
-        # Custom processor to list Google Drive files
-        - bean:
-            ref: "#class:org.apache.camel.component.google.drive.GoogleDriveFileLister"
+            message: "Processing files from Google Drive for user"
         # Filter by file extensions if specified
         - choice:
             when:
-              - simple: "${header.allowedExtensions} != ''"
+              - simple: "{{`{{allowedExtensions}}`}} != ''"
               - split:
-                  jsonpath: "$"
-                  steps:
-                    - filter:
-                        simple: "${body.fileExtension} contains one of ${header.allowedExtensions}"
-        # Set metadata for each file
+                  tokenize: ","
+                  expression:
+                    constant: "{{`{{allowedExtensions}}`}}"
+                steps:
+                  - setHeader:
+                      name: "extension"
+                      simple: "${body.trim()}"
+                  - filter:
+                      expression:
+                        simple: "${exchangeProperty.CamelSplitSize} == ${exchangeProperty.CamelSplitIndex} + 1"
+                  - log:
+                      message: "Filtering for extensions: {{`{{allowedExtensions}}`}}"
+        # Iterate through each file
         - split:
-            jsonpath: "$"
+            simple: "${body}"
             steps:
-              - setHeader:
-                  name: "fileName"
-                  simple: "${body.name}"
+              # Download the file content
               - setHeader:
                   name: "fileId"
                   simple: "${body.id}"
-              # Return the file ID as the body for downstream processing
-              - setBody:
-                  simple: "${body.id}"
-{{- end }}
+              - setHeader:
+                  name: "fileName"
+                  simple: "${body.name}"
+              # Filter by extension if needed
+              - choice:
+                  when:
+                    - simple: "{{`{{allowedExtensions}}`}} != ''"
+                    - script:
+                        language: groovy
+                        expression: |
+                          def fileName = exchange.in.getHeader("fileName")
+                          def allowedExtensions = exchange.in.getHeader("AllowedExtensions")
+
+                          if (allowedExtensions == null || allowedExtensions.isEmpty()) {
+                            return true // No extension filtering
+                          }
+
+                          def extensions = allowedExtensions.split(",")
+                          for (ext in extensions) {
+                            ext = ext.trim()
+                            if (ext.startsWith(".")) {
+                              if (fileName.toLowerCase().endsWith(ext.toLowerCase())) {
+                                return true
+                              }
+                            } else {
+                              if (fileName.toLowerCase().endsWith("." + ext.toLowerCase())) {
+                                return true
+                              }
+                            }
+                          }
+                          return false
+              # Download file content
+              - to: "google-drive:files/get?fileId=${header.fileId}&accessToken={{`{{accessToken}}`}}&refreshToken={{`{{refreshToken}}`}}"
+              # Send to GCS sink
+              - to: "kamelet:user-gcs-sink?bucketName=${header.bucketName}&credentialsPath=${header.credentialsPath}&userFolder=${header.userFolder}"
