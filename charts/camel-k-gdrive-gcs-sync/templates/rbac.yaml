@@ -1,0 +1,41 @@
+# Service Account for Camel K integration
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}-sa
+  namespace: {{ .Values.camelK.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    integration: gdrivegcs
+---
+# Role with permissions for the GCS integration
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Release.Name }}-role
+  namespace: {{ .Values.camelK.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    integration: gdrivegcs
+rules:
+- apiGroups: [""]
+  resources: ["secrets", "configmaps"]
+  verbs: ["get", "list", "watch"]
+---
+# RoleBinding to assign the role to the service account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Release.Name }}-rolebinding
+  namespace: {{ .Values.camelK.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    integration: gdrivegcs
+subjects:
+- kind: ServiceAccount
+  name: {{ .Release.Name }}-sa
+  namespace: {{ .Values.camelK.namespace }}
+roleRef:
+  kind: Role
+  name: {{ .Release.Name }}-role
+  apiGroup: rbac.authorization.k8s.io

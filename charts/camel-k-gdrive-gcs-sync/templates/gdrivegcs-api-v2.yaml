@@ -1,0 +1,184 @@
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: gdrivegcs-api
+  namespace: {{ .Values.camelK.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    integration: gdrivegcs-api
+spec:
+  replicas: {{ .Values.camelK.replicas }}
+  # Use built-in Kamelets
+  dependencies:
+    - "camel:jackson"
+    - "camel:google-drive"
+    - "camel:google-storage"
+    - "camel:platform-http"
+    - "camel:core"
+    - "camel:bean"
+    - "camel:direct"
+    - "camel:rest"
+  traits:
+    container:
+      serviceAccount: {{ .Release.Name }}-sa
+    mount:
+      volumes:
+        - name: google-credentials
+          secret:
+            secretName: {{ .Release.Name }}-gdrivegcs-credentials
+      mounts:
+        - name: google-credentials
+          path: /etc/google-credentials
+    service:
+      enabled: true
+      type: ClusterIP
+  sources:
+    - name: "api.yaml"
+      content: |
+        - rest:
+            id: "gdrivegcs-api"
+            produces: "application/json"
+            consumes: "application/json"
+            enableCORS: true
+            bindingMode: auto
+            configuration:
+              contextPath: /
+              apiComponent: platform-http
+              apiHost: 0.0.0.0
+              apiPort: {{ .Values.endpoint.port }}
+            path: "/"
+            post:
+              path: "{{ .Values.endpoint.path }}"
+              description: "Trigger a Google Drive to GCS sync using user OAuth tokens"
+              param:
+                - name: "body"
+                  description: "User credentials and sync options"
+                  type: "body"
+                  required: true
+              to: "direct:process-request"
+
+        - from:
+            uri: "direct:process-request"
+            steps:
+              # Extract request parameters
+              - setProperty:
+                  name: "userId"
+                  jsonpath: "$.body.userId"
+              - setProperty:
+                  name: "accessToken"
+                  jsonpath: "$.body.accessToken"
+              - setProperty:
+                  name: "refreshToken"
+                  jsonpath: "$.body.refreshToken"
+              # Setup optional allowedExtensions
+              - choice:
+                  when:
+                    - jsonpath: "$.body.allowedExtensions"
+                    - setProperty:
+                        name: "allowedExtensions"
+                        jsonpath: "$.body.allowedExtensions"
+                  otherwise:
+                    - setProperty:
+                        name: "allowedExtensions"
+                        constant: ""
+              # Setup idempotent processing for userId if enabled
+              {{- if .Values.idempotency.enabled }}
+              - idempotentConsumer:
+                  expression:
+                    simple: "${exchangeProperty.userId}"
+                  # Choose repository type
+                  {{- if eq .Values.idempotency.repository "redis" }}
+                  repositoryRef: "redisIdempotentRepository"
+                  {{- else }}
+                  memoryDimension: 100
+                  {{- end }}
+                  # Eager remove completed exchanges
+                  removeOnFailure: true
+                  removeOnCompletion: true
+                  # Set timeout
+                  timeoutMaxAge: "{{ .Values.idempotency.expiration }}"
+              {{- end }}
+              # Main processing logic
+              - log:
+                  message: "Processing Google Drive sync for user: ${exchangeProperty.userId}"
+              # Setup GCS credentials and bucket name
+              - setHeader:
+                  name: "bucketName"
+                  constant: "{{ .Values.gcsBucketName }}"
+              - setHeader:
+                  name: "credentialsPath"
+                  constant: "{{ .Values.credentialsPath }}"
+              - setHeader:
+                  name: "userFolder"
+                  simple: "user-${exchangeProperty.userId}"
+              # Call GDrive listing with user tokens
+              - to: "google-drive:files/list?accessToken=${exchangeProperty.accessToken}&refreshToken=${exchangeProperty.refreshToken}&applicationName=CamelK-GDrive-GCS-Sync"
+              # Process each file
+              - split:
+                  simple: "${body}"
+                  steps:
+                    # Set file details
+                    - setHeader:
+                        name: "fileId"
+                        simple: "${body.id}"
+                    - setHeader:
+                        name: "fileName"
+                        simple: "${body.name}"
+                    # Filter by extension if needed
+                    - choice:
+                        when:
+                          - simple: "${exchangeProperty.allowedExtensions} != ''"
+                          - script:
+                              language: groovy
+                              expression: |
+                                def fileName = exchange.in.getHeader("fileName")
+                                def allowedExtensions = exchange.getProperty("allowedExtensions")
+
+                                if (allowedExtensions == null || allowedExtensions.isEmpty()) {
+                                  return true // No filtering needed
+                                }
+
+                                def extensions = allowedExtensions.split(",")
+                                for (ext in extensions) {
+                                  ext = ext.trim()
+                                  if (ext.startsWith(".")) {
+                                    if (fileName.toLowerCase().endsWith(ext.toLowerCase())) {
+                                      return true
+                                    }
+                                  } else {
+                                    if (fileName.toLowerCase().endsWith("." + ext.toLowerCase())) {
+                                      return true
+                                    }
+                                  }
+                                }
+                                return false
+                    # Download file content
+                    - to: "google-drive:files/get?fileId=${header.fileId}&accessToken=${exchangeProperty.accessToken}&refreshToken=${exchangeProperty.refreshToken}"
+                    # Upload to GCS
+                    - setHeader:
+                        name: "CamelGoogleStorage.bucketName"
+                        simple: "${header.bucketName}"
+                    - setHeader:
+                        name: "CamelGoogleStorage.serviceAccountKey"
+                        simple: "${header.credentialsPath}"
+                    - setHeader:
+                        name: "CamelGoogleStorage.objectName"
+                        simple: "${header.userFolder}/${header.fileName}"
+                    - to: "google-storage:${header.bucketName}"
+                    - log:
+                        message: "Uploaded ${header.fileName} to GCS bucket: ${header.bucketName} in folder: ${header.userFolder}"
+              # Return success response
+              - setBody:
+                  constant: "{\"status\": \"success\", \"message\": \"Google Drive sync initiated successfully\"}"
+
+        {{- if and .Values.idempotency.enabled (eq .Values.idempotency.repository "redis") }}
+        # Redis-based idempotent repository setup
+        - beans:
+            - name: redisIdempotentRepository
+              type: org.apache.camel.processor.idempotent.redis.RedisIdempotentRepository
+              properties:
+                host: {{ .Values.idempotency.redis.host }}
+                port: {{ .Values.idempotency.redis.port }}
+                # Use userId as the key in Redis
+                processorName: user-gdrive-sync
+        {{- end }}
