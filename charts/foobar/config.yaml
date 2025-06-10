@@ -1,6 +1,6 @@
 metadata:
   slug: foobar
-  name: Google Drive to GCS Sync
+  name: Foo Bar GCS
   description: Minimal synchronization from Google Drive to Google Cloud Storage
   categories: [Integration]
   isProduction: false
