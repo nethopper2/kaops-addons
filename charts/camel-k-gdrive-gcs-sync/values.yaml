@@ -27,7 +27,6 @@ credentialsPath: "/etc/google-credentials/google-credentials.json"
 # Camel K integration settings
 camelK:
   namespace: "nh-addons"
-  watchNamespace: ""
   replicas: 2
 
 # API versions - auto-detected but can be overridden
