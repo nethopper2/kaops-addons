@@ -11,7 +11,7 @@ camel-k:
       - name: KAMEL_KAMELET_CATALOG_ENABLED
         value: "true"
 
-  # Platform configuration with Kamelet catalog enabled
+  # Platform configuration without Kamelet catalog
   platform:
     profile: Kubernetes
     build:
@@ -19,8 +19,6 @@ camel-k:
       # Configure registry at platform level
       registry:
         address: "docker.io"
-    # Enable standard Kamelet catalog
-    kamelet: {}
 
   # Explicitly disable all monitoring and optional features
   monitoring:
