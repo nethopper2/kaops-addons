@@ -16,13 +16,13 @@ camel-k:
   # Platform configuration without Kamelet catalog
   platform:
     profile: Kubernetes
-    resources:
-      kamelets: false
     build:
       timeout: 5m
       # Configure registry at platform level
       registry:
         address: "docker.io"
+    # Disable kamelet catalog directly in platform config
+    kameletsCatalogEnabled: false
 
   # Explicitly disable all monitoring and optional features
   monitoring:
