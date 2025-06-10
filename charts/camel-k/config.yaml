@@ -29,6 +29,7 @@ forms:
           label: Basic
       - slug: registry
         variableSlugs:
+          - gcrProjectId
           - registryAddress
           - registrySecret
           - registryOrganization
@@ -52,6 +53,15 @@ forms:
           label: Resources
 
 variables:
+  - slug: gcrProjectId
+    path: gcr.projectId
+    forms: [default]
+    ui:
+      type: text
+      label: GCR Project ID
+      help: Google Cloud Project ID for Container Registry (gcr.io)
+      placeholder: "your-project-id"
+      validation: required
 
   - slug: operatorEnabled
     path: camel-k.enabled

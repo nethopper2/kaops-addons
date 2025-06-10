@@ -1,3 +1,7 @@
+# GCR configuration
+gcr:
+  projectId: "" # Set this via --set gcr.projectId=your-project-id
+
 camel-k:
   enabled: true
 
@@ -21,7 +25,8 @@ camel-k:
       timeout: 5m
       # Configure registry at platform level
       registry:
-        address: "docker.io"
+        address: "{{ if .Values.gcr.projectId }}gcr.io/{{ .Values.gcr.projectId }}{{ end }}" # temp for now.
+    #        address: "docker.io"
     # Explicitly disable Kamelet catalog
 #    kamelet:
 #      repositories: []
