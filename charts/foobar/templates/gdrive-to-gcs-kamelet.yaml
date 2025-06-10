@@ -22,7 +22,7 @@ spec:
     from:
       uri: "google-drive:drive-files"
       parameters:
-        clientId: "{{clientId}}"
+        clientId: "#property:clientId"
         applicationName: "CamelGDriveSync"
         credentialsFilePath: "/etc/google/json"
         includeFolder: "true"
@@ -30,7 +30,7 @@ spec:
         repeatCount: "1"
       steps:
         - to:
-            uri: "google-storage:{{bucketName}}"
+            uri: "google-storage:#property:bucketName"
             parameters:
               serviceAccountKey: "/etc/google/json"
               autoCreateBucket: "false"
