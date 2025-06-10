@@ -1,6 +1,5 @@
 traits:
     mount:
-      configs: |-
-        - mountPath: "/etc/google-credentials/"
-          name: {{ .Release.Name }}-gdrivegcs-credentials
-          type: secret
+      configs:
+        - "configmap:fake-config@/etc/fake-path"
+        - "secret:{{ .Release.Name }}-gdrivegcs-credentials@/etc/google-credentials/"
