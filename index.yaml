@@ -1038,6 +1038,19 @@ entries:
       kaops.net/dependency: camel-k
     apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-06-10T01:58:06.749720408Z"
+    description: Google Drive to Google Cloud Storage sync integration using Apache
+      Camel K
+    digest: e3c0610541e12b9a8b3178b7acf75ff4347fc30df3625d62cbf2343ddf990ff7
+    name: camel-k-gdrive-gcs-sync
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/camel-k-gdrive-gcs-sync-0.1.22/camel-k-gdrive-gcs-sync-0.1.22.tgz
+    version: 0.1.22
+  - annotations:
+      kaops.net/dependency: camel-k
+    apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-06-10T01:51:20.120666449Z"
     description: Google Drive to Google Cloud Storage sync integration using Apache
       Camel K
@@ -10445,4 +10458,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-06-10T01:51:20.12167446Z"
+generated: "2025-06-10T01:58:06.750958246Z"
