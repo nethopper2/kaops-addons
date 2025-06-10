@@ -1,0 +1,28 @@
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: {{ .Release.Name }}-gdrive-gcs-sync
+  namespace: {{ .Values.camelK.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  profile: Kubernetes
+  traits:
+    mount:
+      configuration:
+        volumes:
+          - name: google-creds
+            secret:
+              secretName: {{ .Values.googleCredentialsSecret }}
+        mounts:
+          - name: google-creds
+            path: /etc/google
+  dependencies:
+    - "camel:google-drive"
+    - "camel:google-storage"
+  flows:
+    - from:
+        uri: "kamelet:gdrive-to-gcs"
+        parameters:
+          clientId: "{{ .Values.driveClientId }}"
+          bucketName: "{{ .Values.gcsBucketName }}"

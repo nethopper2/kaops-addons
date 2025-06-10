@@ -1,0 +1,13 @@
+apiVersion: v2
+name: foobar
+description: Minimal Google Drive to Google Cloud Storage sync using Camel K Kamelets
+
+type: application
+
+version: 0.1.0
+appVersion: "1.0.0"
+
+#annotations:
+#  kaops.net/dependency: "camel-k"
+
+dependencies: []

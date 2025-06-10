@@ -1,0 +1,10 @@
+# The only configuration is the Google credentials secret
+googleCredentialsSecret: ""
+
+# Fixed configuration (not configurable by user)
+camelK:
+  namespace: "nh-addons"
+
+# Hardcoded values (not configurable by user)
+gcsBucketName: "camel-k-test"
+driveClientId: "" # user input

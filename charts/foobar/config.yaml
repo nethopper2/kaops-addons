@@ -1,0 +1,55 @@
+metadata:
+  slug: foobar
+  name: Google Drive to GCS Sync
+  description: Minimal synchronization from Google Drive to Google Cloud Storage
+  categories: [Integration]
+  isProduction: false
+  installTargets:
+    clusterMessage: Works on standard Kubernetes including GKE.
+    infoMessage: This addon requires the Camel K addon to be installed first.
+
+forms:
+  - slug: default
+    label: Configuration
+    steps:
+      - slug: basic
+        variableSlugs:
+          - driveClientId
+          - googleCredentialsSecret
+        ui:
+          label: Basic
+
+variables:
+  - slug: driveClientId
+    path: driveClientId
+    forms: [default]
+    ui:
+      type: text
+      label: Google Drive ID
+      validation: required
+  - slug: googleCredentialsSecret
+    path: googleCredentialsSecret
+    forms: [default]
+    ui:
+      type: secret
+      label: Google Credentials
+      help: Base64-encoded Google service account credentials JSON file with access to Google Drive and GCS
+      validation: required
+
+
+system:
+  - path: "camelK.namespace"
+    value: "${system.cluster.namespace}"
+
+output:
+  - name: Integration Status
+    description: Check the status of the Google Drive to GCS integration
+    value: "kubectl get integration {{ .Release.Name }}-gdrive-gcs-sync -n ${system.cluster.namespace}"
+    type: command
+    slug: default
+
+dependencies:
+  addons:
+    - slug: 'camel-k'
+      name: 'Apache Camel K'
+      required: true

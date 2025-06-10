@@ -1,0 +1,36 @@
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: gdrive-to-gcs
+  namespace: {{ .Values.camelK.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  definition:
+    title: "Google Drive to GCS"
+    description: "Sync files from Google Drive to Google Cloud Storage"
+    properties:
+      clientId:
+        title: Client ID
+        description: Google Drive Client ID
+        type: string
+      bucketName:
+        title: Bucket Name
+        description: Google Cloud Storage bucket name
+        type: string
+  template:
+    from:
+      uri: "google-drive:drive-files"
+      parameters:
+        clientId: "{{clientId}}"
+        applicationName: "CamelGDriveSync"
+        credentialsFilePath: "/etc/google/json"
+        includeFolder: "true"
+        includeSubfolders: "true"
+        repeatCount: "1"
+      steps:
+        - to:
+            uri: "google-storage:{{bucketName}}"
+            parameters:
+              serviceAccountKey: "/etc/google/json"
+              autoCreateBucket: "false"
