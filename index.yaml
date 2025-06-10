@@ -667,6 +667,22 @@ entries:
   camel-k:
   - apiVersion: v2
     appVersion: 2.6.0
+    created: "2025-06-10T00:37:43.135781623Z"
+    dependencies:
+    - condition: camel-k.enabled
+      name: camel-k
+      repository: https://apache.github.io/camel-k/charts/
+      version: 2.6.0
+    description: A Helm chart for Apache Camel K - a lightweight integration platform
+      for Kubernetes
+    digest: 3d826755f32fb132ede82dd091d447bb54365c149bc81c67fe7937edcd2165e4
+    name: camel-k
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/camel-k-0.1.24/camel-k-0.1.24.tgz
+    version: 0.1.24
+  - apiVersion: v2
+    appVersion: 2.6.0
     created: "2025-06-10T00:28:21.389839727Z"
     dependencies:
     - condition: camel-k.enabled
@@ -1018,6 +1034,17 @@ entries:
     - https://github.com/nethopper2/kaops-addons/releases/download/camel-k-0.1.1/camel-k-0.1.1.tgz
     version: 0.1.1
   camel-k-gdrive-gcs-sync:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-06-10T00:37:43.348480822Z"
+    description: Google Drive to Google Cloud Storage sync integration using Apache
+      Camel K
+    digest: 634f10c4200dc1e976af926a7e03603f796fc38ff17bf47c07647127eea169e5
+    name: camel-k-gdrive-gcs-sync
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/camel-k-gdrive-gcs-sync-0.1.10/camel-k-gdrive-gcs-sync-0.1.10.tgz
+    version: 0.1.10
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2025-06-10T00:17:55.380667002Z"
@@ -10283,4 +10310,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-06-10T00:28:21.520952348Z"
+generated: "2025-06-10T00:37:43.349516732Z"
