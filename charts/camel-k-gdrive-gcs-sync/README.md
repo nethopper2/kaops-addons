@@ -4,7 +4,7 @@ This Helm chart deploys a Camel K integration that provides an API for synchroni
 
 ## Architecture
 
-This chart uses Apache Camel K Kamelets to implement a flexible and efficient synchronization system:
+This chart uses Apache Camel K to implement a flexible and efficient synchronization system:
 
 1. **REST API Endpoint**: Exposes an HTTP POST endpoint that accepts synchronization requests
 2. **User Authentication**: Uses user-provided OAuth tokens for Google Drive access
@@ -62,12 +62,13 @@ Files will automatically be stored in a folder named `user-{userId}` within the 
 
 ## Implementation Details
 
-### Kamelets
+### Direct Integration
 
-This integration uses custom Kamelets:
+This integration uses a direct Camel route that:
 
-1. **user-gdrive-source**: Lists and retrieves files from Google Drive using user tokens
-2. **user-gcs-sink**: Uploads files to GCS with user-specific paths
+1. **REST API**: Exposes an HTTP endpoint for triggering syncs
+2. **Google Drive Component**: Lists and retrieves files using the user's OAuth tokens
+3. **Google Storage Component**: Uploads files directly to GCS with user-specific paths
 
 ### Idempotent Processing
 

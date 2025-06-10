@@ -8,7 +8,7 @@ metadata:
     app: {{ .Release.Name }}
     integration: gdrivegcs
 ---
-# Role with permissions for the GCS integration
+# Role with minimal permissions needed
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -19,11 +19,8 @@ metadata:
     integration: gdrivegcs
 rules:
 - apiGroups: [""]
-  resources: ["secrets", "configmaps", "pods", "services"]
+  resources: ["secrets", "configmaps"]
   verbs: ["get", "list", "watch"]
-- apiGroups: ["camel.apache.org"]
-  resources: ["integrations", "kamelets"]
-  verbs: ["get", "list", "watch", "create", "update", "patch"]
 ---
 # RoleBinding to assign the role to the service account
 apiVersion: rbac.authorization.k8s.io/v1
