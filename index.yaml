@@ -1402,6 +1402,16 @@ entries:
   foobar:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-06-10T14:13:19.18903025Z"
+    description: Minimal Google Drive to Google Cloud Storage sync using Camel K Kamelets
+    digest: 78097343d781ed65d90e310e720ff67a12102ba39566dcae9af69b527d70054d
+    name: foobar
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/foobar-0.1.2/foobar-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-06-10T14:00:40.037097689Z"
     description: Minimal Google Drive to Google Cloud Storage sync using Camel K Kamelets
     digest: 62bd672d625240c3066b84deef769f33279986b8fba15d524a492f46812c2db6
@@ -10585,4 +10595,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-06-10T14:00:40.038585783Z"
+generated: "2025-06-10T14:13:19.189973146Z"
