@@ -4,18 +4,14 @@ camel-k:
   operator:
     namespace: nh-addons
     logLevel: info
-    # Commenting out Kamelet-disabling env vars to re-enable Kamelets
-    # env:
-    #   # Disable Kamelets completely
-    #   - name: KAMEL_INSTALL_DEFAULT_KAMELETS
-    #     value: "false"
-    #   - name: KAMEL_KAMELET_CATALOG_ENABLED
-    #     value: "false"
-    #   # Skip Kamelet installation entirely
-    #   - name: KAMEL_KAMELET_CATALOG_REPO
-    #     value: ""
+    env:
+      # Explicitly enable Kamelets
+      - name: KAMEL_INSTALL_DEFAULT_KAMELETS
+        value: "true"
+      - name: KAMEL_KAMELET_CATALOG_ENABLED
+        value: "true"
 
-  # Platform configuration - re-enable Kamelet catalog at platform level
+  # Platform configuration with Kamelet catalog enabled
   platform:
     profile: Kubernetes
     build:
@@ -23,9 +19,8 @@ camel-k:
       # Configure registry at platform level
       registry:
         address: "docker.io"
-    # Re-enable Kamelet catalog by commenting out the empty repositories
-    # kamelet:
-    #   repositories: []
+    # Enable standard Kamelet catalog
+    kamelet: {}
 
   # Explicitly disable all monitoring and optional features
   monitoring:

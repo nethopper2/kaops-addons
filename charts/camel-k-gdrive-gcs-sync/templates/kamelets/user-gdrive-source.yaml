@@ -1,8 +1,8 @@
-apiVersion: {{ template "camel-k.kameletApiVersion" . }}
+apiVersion: camel.apache.org/v1
 kind: Kamelet
 metadata:
   name: user-gdrive-source
-  namespace: {{ template "camel-k.namespace" . }}
+  namespace: {{ .Values.camelK.namespace }}
   labels:
     app: {{ .Release.Name }}
     integration: gdrivegcs
