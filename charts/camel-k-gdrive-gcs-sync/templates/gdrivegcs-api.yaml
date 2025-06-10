@@ -97,9 +97,6 @@ spec:
                   name: "gcs.bucket"
                   constant: "{{ .Values.gcsBucketName }}"
               - setHeader:
-                  name: "gcs.credentials"
-                  constant: "{{ .Values.credentialsPath }}"
-              - setHeader:
                   name: "userFolder"
                   simple: "user-${exchangeProperty.userId}"
               # Call GDrive listing with user tokens
@@ -149,9 +146,6 @@ spec:
                     - setHeader:
                         name: "CamelGoogleStorage.bucketName"
                         simple: "${header.gcs.bucket}"
-                    - setHeader:
-                        name: "CamelGoogleStorage.serviceAccountKey"
-                        simple: "${header.gcs.credentials}"
                     - setHeader:
                         name: "CamelGoogleStorage.objectName"
                         simple: "${header.userFolder}/${header.fileName}"

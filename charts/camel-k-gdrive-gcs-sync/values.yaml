@@ -21,8 +21,8 @@ idempotency:
 # Shared Redis configuration - fixed name that will be provided by Redis addon
 redisConfigMapName: "shared-configmap-redis"
 
-# Service account credentials path (mounted from secret)
-credentialsPath: "/etc/google-credentials/google-credentials.json"
+# Service account credentials environment variable name
+credentialsPath: "GOOGLE_APPLICATION_CREDENTIALS"
 
 # Camel K integration settings
 camelK:
