@@ -9,13 +9,10 @@ spec:
   profile: Kubernetes
   traits:
     mount:
+      configs:
+        - "secret:{{ .Values.googleCredentialsSecret }}"
       volumes:
-        - name: google-creds
-          secret:
-            secretName: {{ .Values.googleCredentialsSecret }}
-      mounts:
-        - name: google-creds
-          path: /etc/google
+        - "secret:{{ .Values.googleCredentialsSecret }}:/etc/google"
   dependencies:
     - "camel:google-drive"
     - "camel:google-storage"

@@ -4,7 +4,7 @@ description: Minimal Google Drive to Google Cloud Storage sync using Camel K Kam
 
 type: application
 
-version: 0.1.5
+version: 0.1.6
 appVersion: "1.0.0"
 
 #annotations:
