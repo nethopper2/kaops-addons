@@ -135,3 +135,12 @@ backups:
   schedule: "0 */8 * * *"
   # gcsBucketName: # user provided
   # googleApplicationCredentialsSecretRef: defaults to global.googleApplicationCredentialsSecretRef
+
+nh-rag-api:
+  enabled: false
+  image:
+    repository: nethopper/nh-rag-api
+    tag: "v0.0.1"
+  env: 
+    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
+    QDRANT_URL: # system provided

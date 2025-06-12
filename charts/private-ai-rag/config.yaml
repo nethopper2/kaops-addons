@@ -35,6 +35,7 @@ forms:
           - qdrant
           - privateAiRest
           - gdriveGcsSync
+          - nhRagApi
         ui:
           if: "$get(dependencies).value"
           label: Dependencies
@@ -173,6 +174,13 @@ variables:
       label: gdrive-gcs-sync
       id: gdriveGcsSync
       value: true
+  - slug: nhRagApi
+    path: nh-rag-api.enabled
+    forms: [default]
+    ui:
+      type: toggle
+      label: private-ai-rest
+      value: false
   - slug: additionalHosts
     path: ingress.additionalHosts
     forms: [default]
@@ -327,6 +335,8 @@ system:
     value: "https://storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "rag.allowedCorsOrigin"
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}|https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
+  - path: "nh-rag-api.env.QDRANT_URL"
+    value: "http://${system.cluster.name}-private-ai-rag-qdrant:6333"
 
 output:
   - name: Open Web UI URL
