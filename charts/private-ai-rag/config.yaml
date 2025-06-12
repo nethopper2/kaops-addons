@@ -10,6 +10,7 @@ metadata:
   isProduction: true
   isStaging: false
   useSafeDelete: true
+  serverSideDiff: true
   installTargets:
     clusterMessage: Must be installed on clusters configured for Ingress.
     infoMessage: Install the oAuth2 Proxy Addon to use SSO.
