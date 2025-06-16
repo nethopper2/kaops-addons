@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.211
+version: 0.1.212
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -52,7 +52,7 @@ dependencies:
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-rag-api.enabled
   - name: nh-rag
-    version: 0.1.0
+    version: 0.1.1
     alias: nh-rag-worker
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-rag-worker.enabled
