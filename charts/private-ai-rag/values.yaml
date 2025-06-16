@@ -152,3 +152,5 @@ nh-rag-worker:
   env: 
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+redis:
+  enabled: false
