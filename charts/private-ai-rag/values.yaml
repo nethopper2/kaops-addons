@@ -154,3 +154,13 @@ nh-rag-worker:
     QDRANT_URL: # system provided
 redis:
   enabled: false
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+      storageClass: "" # Optionally set your storage class
+  replica:
+    replicaCount: 0
