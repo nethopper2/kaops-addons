@@ -20,9 +20,10 @@ forms:
     label: Configuration
     steps:
       - slug: details
-#        isCreateOnly: true
+        #        isCreateOnly: true
         variableSlugs:
           - ssoEnabled
+          - dataIngestionEnabled
           - gpuEnabled
           - modelsToPull
           - additionalHosts
@@ -41,7 +42,7 @@ forms:
           if: "$get(dependencies).value"
           label: Dependencies
       - slug: gDrive
-#        isCreateOnly: true
+        #        isCreateOnly: true
         variableSlugs:
           - gDriveGoogleApplicationsCredentialsSecretRef
           - gDriveGcsBucketName
@@ -51,15 +52,30 @@ forms:
           if: "$get(gdriveGcsSync).value !== false"
           label: GDrive
       - slug: sso
-#        isCreateOnly: true
+        #        isCreateOnly: true
         variableSlugs:
           - systemAdmin
           - oauthProviderName
         ui:
           if: $get(ssoEnabled).value
           label: SSO
+      - slug: dataIngestion
+        variableSlugs:
+          - encryptionKey
+          - googleClientId
+          - googleClientSecret
+          - microsoftClientId
+          - microsoftClientSecret
+          - microsoftTenantId
+          - slackClientId
+          - slackClientSecret
+          - atlassianClientId
+          - atlassianClientSecret
+        ui:
+          if: $get(dataIngestionEnabled).value
+          label: Data Ingestion
       - slug: postInstall
-#        isCreateOnly: true
+        #        isCreateOnly: true
         variableSlugs:
           - postInstallOptions
           - postInstallGroupsSuggested
@@ -71,6 +87,7 @@ forms:
           label: Options
 
 variables:
+  #sso variables
   - slug: ssoEnabled
     path: ingress.oauth2Proxy.enabled
     forms: [default]
@@ -79,6 +96,111 @@ variables:
       label: Use Single Sign On
       id: ssoEnabled
       value: false
+  - slug: systemAdmin
+    path: ingress.oauth2Proxy.adminEmail
+    forms: [default]
+    ui:
+      type: text
+      label: System Admin Email
+      id: systemAdmin
+      help: An email for admin account of your private AI
+      validation: email
+  - slug: oauthProviderName
+    path: ingress.oauthProviderName
+    forms: [default]
+    ui:
+      type: select
+      label: OAuth Provider Name
+      id: oauthProviderName
+      options:
+        - label: Google
+          value: google
+        - label: Microsoft
+          value: microsoft
+        - label: Okta
+          value: okta
+      validation: required
+  # data ingestion variables
+  - slug: dataIngestionEnabled
+    path: dataIngestion.enabled
+    forms: [default, defaultUpdate]
+    ui:
+      type: toggle
+      label: Enable Data Ingestion
+      id: dataIngestionEnabled
+      value: false
+  - slug: googleClientId
+    path: dataIngestion.config.googleClientId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Google Client Id
+      id: googleClientId
+      help: Google Oauth Application Client Id
+  - slug: googleClientSecret
+    path: dataIngestion.config.googleClientSecret
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: Google Client Secret
+      id: gcsServiceAccountCredentials
+      help: Google Oauth Application Client Secret
+  - slug: microsoftClientId
+    path: dataIngestion.config.microsoftClientId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Microsoft Client Id
+      id: microsoftClientId
+      help: Microsoft Oauth Application Client Id
+  - slug: microsoftClientSecret
+    path: dataIngestion.config.microsoftClientSecret
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: Microsoft Client Secret
+      id: microsoftClientSecret
+      help: Microsoft Oauth Application Client Secret
+  - slug: microsoftTenantId
+    path: dataIngestion.config.microsoftTenantId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Microsoft Entra ID Tenant Id
+      id: microsoftTenantId
+      help: Microsoft Entra Id Tenant Id
+  - slug: slackClientId
+    path: dataIngestion.config.slackClientId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Slack Client Id
+      id: slackClientId
+      help: Slack Oauth Application Client Id
+  - slug: slackClientSecret
+    path: dataIngestion.config.slackClientSecret
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: Slack Client Secret
+      id: slackClientSecret
+      help: Slack Oauth Application Client Secret
+  - slug: atlassianClientId
+    path: dataIngestion.config.atlassianClientId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Atlassian Client Id
+      id: atlassianClientId
+      help: Atlassian Oauth Application Client Id
+  - slug: atlassianClientSecret
+    path: dataIngestion.config.atlassianClientSecret
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: Atlassian Client Secret
+      id: atlassianClientSecret
+      help: Atlassian Oauth Application Client Secret
   - slug: gDriveGoogleApplicationsCredentialsSecretRef
     path: "global.googleApplicationCredentialsSecretRef"
     forms: [default]
@@ -102,28 +224,6 @@ variables:
       type: text
       label: Allowed Extensions
       help: Comma separated list of allowed file extensions to sync. No dots.
-  - slug: systemAdmin
-    path: ingress.oauth2Proxy.adminEmail
-    forms: [default]
-    ui:
-      type: text
-      label: System Admin Email
-      id: systemAdmin
-      help: An email for admin account of your private AI
-      validation: email
-  - slug: oauthProviderName
-    path: ingress.oauthProviderName
-    forms: [default]
-    ui:
-      type: select
-      label: OAuth Provider Name
-      id: oauthProviderName
-      options:
-        - label: Google
-          value: google
-        - label: Okta
-          value: okta
-      validation: required
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
@@ -338,6 +438,14 @@ system:
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}|https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "nh-rag-api.env.QDRANT_URL"
     value: "http://${system.cluster.name}-private-ai-rag-qdrant:6333"
+  - path: "dataIngestion.config.googleRedirectUrl"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}api/v1/data/google/callback"
+  - path: "dataIngestion.config.microsoftRedirectUrl"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}api/v1/data/microsoft/callback"
+  - path: "dataIngestion.config.slackRedirectUrl"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}api/v1/data/slack/callback"
+  - path: "dataIngestion.config.atlassianRedirectUrl"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}api/v1/data/atlassian/callback"
 
 output:
   - name: Open Web UI URL

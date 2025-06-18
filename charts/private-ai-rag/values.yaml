@@ -8,6 +8,22 @@ global:
       existingSecret: postgresql-password
       secretKeys:
         adminPasswordKey: postgresPassword
+dataIngestion:
+  enabled: false
+  config:
+    googleClientId:
+    googleClientSecret:
+    googleRedirectUrl:
+    microsoftClientId:
+    microsoftClientSecret:
+    microsoftTenantId:
+    microsoftRedirectUrl:
+    slackClientId:
+    slackClientSecret:
+    slackRedirectUrl:
+    atlassianClientId:
+    atlassianClientSecret:
+    atlassianRedirectUrl:
 ingress:
   enabled: true
   class: nginx
@@ -115,7 +131,8 @@ postgresql:
           CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
 rag:
   secretArgocdHook: PreSync
-  custom: {}
+  custom:
+    {}
     # logo: # user provided
     # bgImageAuth: # user provided
     # bgMovieAuth: # user provided
@@ -130,7 +147,7 @@ rag:
 postInstall:
   chosenPostInstallOptions: ""
 
-backups: 
+backups:
   enabled: false
   schedule: "0 */8 * * *"
   # gcsBucketName: # user provided
@@ -141,7 +158,7 @@ nh-rag-api:
   image:
     repository: nethopper/nh-rag-api
     tag: "v0.0.4"
-  env: 
+  env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
 nh-rag-worker:
@@ -149,7 +166,7 @@ nh-rag-worker:
   image:
     repository: nethopper/nh-rag-worker
     tag: "v0.0.4"
-  env: 
+  env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
 redis:

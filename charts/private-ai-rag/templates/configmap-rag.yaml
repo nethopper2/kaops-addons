@@ -25,3 +25,24 @@ data:
   ENABLE_LOGIN_FORM: 'true'
   OAUTH_PROVIDER_NAME: {{ .Values.ingress.oauthProviderName }}
   {{- end }}
+  {{- if eq .Values.dataIngestion.enabled true }}
+  ENCRYPTION_KEY: {{ randBytes 32 | b64enc | quote }}
+  SLACK_CLIENT_ID: {{ .Values.dataIngestion.config.slackClientId }}
+  SLACK_CLIENT_SECRET: {{ .Values.dataIngestion.config.slackClientSecret }}
+  SLACK_REDIRECT_URI: {{ .Values.dataIngestion.config.slackRedirectUrl }}
+
+  GOOGLE_CLIENT_ID: {{ .Values.dataIngestion.config.googleClientId }}
+  GOOGLE_CLIENT_SECRET: {{ .Values.dataIngestion.config.googleClientSecret }}
+  GOOGLE_REDIRECT_URI: {{ .Values.dataIngestion.config.googleRedirectUrl }}
+
+  MICROSOFT_CLIENT_ID: {{ .Values.dataIngestion.config.microsoftClientId }}
+  MICROSOFT_CLIENT_SECRET: {{ .Values.dataIngestion.config.microsoftClientSecret }}
+  MICROSOFT_TENANT_ID:  {{ .Values.dataIngestion.config.microsoftTenantId }}
+  MICROSOFT_REDIRECT_URI: {{ .Values.dataIngestion.config.microsoftRedirectUrl }}
+
+  ATLASSIAN_CLIENT_ID: {{ .Values.dataIngestion.config.atlassianClientId }}
+  ATLASSIAN_CLIENT_SECRET: {{ .Values.dataIngestion.config.atlassianClientSecret }}
+  ATLASSIAN_REDIRECT_URL: {{ .Values.dataIngestion.config.atlassianRedirectUrl }}
+
+  GCS_SERVICE_ACCOUNT_BASE64:  {{ .Values.global.googleApplicationCredentialsSecretRef }}
+  {{- end }}
