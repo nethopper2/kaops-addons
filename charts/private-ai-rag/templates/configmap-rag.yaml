@@ -26,6 +26,7 @@ data:
   OAUTH_PROVIDER_NAME: {{ .Values.ingress.oauthProviderName }}
   {{- end }}
   {{- if eq .Values.dataIngestion.enabled true }}
+  ENABLE_SSO_DATA_SYNC: {{ .Values.dataIngestion.enabled }}
   ENCRYPTION_KEY: {{ randBytes 32 | b64enc | quote }}
   SLACK_CLIENT_ID: {{ .Values.dataIngestion.config.slackClientId }}
   SLACK_CLIENT_SECRET: {{ .Values.dataIngestion.config.slackClientSecret }}
