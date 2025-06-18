@@ -45,7 +45,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: 0.6.5-alpha.26
+    tag: 0.6.5-alpha.28
     pullPolicy: Always
   ollama:
     persistentVolume:
@@ -171,3 +171,13 @@ nh-rag-worker:
     QDRANT_URL: # system provided
 redis:
   enabled: false
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+      storageClass: "" # Optionally set your storage class
+  replica:
+    replicaCount: 0
