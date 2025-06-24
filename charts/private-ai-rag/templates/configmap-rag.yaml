@@ -27,7 +27,7 @@ data:
   {{- end }}
   {{- if eq .Values.dataIngestion.enabled true }}
   ENABLE_SSO_DATA_SYNC: {{ .Values.dataIngestion.enabled | quote }}
-  ENCRYPTION_KEY: {{ randBytes 32 | b64enc | replace "+" "-" | replace "/" "_" | trimSuffix "=" | quote }}
+  ENCRYPTION_KEY: {{ .Values.dataIngestion.config.encryptionKey | quote }}
   SLACK_CLIENT_ID: {{ .Values.dataIngestion.config.slackClientId | quote }}
   SLACK_CLIENT_SECRET: {{ .Values.dataIngestion.config.slackClientSecret | quote }}
   SLACK_REDIRECT_URI: {{ .Values.dataIngestion.config.slackRedirectUrl | quote }}
@@ -45,11 +45,5 @@ data:
   ATLASSIAN_CLIENT_SECRET: {{ .Values.dataIngestion.config.atlassianClientSecret | quote }}
   ATLASSIAN_REDIRECT_URL: {{ .Values.dataIngestion.config.atlassianRedirectUrl | quote }}
 
-  {{- $secretName := .Values.backups.googleApplicationCredentialsSecretRef | default .Values.global.googleApplicationCredentialsSecretRef }}
-  {{- if $secretName }}
-    {{- $secret := lookup "v1" "Secret" .Release.Namespace $secretName }}
-    {{- if and $secret $secret.data (index $secret.data "GOOGLE_APPLICATION_CREDENTIALS_BASE64") }}
-    GCS_SERVICE_ACCOUNT_BASE64: {{ index $secret.data "GOOGLE_APPLICATION_CREDENTIALS_BASE64" | b64dec | quote }}
-    {{- end }}
-  {{- end }}
+  GCS_SERVICE_ACCOUNT_BASE64: {{ .Values.dataIngestion.config.googleApplicationCredentialsBase64 | quote }}
   {{- end }}

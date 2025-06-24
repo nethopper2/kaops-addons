@@ -129,6 +129,14 @@ variables:
       label: Enable Data Ingestion
       id: dataIngestionEnabled
       value: false
+  - slug: encryptionKey
+    path: dataIngestion.config.encryptionKey
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Token Encryption Key
+      id: encryptionKey
+      help: Token Encryption Key for Data Ingestion
   - slug: googleClientId
     path: dataIngestion.config.googleClientId
     forms: [default, defaultUpdate]

@@ -11,6 +11,8 @@ global:
 dataIngestion:
   enabled: false
   config:
+    googleApplicationCredentialsBase64:
+    encryptionKey:
     googleClientId:
     googleClientSecret:
     googleRedirectUrl:
