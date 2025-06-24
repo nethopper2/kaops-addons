@@ -27,7 +27,7 @@ data:
   {{- end }}
   {{- if eq .Values.dataIngestion.enabled true }}
   ENABLE_SSO_DATA_SYNC: {{ .Values.dataIngestion.enabled | quote }}
-  ENCRYPTION_KEY: {{ randBytes 32 | b64enc | quote }}
+  ENCRYPTION_KEY: {{ randBytes 32 | b64enc | replace "+" "-" | replace "/" "_" | trimSuffix "=" | quote }}
   SLACK_CLIENT_ID: {{ .Values.dataIngestion.config.slackClientId | quote }}
   SLACK_CLIENT_SECRET: {{ .Values.dataIngestion.config.slackClientSecret | quote }}
   SLACK_REDIRECT_URI: {{ .Values.dataIngestion.config.slackRedirectUrl | quote }}
