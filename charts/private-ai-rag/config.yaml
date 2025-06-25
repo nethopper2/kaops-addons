@@ -62,6 +62,7 @@ forms:
       - slug: dataIngestion
         variableSlugs:
           - encryptionKey
+          - gDriveGoogleApplicationsCredentials
           - googleClientId
           - googleClientSecret
           - microsoftClientId
@@ -137,6 +138,14 @@ variables:
       label: Token Encryption Key
       id: encryptionKey
       help: Token Encryption Key for Data Ingestion
+  - slug: googleApplicationCredentialsBase64
+    path: dataIngestion.config.googleApplicationCredentialsBase64
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: GCS Service Account Credentials
+      id: googleApplicationCredentialsBase64
+      help: GCS Service Account Credentials for Data Ingestion
   - slug: googleClientId
     path: dataIngestion.config.googleClientId
     forms: [default, defaultUpdate]
