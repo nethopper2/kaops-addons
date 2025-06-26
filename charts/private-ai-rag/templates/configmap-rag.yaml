@@ -47,5 +47,5 @@ data:
 
   {{- if .Values.global.googleApplicationCredentialsSecretRef }}
   GCS_SERVICE_ACCOUNT_BASE64: {{ (lookup "v1" "Secret" .Release.Namespace .Values.global.googleApplicationCredentialsSecretRef.name).data.GOOGLE_APPLICATION_CREDENTIALS_BASE64 | quote }}
-  {{- else }}
+  {{- end }}
   {{- end }}
