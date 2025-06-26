@@ -46,6 +46,17 @@ data:
   ATLASSIAN_REDIRECT_URL: {{ .Values.dataIngestion.config.atlassianRedirectUrl | quote }}
 
   {{- if .Values.global.googleApplicationCredentialsSecretRef }}
-  GCS_SERVICE_ACCOUNT_BASE64: {{ (lookup "v1" "Secret" .Release.Namespace .Values.global.googleApplicationCredentialsSecretRef.name).data.GOOGLE_APPLICATION_CREDENTIALS_BASE64 | quote }}
+  {{- $secretName := .Values.global.googleApplicationCredentialsSecretRef.name }}
+  {{- $secretKey := .Values.global.googleApplicationCredentialsSecretRef.key | default "GOOGLE_APPLICATION_CREDENTIALS_BASE64" }}
+  {{- $sourceSecret := lookup "v1" "Secret" .Release.Namespace $secretName }}
+  {{- if $sourceSecret }}
+  {{- if hasKey $sourceSecret.data $secretKey }}
+  GCS_SERVICE_ACCOUNT_BASE64: {{ index $sourceSecret.data $secretKey | quote }}
+  {{- else }}
+  {{- fail (printf "Secret %s does not contain key %s" $secretName $secretKey) }}
+  {{- end }}
+  {{- else }}
+  {{- fail (printf "Secret %s not found in namespace %s" $secretName .Release.Namespace) }}
+  {{- end }}
   {{- end }}
   {{- end }}
