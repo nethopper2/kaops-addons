@@ -62,7 +62,6 @@ forms:
       - slug: dataIngestion
         variableSlugs:
           - encryptionKey
-          - gDriveGoogleApplicationsCredentials
           - googleClientId
           - googleClientSecret
           - microsoftClientId
@@ -138,14 +137,6 @@ variables:
       label: Token Encryption Key
       id: encryptionKey
       help: Token Encryption Key for Data Ingestion
-  - slug: googleApplicationCredentialsBase64
-    path: dataIngestion.config.googleApplicationCredentialsBase64
-    forms: [default, defaultUpdate]
-    ui:
-      type: text
-      label: GCS Service Account Credentials
-      id: googleApplicationCredentialsBase64
-      help: GCS Service Account Credentials for Data Ingestion
   - slug: googleClientId
     path: dataIngestion.config.googleClientId
     forms: [default, defaultUpdate]
@@ -456,13 +447,13 @@ system:
   - path: "nh-rag-api.env.QDRANT_URL"
     value: "http://${system.cluster.name}-private-ai-rag-qdrant:6333"
   - path: "dataIngestion.config.googleRedirectUrl"
-    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}api/v1/data/google/callback"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}/api/v1/data/google/callback"
   - path: "dataIngestion.config.microsoftRedirectUrl"
-    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}api/v1/data/microsoft/callback"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}/api/v1/data/microsoft/callback"
   - path: "dataIngestion.config.slackRedirectUrl"
-    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}api/v1/data/slack/callback"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}/api/v1/data/slack/callback"
   - path: "dataIngestion.config.atlassianRedirectUrl"
-    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}api/v1/data/atlassian/callback"
+    value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}/api/v1/data/atlassian/callback"
 
 output:
   - name: Open Web UI URL

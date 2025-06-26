@@ -45,5 +45,7 @@ data:
   ATLASSIAN_CLIENT_SECRET: {{ .Values.dataIngestion.config.atlassianClientSecret | quote }}
   ATLASSIAN_REDIRECT_URL: {{ .Values.dataIngestion.config.atlassianRedirectUrl | quote }}
 
-  GCS_SERVICE_ACCOUNT_BASE64: {{ .Values.dataIngestion.config.googleApplicationCredentialsBase64 | quote }}
+  {{- if .Values.global.googleApplicationCredentialsSecretRef }}
+  GCS_SERVICE_ACCOUNT_BASE64: {{ (lookup "v1" "Secret" .Release.Namespace .Values.global.googleApplicationCredentialsSecretRef.name).data.GOOGLE_APPLICATION_CREDENTIALS_BASE64 | quote }}
+  {{- else }}
   {{- end }}
