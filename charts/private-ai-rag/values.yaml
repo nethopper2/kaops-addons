@@ -12,6 +12,7 @@ dataIngestion:
   enabled: false
   config:
     encryptionKey:
+    gcsServiceAccountCredentials:
     googleClientId:
     googleClientSecret:
     googleRedirectUrl:
