@@ -69,6 +69,8 @@ open-webui:
       value: "false"
     - name: ENABLE_CODE_INTERPRETER
       value: "false"
+    - name: ENABLE_EVALUATION_ARENA_MODELS
+      value: "false"
     - name: ENABLE_GOOGLE_DRIVE_INTEGRATION
       value: "true"
     - name: ENABLE_ONEDRIVE_INTEGRATION
