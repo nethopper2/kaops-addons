@@ -22,7 +22,7 @@ version: 0.1.233
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 # NOTE: open webui was forked and this currently matches our release tag in the `values` file.
-appVersion: "0.6.15-alpha.1"
+appVersion: "0.6.15-alpha.2"
 
 dependencies:
   - name: open-webui
