@@ -83,6 +83,8 @@ open-webui:
       value: "true"
     - name: USER_PERMISSIONS_CHAT_CONTROLS
       value: "false"
+    - name: USER_PERMISSIONS_WORKSPACE_PROMPTS_ACCESS
+      value: "true"
     - name: WEBUI_AUTH
       value: "true"
     - name: API_KEY_ALLOWED_ENDPOINTS
