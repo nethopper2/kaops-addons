@@ -27,10 +27,12 @@ data:
   SSO_PROVIDER_NAME: {{ .Values.ingress.oauthProviderName | quote }}
   {{- end }}
   {{- if eq .Values.dataIngestion.enabled true }}
-  OVERIDE_WEB_SOCKET_URL: {{ .Values.dataIngestion.overideWebSocketUrl | quote }}
-  DATASOURCES_URL: {{ .Values.dataIngestion.dataSourcesUrl | quote }}
   ENABLE_SSO_DATA_SYNC: {{ .Values.dataIngestion.enabled | quote }}
   ENCRYPTION_KEY: {{ .Values.dataIngestion.config.encryptionKey | quote }}
+
+  OVERIDE_WEB_SOCKET_URL: {{ .Values.dataIngestion.config.overideWebSocketUrl | quote }}
+  DATASOURCES_URL: {{ .Values.dataIngestion.config.dataSourcesUrl | quote }}
+
   SLACK_CLIENT_ID: {{ .Values.dataIngestion.config.slackClientId | quote }}
   SLACK_CLIENT_SECRET: {{ .Values.dataIngestion.config.slackClientSecret | quote }}
   SLACK_REDIRECT_URI: {{ .Values.dataIngestion.config.slackRedirectUrl | quote }}
