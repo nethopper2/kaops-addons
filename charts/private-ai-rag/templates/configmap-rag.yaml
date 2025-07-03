@@ -15,6 +15,9 @@ data:
   {{- if .Values.rag.googleAllowedExtensions }}
   GOOGLE_ALLOWED_EXTENSIONS: {{ .Values.rag.googleAllowedExtensions }}
   {{- end }}
+  {{- if eq .Values.ingress.oauth2Proxy.enabled false }}
+  ENABLE_LOGIN_FORM: 'true'
+  {{- end }}
   {{- if eq .Values.ingress.oauth2Proxy.enabled true }}
   ENABLE_SIGNUP: 'true'
   WEBUI_AUTH_TRUSTED_EMAIL_HEADER: X-Forwarded-Email
@@ -22,10 +25,12 @@ data:
   ENABLE_OAUTH_SIGNUP: 'true'
   WEBUI_SESSION_COOKIE_SAME_SITE: lax
   WEBUI_AUTH_COOKIE_SAME_SITE: lax
-  ENABLE_LOGIN_FORM: 'true'
-  OAUTH_PROVIDER_NAME: {{ .Values.ingress.oauthProviderName | quote }}
+  ENABLE_LOGIN_FORM: 'false'
+  SSO_PROVIDER_NAME: {{ .Values.ingress.oauthProviderName | quote }}
   {{- end }}
   {{- if eq .Values.dataIngestion.enabled true }}
+  OVERIDE_WEB_SOCKET_URL: {{ .Values.dataIngestion.overideWebSocketUrl | quote }}
+  DATASOURCES_URL: {{ .Values.dataIngestion.dataSourcesUrl | quote }}
   ENABLE_SSO_DATA_SYNC: {{ .Values.dataIngestion.enabled | quote }}
   ENCRYPTION_KEY: {{ .Values.dataIngestion.config.encryptionKey | quote }}
   SLACK_CLIENT_ID: {{ .Values.dataIngestion.config.slackClientId | quote }}

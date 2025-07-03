@@ -11,6 +11,8 @@ global:
 dataIngestion:
   enabled: false
   config:
+    dataSourcesUrl:
+    overideWebSocketUrl:
     encryptionKey:
     gcsServiceAccountCredentials:
     googleClientId:
@@ -47,7 +49,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: 0.6.15-alpha.2 # This should match the appVersion in Chart.yaml
+    tag: 0.6.15-alpha.6 # This should match the appVersion in Chart.yaml
     pullPolicy: Always
   ollama:
     persistentVolume:
