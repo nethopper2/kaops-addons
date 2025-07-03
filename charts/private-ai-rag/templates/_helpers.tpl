@@ -72,3 +72,14 @@ Create the CORS origins string
 {{- end }}
 {{- join "|" $cors }}
 {{- end }}
+
+{{/*
+Create docker image name
+*/}}
+{{- define "private-ai.image" -}}
+  {{- $repo := index .Values "open-webui" "image" "repository" -}}
+  {{- $tag  := default .Chart.AppVersion (index .Values "open-webui" "image" "tag") -}}
+  {{- /* remove all characters through the last slash */ -}}
+  {{- $name := regexReplaceAll "^.*/" $repo "" -}}
+  {{- printf "%s:%s" $name $tag | quote -}}
+{{- end }}
