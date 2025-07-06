@@ -7394,6 +7394,51 @@ entries:
     version: 0.1.9
   private-ai-rag:
   - apiVersion: v2
+    appVersion: 0.6.15-alpha.9
+    created: "2025-07-06T01:05:56.56704845Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 6.22.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - condition: private-ai-rest.enabled
+      name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.20
+    - condition: gdrive-gcs-sync.enabled
+      name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.26
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.1
+    - alias: nh-rag-worker
+      condition: nh-rag-worker.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    description: KAOPS addon to install private-ai
+    digest: 1af34a5307543150442c59c8daf980e3f0af209fe2471e0deb515746bb086c85
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.245/private-ai-rag-0.1.245.tgz
+    version: 0.1.245
+  - apiVersion: v2
     appVersion: 0.6.15-alpha.8
     created: "2025-07-05T16:19:35.216492662Z"
     dependencies:
@@ -12433,4 +12478,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-07-05T16:19:35.218374132Z"
+generated: "2025-07-06T01:05:56.567980484Z"
