@@ -7395,6 +7395,51 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: 0.6.15-alpha.9
+    created: "2025-07-09T11:06:11.240400877Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 6.22.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - condition: private-ai-rest.enabled
+      name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.20
+    - condition: gdrive-gcs-sync.enabled
+      name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.26
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.1
+    - alias: nh-rag-worker
+      condition: nh-rag-worker.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    description: KAOPS addon to install private-ai
+    digest: b1168148d28461f9beefc6c7562209e81555584f407dadfde42ba47ee5a7abb7
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.249/private-ai-rag-0.1.249.tgz
+    version: 0.1.249
+  - apiVersion: v2
+    appVersion: 0.6.15-alpha.9
     created: "2025-07-09T10:47:04.981479413Z"
     dependencies:
     - condition: open-webui.enabled
@@ -12613,4 +12658,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-07-09T10:47:04.982476873Z"
+generated: "2025-07-09T11:06:11.242228108Z"
