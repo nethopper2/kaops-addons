@@ -28,27 +28,7 @@ data:
   {{- end }}
   {{- if eq .Values.dataIngestion.enabled true }}
   ENABLE_SSO_DATA_SYNC: {{ .Values.dataIngestion.enabled | quote }}
-  ENCRYPTION_KEY: {{ .Values.dataIngestion.config.encryptionKey | quote }}
 
   OVERIDE_WEB_SOCKET_URL: {{ .Values.dataIngestion.config.overideWebSocketUrl | quote }}
   DATASOURCES_URL: {{ .Values.dataIngestion.config.dataSourcesUrl | quote }}
-
-  SLACK_CLIENT_ID: {{ .Values.dataIngestion.config.slackClientId | quote }}
-  SLACK_CLIENT_SECRET: {{ .Values.dataIngestion.config.slackClientSecret | quote }}
-  SLACK_REDIRECT_URI: {{ .Values.dataIngestion.config.slackRedirectUrl | quote }}
-
-  GOOGLE_CLIENT_ID: {{ .Values.dataIngestion.config.googleClientId | quote }}
-  GOOGLE_CLIENT_SECRET: {{ .Values.dataIngestion.config.googleClientSecret | quote }}
-  GOOGLE_REDIRECT_URI: {{ .Values.dataIngestion.config.googleRedirectUrl | quote }}
-
-  MICROSOFT_CLIENT_ID: {{ .Values.dataIngestion.config.microsoftClientId | quote }}
-  MICROSOFT_CLIENT_SECRET: {{ .Values.dataIngestion.config.microsoftClientSecret | quote }}
-  MICROSOFT_TENANT_ID:  {{ .Values.dataIngestion.config.microsoftTenantId | quote }}
-  MICROSOFT_REDIRECT_URI: {{ .Values.dataIngestion.config.microsoftRedirectUrl | quote }}
-
-  ATLASSIAN_CLIENT_ID: {{ .Values.dataIngestion.config.atlassianClientId | quote }}
-  ATLASSIAN_CLIENT_SECRET: {{ .Values.dataIngestion.config.atlassianClientSecret | quote }}
-  ATLASSIAN_REDIRECT_URL: {{ .Values.dataIngestion.config.atlassianRedirectUrl | quote }}
-
-  GCS_SERVICE_ACCOUNT_BASE64: {{ .Values.dataIngestion.config.gcsServiceAccountCredentials | quote }}
   {{- end }}
