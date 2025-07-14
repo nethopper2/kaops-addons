@@ -31,4 +31,9 @@ data:
 
   OVERIDE_WEB_SOCKET_URL: {{ .Values.dataIngestion.config.overideWebSocketUrl | quote }}
   DATASOURCES_URL: {{ .Values.dataIngestion.config.dataSourcesUrl | quote }}
+
+  SLACK_REDIRECT_URI: {{ .Values.dataIngestion.config.slackRedirectUrl | quote }}
+  GOOGLE_REDIRECT_URI: {{ .Values.dataIngestion.config.googleRedirectUrl | quote }}
+  MICROSOFT_REDIRECT_URI: {{ .Values.dataIngestion.config.microsoftRedirectUrl | quote }}
+  ATLASSIAN_REDIRECT_URL: {{ .Values.dataIngestion.config.atlassianRedirectUrl | quote }}
   {{- end }}

@@ -13,20 +13,9 @@ dataIngestion:
   config:
     dataSourcesUrl:
     overideWebSocketUrl:
-    encryptionKey:
-    gcsServiceAccountCredentials:
-    googleClientId:
-    googleClientSecret:
     googleRedirectUrl:
-    microsoftClientId:
-    microsoftClientSecret:
-    microsoftTenantId:
     microsoftRedirectUrl:
-    slackClientId:
-    slackClientSecret:
     slackRedirectUrl:
-    atlassianClientId:
-    atlassianClientSecret:
     atlassianRedirectUrl:
 ingress:
   enabled: true
