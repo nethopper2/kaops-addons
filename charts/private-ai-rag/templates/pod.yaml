@@ -7,6 +7,7 @@ metadata:
     {{- include "private-ai.labels" . | nindent 4 }}
     app.kubernetes.io/component: open-webui
 spec:
+  # Only explicit settings that differ from defaults or are required
   automountServiceAccountToken: false
   enableServiceLinks: false
   {{- if .Values.serviceAccount }}
@@ -17,13 +18,14 @@ spec:
   {{- end }}
   
   # Init container - conditional based on open-webui configuration
-  {{- if .Values.openWebUI }}
-  {{- if .Values.openWebUI.initContainer }}
-  {{- if .Values.openWebUI.initContainer.enabled | default true }}
+  {{- if index .Values "open-webui" }}
+  {{- $openWebUI := index .Values "open-webui" }}
+  {{- if $openWebUI.initContainer }}
+  {{- if $openWebUI.initContainer.enabled | default true }}
   initContainers:
   - name: copy-app-data
-    image: {{ .Values.openWebUI.image.repository }}:{{ .Values.openWebUI.image.tag }}
-    imagePullPolicy: {{ .Values.openWebUI.image.pullPolicy }}
+    image: {{ $openWebUI.image.repository }}:{{ $openWebUI.image.tag }}
+    imagePullPolicy: {{ $openWebUI.image.pullPolicy }}
     command:
     - sh
     - -c
@@ -37,18 +39,20 @@ spec:
   
   containers:
   - name: open-webui
-    image: {{ .Values.openWebUI.image.repository }}:{{ .Values.openWebUI.image.tag }}
-    imagePullPolicy: {{ .Values.openWebUI.image.pullPolicy }}
-    {{- if .Values.openWebUI.tty | default true }}
+    {{- $openWebUI := index .Values "open-webui" }}
+    image: {{ $openWebUI.image.repository }}:{{ $openWebUI.image.tag }}
+    imagePullPolicy: {{ $openWebUI.image.pullPolicy }}
+    {{- if $openWebUI.tty | default true }}
     tty: true
     {{- end }}
     ports:
-    - containerPort: {{ .Values.openWebUI.service.port | default 8080 }}
+    - containerPort: 8080
       name: http
     
     # Environment variables from your values structure
     env:
-    {{- range .Values.openWebUI.extraEnvVars }}
+    {{- $openWebUI := index .Values "open-webui" }}
+    {{- range $openWebUI.extraEnvVars }}
     - name: {{ .name }}
       {{- if .value }}
       value: {{ .value | quote }}
@@ -148,7 +152,7 @@ spec:
     {{- end }}
     
     # Additional custom environment variables can be added here
-    {{- range $key, $value := .Values.openWebUI.customEnvVars | default dict }}
+    {{- range $key, $value := $openWebUI.customEnvVars | default dict }}
     - name: {{ $key }}
       {{- if $value.value }}
       value: {{ $value.value | quote }}
@@ -168,7 +172,7 @@ spec:
     
     # Automatic environment variable loading from your values structure
     envFrom:
-    {{- range .Values.openWebUI.extraEnvFrom }}
+    {{- range $openWebUI.extraEnvFrom }}
     - {{ . | toYaml | nindent 6 }}
     {{- end }}
     
@@ -185,50 +189,51 @@ spec:
     # Volume mounts
     volumeMounts:
     - name: data
-      mountPath: {{ .Values.openWebUI.persistence.mountPath | default "/app/backend/data" }}
-    {{- if .Values.openWebUI.extraVolumeMounts }}
-    {{- range .Values.openWebUI.extraVolumeMounts }}
+      mountPath: /app/backend/data
+    {{- if $openWebUI.extraVolumeMounts }}
+    {{- range $openWebUI.extraVolumeMounts }}
     - {{ . | toYaml | nindent 6 }}
     {{- end }}
     {{- end }}
     
     # Resources
-    {{- if .Values.openWebUI.resources }}
+    {{- if $openWebUI.resources }}
     resources:
-      {{- toYaml .Values.openWebUI.resources | nindent 6 }}
+      {{- toYaml $openWebUI.resources | nindent 6 }}
     {{- end }}
     
     # Security context
-    {{- if .Values.openWebUI.securityContext }}
+    {{- if $openWebUI.securityContext }}
     securityContext:
-      {{- toYaml .Values.openWebUI.securityContext | nindent 6 }}
+      {{- toYaml $openWebUI.securityContext | nindent 6 }}
     {{- end }}
     
     # Health checks
-    {{- if .Values.openWebUI.livenessProbe }}
+    {{- if $openWebUI.livenessProbe }}
     livenessProbe:
-      {{- toYaml .Values.openWebUI.livenessProbe | nindent 6 }}
+      {{- toYaml $openWebUI.livenessProbe | nindent 6 }}
     {{- end }}
-    {{- if .Values.openWebUI.readinessProbe }}
+    {{- if $openWebUI.readinessProbe }}
     readinessProbe:
-      {{- toYaml .Values.openWebUI.readinessProbe | nindent 6 }}
+      {{- toYaml $openWebUI.readinessProbe | nindent 6 }}
     {{- end }}
   
   # Volumes
   volumes:
   - name: data
-    {{- if .Values.openWebUI.persistence }}
-    {{- if .Values.openWebUI.persistence.enabled | default true }}
+    {{- $openWebUI := index .Values "open-webui" }}
+    {{- if $openWebUI.persistence }}
+    {{- if $openWebUI.persistence.enabled | default true }}
     persistentVolumeClaim:
-      claimName: {{ .Values.openWebUI.persistence.existingClaim | default (printf "%s-data" (include "private-ai.fullname" .)) }}
+      claimName: {{ $openWebUI.persistence.existingClaim | default (printf "%s-data" (include "private-ai.fullname" .)) }}
     {{- else }}
     emptyDir: {}
     {{- end }}
     {{- else }}
     emptyDir: {}
     {{- end }}
-  {{- if .Values.openWebUI.extraVolumes }}
-  {{- range .Values.openWebUI.extraVolumes }}
+  {{- if $openWebUI.extraVolumes }}
+  {{- range $openWebUI.extraVolumes }}
   - {{ . | toYaml | nindent 4 }}
   {{- end }}
   {{- end }}
@@ -249,9 +254,9 @@ spec:
     {{- toYaml .Values.affinity | nindent 4 }}
   {{- end }}
   
-  {{- if .Values.openWebUI.podSecurityContext }}
+  {{- if $openWebUI.podSecurityContext }}
   securityContext:
-    {{- toYaml .Values.openWebUI.podSecurityContext | nindent 4 }}
+    {{- toYaml $openWebUI.podSecurityContext | nindent 4 }}
   {{- end }}
 
 ---
