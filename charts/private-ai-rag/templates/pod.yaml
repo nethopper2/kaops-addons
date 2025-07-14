@@ -72,7 +72,7 @@ spec:
     
     # Data ingestion secrets - Single secret with different keys approach
     {{- if .Values.dataIngestion.enabled }}
-    {{- $dataIngestionSecret := .Values.dataIngestion.config.dataIngestionSecretsRef | default .Values.global.dataIngestionSecretsRef | default "shared-secrets-data-ingestion" }}
+    {{- $dataIngestionSecret := .Values.dataIngestion.config.dataIngestionCredentialsSecretRef | default .Values.global.dataIngestionCredentialsSecretRef | default "shared-secrets-data-ingestion" }}
     
     # All data ingestion secrets from single secret with individual keys
     - name: ENCRYPTION_KEY
