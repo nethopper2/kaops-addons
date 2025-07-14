@@ -7,13 +7,19 @@ metadata:
     {{- include "private-ai.labels" . | nindent 4 }}
     app.kubernetes.io/component: open-webui
 spec:
+  # Only explicit settings that differ from defaults or are required
   automountServiceAccountToken: {{ .Values.serviceAccount.automountToken | default false }}
   enableServiceLinks: {{ .Values.pod.enableServiceLinks | default false }}
-  {{- if .Values.serviceAccount.create }}
+  {{- if .Values.serviceAccount }}
+  {{- if .Values.serviceAccount.create | default true }}
   serviceAccount: {{ include "private-ai.serviceAccountName" . }}
   serviceAccountName: {{ include "private-ai.serviceAccountName" . }}
   {{- end }}
+  {{- end }}
   
+  # Init container - conditional based on open-webui configuration
+  {{- if .Values.openWebUI }}
+  {{- if .Values.openWebUI.initContainer }}
   {{- if .Values.openWebUI.initContainer.enabled | default true }}
   initContainers:
   - name: copy-app-data
@@ -27,6 +33,8 @@ spec:
     - mountPath: /tmp/app-data
       name: data
   {{- end }}
+  {{- end }}
+  {{- end }}
   
   containers:
   - name: open-webui
@@ -39,6 +47,7 @@ spec:
     - containerPort: {{ .Values.openWebUI.service.port | default 8080 }}
       name: http
     
+    # Environment variables from your values structure
     env:
     {{- range .Values.openWebUI.extraEnvVars }}
     - name: {{ .name }}
@@ -58,8 +67,11 @@ spec:
       {{- end }}
     {{- end }}
     
+    # Data ingestion secrets - Single secret with different keys approach
     {{- if .Values.dataIngestion.enabled }}
     {{- $dataIngestionSecret := .Values.dataIngestion.dataIngestionSecretsRef | default .Values.global.dataIngestionSecretsRef | default "shared-secrets-data-ingestion" }}
+    
+    # All data ingestion secrets from single secret with individual keys
     - name: ENCRYPTION_KEY
       valueFrom:
         secretKeyRef:
@@ -110,6 +122,11 @@ spec:
         secretKeyRef:
           name: {{ $dataIngestionSecret }}
           key: SLACK_CLIENT_SECRET
+    - name: SLACK_REDIRECT_URI
+      valueFrom:
+        secretKeyRef:
+          name: {{ $dataIngestionSecret }}
+          key: SLACK_REDIRECT_URI
     - name: ATLASSIAN_CLIENT_ID
       valueFrom:
         secretKeyRef:
@@ -120,9 +137,19 @@ spec:
         secretKeyRef:
           name: {{ $dataIngestionSecret }}
           key: ATLASSIAN_CLIENT_SECRET
+    - name: ATLASSIAN_REDIRECT_URL
+      valueFrom:
+        secretKeyRef:
+          name: {{ $dataIngestionSecret }}
+          key: ATLASSIAN_REDIRECT_URL
+    - name: GCS_SERVICE_ACCOUNT_BASE64
+      valueFrom:
+        secretKeyRef:
+          name: {{ $dataIngestionSecret }}
+          key: GOOGLE_APPLICATION_CREDENTIALS_BASE64
     {{- end }}
     
-    # Global Google Application Credentials 
+    # Global Google Application Credentials (if provided separately)
     {{- if .Values.global.googleApplicationCredentialsSecretRef }}
     - name: GOOGLE_APPLICATION_CREDENTIALS_BASE64
       valueFrom:
@@ -131,6 +158,7 @@ spec:
           key: GOOGLE_APPLICATION_CREDENTIALS_BASE64
     {{- end }}
     
+    # Additional custom environment variables can be added here
     {{- range $key, $value := .Values.openWebUI.customEnvVars | default dict }}
     - name: {{ $key }}
       {{- if $value.value }}
@@ -149,12 +177,13 @@ spec:
       {{- end }}
     {{- end }}
     
-
+    # Automatic environment variable loading from your values structure
     envFrom:
     {{- range .Values.openWebUI.extraEnvFrom }}
     - {{ . | toYaml | nindent 6 }}
     {{- end }}
     
+    # Additional envFrom sources
     {{- if .Values.global.extraEnvVarsCM }}
     - configMapRef:
         name: {{ .Values.global.extraEnvVarsCM }}
@@ -168,8 +197,10 @@ spec:
     volumeMounts:
     - name: data
       mountPath: {{ .Values.openWebUI.persistence.mountPath | default "/app/backend/data" }}
-    {{- range .Values.openWebUI.extraVolumeMounts | default list }}
+    {{- if .Values.openWebUI.extraVolumeMounts }}
+    {{- range .Values.openWebUI.extraVolumeMounts }}
     - {{ . | toYaml | nindent 6 }}
+    {{- end }}
     {{- end }}
     
     # Resources
@@ -197,16 +228,23 @@ spec:
   # Volumes
   volumes:
   - name: data
+    {{- if .Values.openWebUI.persistence }}
     {{- if .Values.openWebUI.persistence.enabled | default true }}
     persistentVolumeClaim:
       claimName: {{ .Values.openWebUI.persistence.existingClaim | default (printf "%s-data" (include "private-ai.fullname" .)) }}
     {{- else }}
     emptyDir: {}
     {{- end }}
-  {{- range .Values.openWebUI.extraVolumes | default list }}
+    {{- else }}
+    emptyDir: {}
+    {{- end }}
+  {{- if .Values.openWebUI.extraVolumes }}
+  {{- range .Values.openWebUI.extraVolumes }}
   - {{ . | toYaml | nindent 4 }}
   {{- end }}
+  {{- end }}
   
+  # Pod-level configurations - only if specified
   {{- if .Values.tolerations }}
   tolerations:
     {{- toYaml .Values.tolerations | nindent 2 }}
@@ -229,6 +267,8 @@ spec:
 
 ---
 # Service to expose the pod
+{{- if .Values.openWebUI }}
+{{- if .Values.openWebUI.service }}
 {{- if .Values.openWebUI.service.enabled | default true }}
 apiVersion: v1
 kind: Service
@@ -248,10 +288,12 @@ spec:
   - port: {{ .Values.openWebUI.service.port | default 8080 }}
     targetPort: {{ .Values.openWebUI.service.targetPort | default 8080 }}
     name: http
-    {{- if and (eq .Values.openWebUI.service.type "NodePort") .Values.openWebUI.service.nodePort }}
+    {{- if and (eq (.Values.openWebUI.service.type | default "ClusterIP") "NodePort") .Values.openWebUI.service.nodePort }}
     nodePort: {{ .Values.openWebUI.service.nodePort }}
     {{- end }}
   selector:
     {{- include "private-ai.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: open-webui
+{{- end }}
+{{- end }}
 {{- end }}
