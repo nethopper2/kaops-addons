@@ -110,11 +110,6 @@ spec:
         secretKeyRef:
           name: {{ $dataIngestionSecret }}
           key: SLACK_CLIENT_SECRET
-    - name: SLACK_REDIRECT_URI
-      valueFrom:
-        secretKeyRef:
-          name: {{ $dataIngestionSecret }}
-          key: SLACK_REDIRECT_URI
     - name: ATLASSIAN_CLIENT_ID
       valueFrom:
         secretKeyRef:
@@ -125,11 +120,6 @@ spec:
         secretKeyRef:
           name: {{ $dataIngestionSecret }}
           key: ATLASSIAN_CLIENT_SECRET
-    - name: ATLASSIAN_REDIRECT_URL
-      valueFrom:
-        secretKeyRef:
-          name: {{ $dataIngestionSecret }}
-          key: ATLASSIAN_REDIRECT_URL
     {{- end }}
     
     # Global Google Application Credentials 
