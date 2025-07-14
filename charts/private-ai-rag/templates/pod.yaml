@@ -7,9 +7,8 @@ metadata:
     {{- include "private-ai.labels" . | nindent 4 }}
     app.kubernetes.io/component: open-webui
 spec:
-  # Only explicit settings that differ from defaults or are required
-  automountServiceAccountToken: {{ .Values.serviceAccount.automountToken | default false }}
-  enableServiceLinks: {{ .Values.pod.enableServiceLinks | default false }}
+  automountServiceAccountToken: false
+  enableServiceLinks: false
   {{- if .Values.serviceAccount }}
   {{- if .Values.serviceAccount.create | default true }}
   serviceAccount: {{ include "private-ai.serviceAccountName" . }}
@@ -137,16 +136,6 @@ spec:
         secretKeyRef:
           name: {{ $dataIngestionSecret }}
           key: ATLASSIAN_CLIENT_SECRET
-    - name: ATLASSIAN_REDIRECT_URL
-      valueFrom:
-        secretKeyRef:
-          name: {{ $dataIngestionSecret }}
-          key: ATLASSIAN_REDIRECT_URL
-    - name: GCS_SERVICE_ACCOUNT_BASE64
-      valueFrom:
-        secretKeyRef:
-          name: {{ $dataIngestionSecret }}
-          key: GOOGLE_APPLICATION_CREDENTIALS_BASE64
     {{- end }}
     
     # Global Google Application Credentials (if provided separately)
