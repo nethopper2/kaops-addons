@@ -17,6 +17,7 @@ dataIngestion:
     microsoftRedirectUrl:
     slackRedirectUrl:
     atlassianRedirectUrl:
+    dataIngestionSecretsRef:
 ingress:
   enabled: true
   class: nginx
