@@ -223,7 +223,7 @@ spec:
   - name: data
     {{- $openWebUI := index .Values "open-webui" }}
     {{- if $openWebUI.persistence }}
-    {{- if $openWebUI.persistence.enabled | default true }}
+    {{- if $openWebUI.persistence.enabled | default false }}
     persistentVolumeClaim:
       claimName: {{ $openWebUI.persistence.existingClaim | default (printf "%s-data" (include "private-ai.fullname" .)) }}
     {{- else }}

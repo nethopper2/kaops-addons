@@ -41,9 +41,6 @@ open-webui:
     repository: nethopper/kaops-open-webui
     tag: 0.6.15-alpha.9 # This should match the appVersion in Chart.yaml
     pullPolicy: Always
-  persistence:
-    enabled: true
-    existingClaim: "open-webui"
   ollama:
     persistentVolume:
       enabled: true
