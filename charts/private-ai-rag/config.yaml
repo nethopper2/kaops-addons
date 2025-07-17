@@ -62,7 +62,16 @@ forms:
       - slug: dataIngestion
         variableSlugs:
           - encryptionKey
-          - dataIngestionCredentials
+          - gcsServiceAccountCredentials
+          - googleClientId
+          - googleClientSecret
+          - microsoftClientId
+          - microsoftClientSecret
+          - microsoftTenantId
+          - slackClientId
+          - slackClientSecret
+          - atlassianClientId
+          - atlassianClientSecret
         ui:
           if: $get(dataIngestionEnabled).value
           label: Data Ingestion
@@ -121,15 +130,94 @@ variables:
       label: Enable Data Ingestion
       id: dataIngestionEnabled
       value: false
-  - slug: dataIngestionCredentials
-    path: dataIngestion.config.dataIngestionCredentialsSecretRef
+  - slug: encryptionKey
+    path: dataIngestion.config.encryptionKey
     forms: [default, defaultUpdate]
     ui:
-      type: secret
-      label: Data Ingestion Credentials Secret Ref
-      id: dataIngestionCredentials
-      help: Data Ingestion Credentials Secret Ref
-      validation: required
+      type: text
+      label: Token Encryption Key
+      id: encryptionKey
+      help: Token Encryption Key for Data Ingestion
+  - slug: gcsServiceAccountCredentials
+    path: dataIngestion.config.gcsServiceAccountCredentials
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: GCS Service Account Credentials
+      id: gcsServiceAccountCredentials
+      help: Base64 encoded Google Application Credentials.
+  - slug: googleClientId
+    path: dataIngestion.config.googleClientId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Google Client Id
+      id: googleClientId
+      help: Google Oauth Application Client Id
+  - slug: googleClientSecret
+    path: dataIngestion.config.googleClientSecret
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: Google Client Secret
+      id: googleClientSecret
+      help: Google Oauth Application Client Secret
+  - slug: microsoftClientId
+    path: dataIngestion.config.microsoftClientId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Microsoft Client Id
+      id: microsoftClientId
+      help: Microsoft Oauth Application Client Id
+  - slug: microsoftClientSecret
+    path: dataIngestion.config.microsoftClientSecret
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: Microsoft Client Secret
+      id: microsoftClientSecret
+      help: Microsoft Oauth Application Client Secret
+  - slug: microsoftTenantId
+    path: dataIngestion.config.microsoftTenantId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Microsoft Entra ID Tenant Id
+      id: microsoftTenantId
+      help: Microsoft Entra Id Tenant Id
+  - slug: slackClientId
+    path: dataIngestion.config.slackClientId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Slack Client Id
+      id: slackClientId
+      help: Slack Oauth Application Client Id
+  - slug: slackClientSecret
+    path: dataIngestion.config.slackClientSecret
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: Slack Client Secret
+      id: slackClientSecret
+      help: Slack Oauth Application Client Secret
+  - slug: atlassianClientId
+    path: dataIngestion.config.atlassianClientId
+    forms: [default, defaultUpdate]
+    ui:
+      type: text
+      label: Atlassian Client Id
+      id: atlassianClientId
+      help: Atlassian Oauth Application Client Id
+  - slug: atlassianClientSecret
+    path: dataIngestion.config.atlassianClientSecret
+    forms: [default, defaultUpdate]
+    ui:
+      type: password
+      label: Atlassian Client Secret
+      id: atlassianClientSecret
+      help: Atlassian Oauth Application Client Secret
   - slug: gDriveGoogleApplicationsCredentialsSecretRef
     path: "global.googleApplicationCredentialsSecretRef"
     forms: [default]

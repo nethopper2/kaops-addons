@@ -13,11 +13,21 @@ dataIngestion:
   config:
     dataSourcesUrl:
     overideWebSocketUrl:
+    encryptionKey:
+    gcsServiceAccountCredentials:
+    googleClientId:
+    googleClientSecret:
     googleRedirectUrl:
+    microsoftClientId:
+    microsoftClientSecret:
+    microsoftTenantId:
     microsoftRedirectUrl:
+    slackClientId:
+    slackClientSecret:
     slackRedirectUrl:
+    atlassianClientId:
+    atlassianClientSecret:
     atlassianRedirectUrl:
-    dataIngestionSecretsRef:
 ingress:
   enabled: true
   class: nginx
@@ -54,6 +64,8 @@ open-webui:
   extraEnvFrom:
     - configMapRef:
         name: shared-configmap-rag
+    - secretRef:
+        name: shared-secrets-data-ingestion
   extraEnvVars:
     - name: WEBUI_NAME
       value: "Private AI"
