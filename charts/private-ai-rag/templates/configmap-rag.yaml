@@ -32,3 +32,5 @@ data:
   OVERIDE_WEB_SOCKET_URL: {{ .Values.dataIngestion.config.overideWebSocketUrl | quote }}
   DATASOURCES_URL: {{ .Values.dataIngestion.config.dataSourcesUrl | quote }}
   {{- end }}
+  NEO4J_URI: {{ .Values.rag.neo4j.uri | quote }}
+  NEO4J_USER: {{ .Values.rag.neo4j.auth.user | quote }}

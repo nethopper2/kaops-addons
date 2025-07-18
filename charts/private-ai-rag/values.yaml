@@ -66,6 +66,8 @@ open-webui:
         name: shared-configmap-rag
     - secretRef:
         name: shared-secrets-data-ingestion
+    - secretRef:
+        name: secretname
   extraEnvVars:
     - name: WEBUI_NAME
       value: "Private AI"
@@ -191,3 +193,18 @@ redis:
       storageClass: "" # Optionally set your storage class
   replica:
     replicaCount: 0
+
+neo4j:
+  enabled: false
+  disableLookups: true
+  neo4j:
+    name: my-standalone
+    resources:
+      cpu: "0.5"
+      memory: "2Gi"
+    passwordFromSecret: neo4j-password
+  volumes:
+    data:
+      mode: "dynamic"
+      dynamic:
+        storageClassName: premium-rwo
