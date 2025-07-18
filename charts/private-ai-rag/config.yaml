@@ -467,6 +467,8 @@ system:
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}/api/v1/data/slack/callback"
   - path: "dataIngestion.config.atlassianRedirectUrl"
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}/api/v1/data/atlassian/callback"
+  - path: "neo4j.uri"
+    value: "bolt://${system.cluster.name}-private-ai-rag-neo4j.nh-addons.svc.cluster.local:7687"
 
 output:
   - name: Open Web UI URL
