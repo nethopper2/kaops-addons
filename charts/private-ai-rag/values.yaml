@@ -189,3 +189,26 @@ redis:
       storageClass: "" # Optionally set your storage class
   replica:
     replicaCount: 0
+
+neo4j:
+  enabled: false
+  disableLookups: true
+  auth:
+    user: neo4j
+  uri: # system provided
+  services:
+    neo4j:
+      enabled: false
+    internals:
+      enabled: true
+  neo4j:
+    name: my-standalone
+    resources:
+      cpu: "0.5"
+      memory: "2Gi"
+    passwordFromSecret: neo4j-password
+  volumes:
+    data:
+      mode: "dynamic"
+      dynamic:
+        storageClassName: premium-rwo
