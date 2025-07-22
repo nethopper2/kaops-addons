@@ -7394,6 +7394,51 @@ entries:
     version: 0.1.9
   private-ai-rag:
   - apiVersion: v2
+    appVersion: 0.6.15-alpha.10
+    created: "2025-07-22T14:08:58.912197467Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 6.22.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - condition: private-ai-rest.enabled
+      name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.20
+    - condition: gdrive-gcs-sync.enabled
+      name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.26
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.1
+    - alias: nh-rag-worker
+      condition: nh-rag-worker.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    description: KAOPS addon to install private-ai
+    digest: 2443fcda88ef290566eb09e4caf7a6affa160b957abcad9028ee5e900b69bf46
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.263/private-ai-rag-0.1.263.tgz
+    version: 0.1.263
+  - apiVersion: v2
     appVersion: 0.6.15-alpha.9
     created: "2025-07-17T11:45:46.117415496Z"
     dependencies:
@@ -13243,4 +13288,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-07-17T11:45:46.118825158Z"
+generated: "2025-07-22T14:08:58.913213618Z"
