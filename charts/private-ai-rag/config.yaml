@@ -454,7 +454,7 @@ system:
   - path: "rag.allowedCorsOrigin"
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}|https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "nh-rag-api.env.QDRANT_URL"
-    value: "http://${system.cluster.name}-private-ai-rag-qdrant:6333"
+    value: "http://${system.cluster.name}-private-ai-rag-qdrant.nh-addons.svc.cluster.local:6333"
   - path: "dataIngestion.config.overideWebSocketUrl"
     value: "wss://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "dataIngestion.config.dataSourcesUrl"
