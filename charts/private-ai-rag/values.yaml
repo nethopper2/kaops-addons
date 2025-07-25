@@ -64,8 +64,6 @@ open-webui:
   extraEnvFrom:
     - configMapRef:
         name: shared-configmap-rag
-    - secretRef:
-        name: shared-secrets-data-ingestion
   extraEnvVars:
     - name: WEBUI_NAME
       value: "Private AI"
