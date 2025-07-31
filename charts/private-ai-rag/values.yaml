@@ -8,6 +8,7 @@ global:
       existingSecret: postgresql-password
       secretKeys:
         adminPasswordKey: postgresPassword
+  llmBaseUrl: http://open-webui-ollama:11434
 dataIngestion:
   enabled: false
   config:
@@ -168,7 +169,6 @@ nh-rag-api:
     tag: "v0.0.4"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
-    LLM_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
 nh-rag-worker:
   enabled: false
@@ -177,7 +177,6 @@ nh-rag-worker:
     tag: "v0.0.4"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
-    LLM_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
 redis:
   enabled: false
