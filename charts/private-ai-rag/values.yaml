@@ -213,3 +213,6 @@ neo4j:
       mode: "dynamic"
       dynamic:
         storageClassName: premium-rwo
+
+langfuse:
+  enabled: false
