@@ -1,10 +1,19 @@
 ingress-nginx:
+  enabled: true
   controller:
     extraArgs:
       enable-ssl-passthrough: true
     admissionWebhooks:
       enabled: false
+    service:
+      external: 
+        enabled: true
+      internal:
+        enabled: false
+        # annotations:
+        #   service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
 cert-manager:
+  enabled: true
   crds:
     enabled: true
     keep: false

@@ -25,3 +25,44 @@ variables:
     ui:
       type: 'toggle'
       label: 'Keep CRDs for Cert-Manager on uninstall'
+  - slug: 'ingress-nginx'
+    path: 'ingress-nginx.enabled'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Install NGINX Ingress Controller'
+      value: true
+  - slug: 'cert-manager'
+    path: 'cert-manager.enabled'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Install Cert-Manager'
+      value: true
+  - slug: 'ingress-nginx-service-external'
+    path: 'ingress-nginx.service.external.enabled'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Install NGINX Ingress Controller Service External'
+      value: true
+  - slug: 'ingress-nginx-service-internal'
+    path: 'ingress-nginx.service.internal.enabled'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Install NGINX Ingress Controller Service Internal'
+      value: false
+  - slug: "cloud-provider"
+    path: "ingress-nginx.service.internal.annotations"
+    forms: ['default']
+    ui: 
+      type: 'select'
+      label: 'Cloud Provider'
+      options:
+        - label: 'AWS'
+          value: 'service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"'
+        - label: 'Azure'
+          value: 'service.beta.kubernetes.io/azure-load-balancer-internal: "true"'
+        - label: 'GCP'
+          value: 'networking.gke.io/load-balancer-type: "Internal"'
