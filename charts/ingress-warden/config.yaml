@@ -30,28 +30,28 @@ variables:
     forms: ['default']
     ui:
       type: 'toggle'
-      label: 'Install NGINX Ingress Controller'
+      label: 'NGINX Ingress Controller'
       value: true
   - slug: 'cert-manager'
     path: 'cert-manager.enabled'
     forms: ['default']
     ui:
       type: 'toggle'
-      label: 'Install Cert-Manager'
+      label: 'Cert-Manager'
       value: true
   - slug: 'ingress-nginx-service-external'
     path: 'ingress-nginx.service.external.enabled'
     forms: ['default']
     ui:
       type: 'toggle'
-      label: 'Install NGINX Ingress Controller Service External'
+      label: 'External Service'
       value: true
   - slug: 'ingress-nginx-service-internal'
     path: 'ingress-nginx.service.internal.enabled'
     forms: ['default']
     ui:
       type: 'toggle'
-      label: 'Install NGINX Ingress Controller Service Internal'
+      label: 'Internal Service'
       value: false
   - slug: "cloud-provider"
     path: "ingress-nginx.service.internal.annotations"
