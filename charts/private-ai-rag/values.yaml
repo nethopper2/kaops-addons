@@ -216,3 +216,6 @@ neo4j:
 
 langfuse:
   enabled: false
+
+ragflow:
+  enabled: false
