@@ -50,7 +50,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: 0.6.15-alpha.15 # This should match the appVersion in Chart.yaml
+    tag: 0.6.22-alpha.4 # This should match the appVersion in Chart.yaml
     pullPolicy: Always
   ollama:
     persistentVolume:
