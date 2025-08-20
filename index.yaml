@@ -7455,6 +7455,63 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: 0.6.22-alpha.4
+    created: "2025-08-20T12:03:39.255869713Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 6.22.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - condition: private-ai-rest.enabled
+      name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.20
+    - condition: gdrive-gcs-sync.enabled
+      name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.26
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.1
+    - alias: nh-rag-worker
+      condition: nh-rag-worker.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    - condition: neo4j.enabled
+      name: neo4j
+      repository: https://neo4j.github.io/helm-charts/
+      version: 2025.6.2
+    - condition: langfuse.enabled
+      name: langfuse
+      repository: https://langfuse.github.io/langfuse-k8s
+      version: 1.3.4
+    - condition: ragflow.enabled
+      name: ragflow
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.0
+    description: KAOPS addon to install private-ai
+    digest: bab12a02df7cdc68f26b70f0e4a491e0cd1985ba4f78d8514d41bf0ecfecccc5
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.279/private-ai-rag-0.1.279.tgz
+    version: 0.1.279
+  - apiVersion: v2
+    appVersion: 0.6.22-alpha.4
     created: "2025-08-20T11:27:16.846529309Z"
     dependencies:
     - condition: open-webui.enabled
@@ -14123,4 +14180,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-08-20T11:27:16.84787226Z"
+generated: "2025-08-20T12:03:39.258306088Z"
