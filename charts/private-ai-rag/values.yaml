@@ -166,7 +166,7 @@ nh-rag-api:
   enabled: false
   image:
     repository: nethopper/nh-rag-api
-    tag: "v0.0.4"
+    tag: "v0.0.53"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -174,7 +174,7 @@ nh-rag-worker:
   enabled: false
   image:
     repository: nethopper/nh-rag-worker
-    tag: "v0.0.4"
+    tag: "v0.0.53"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
