@@ -28,9 +28,12 @@ data:
   {{- end }}
   {{- if eq .Values.dataIngestion.enabled true }}
   ENABLE_SSO_DATA_SYNC: {{ .Values.dataIngestion.enabled | quote }}
-
   OVERIDE_WEB_SOCKET_URL: {{ .Values.dataIngestion.config.overideWebSocketUrl | quote }}
   DATASOURCES_URL: {{ .Values.dataIngestion.config.dataSourcesUrl | quote }}
+  SLACK_REDIRECT_URI: {{ .Values.dataIngestion.config.slackRedirectUrl | quote }}
+  GOOGLE_REDIRECT_URI: {{ .Values.dataIngestion.config.googleRedirectUrl | quote }}
+  MICROSOFT_REDIRECT_URI: {{ .Values.dataIngestion.config.microsoftRedirectUrl | quote }}
+  ATLASSIAN_REDIRECT_URI: {{ .Values.dataIngestion.config.atlassianRedirectUrl | quote }}
   {{- end }}
   NEO4J_URI: {{ .Values.neo4j.uri | quote }}
   NEO4J_USER: {{ .Values.neo4j.auth.user | quote }}
