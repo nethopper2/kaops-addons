@@ -124,6 +124,7 @@ postgresql:
           CREATE DATABASE "open-webui" WITH OWNER postgres;
           CREATE DATABASE "private-ai-rag" WITH OWNER postgres;
           CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
+          CREATE DATABASE "juicefs" WITH OWNER postgres;
 rag:
   secretArgocdHook: PreSync
   custom:
@@ -205,3 +206,20 @@ langfuse:
 
 ragflow:
   enabled: false
+
+juicefs-s3-gateway:
+  enabled: false
+  secret:
+    name: "juicefs-s3-gateway"
+    create: true
+    config:
+      name: "juicefs-volume"
+      storage: "" # user provided
+      bucket: "" # user provided
+      metaurl: "" # system provided
+
+nh-pai-data-service:
+  enabled: false
+  config:
+    juiceFsSecretName: "juicefs-s3-gateway"
+    juiceFsUrl: "" # system provided
