@@ -382,6 +382,8 @@ system:
     value: "bolt://${system.cluster.name}-private-ai-rag-neo4j.nh-addons.svc.cluster.local:7687"
   - path: "juicefs-s3-gateway.secret.config.metaurl"
     value: "postgres://postgres@${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local:5432/juicefs"
+  - path: "nh-pai-data-service.config.juiceFsUrl"
+    value: "http://${system.cluster.name}-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
 
 output:
   - name: Open Web UI URL
