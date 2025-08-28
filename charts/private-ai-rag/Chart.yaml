@@ -15,14 +15,14 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.293
+version: 0.1.294
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 # NOTE: open webui was forked and this currently matches our release tag in the `values` file.
-appVersion: "0.6.25-alpha.1"
+appVersion: "0.6.25-alpha.3"
 
 dependencies:
   - name: open-webui
@@ -76,6 +76,6 @@ dependencies:
     repository: https://nethopper2.github.io/helm-charts/
     condition: juicefs-s3-gateway.enabled
   - name: nh-pai-data-service
-    version: 0.1.4
+    version: 0.1.5
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-pai-data-service.enabled
