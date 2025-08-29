@@ -219,6 +219,7 @@ juicefs-s3-gateway:
       metaurl: "" # system provided
 
 nh-pai-data-service:
+  url: # system provided
   enabled: false
   config:
     juiceFsSecretName: "juicefs-s3-gateway"

@@ -384,6 +384,8 @@ system:
     value: "postgres://postgres@${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local:5432/juicefs"
   - path: "nh-pai-data-service.config.juiceFsUrl"
     value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
+  - path: "nh-pai-data-service.url"
+    value: "http://${system.cluster.name}-private-ai-rag-nh-pai-data-service.nh-addons.svc.cluster.local:4500"
 
 output:
   - name: Open Web UI URL
