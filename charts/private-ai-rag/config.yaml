@@ -362,6 +362,8 @@ system:
     value: "https://www.googleapis.com/auth/drive.readonly"
   - path: "rag.apiBaseUrl"
     value: "https://storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
+  - path: "rag.dataServiceUrl"
+    value: "https://data-service.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "rag.allowedCorsOrigin"
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}|https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "nh-rag-api.env.QDRANT_URL"
@@ -384,9 +386,16 @@ system:
     value: "postgres://postgres@${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local:5432/juicefs"
   - path: "nh-pai-data-service.config.juiceFsUrl"
     value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
-  - path: "nh-pai-data-service.url"
-    value: "http://${system.cluster.name}-private-ai-rag-nh-pai-data-service.nh-addons.svc.cluster.local:4500"
-
+  - path: "nh-pai-data-service.ingress.hosts[0].host"
+    value: "data-service.${system.cluster.name}.${system.hubCluster.ingressHostname}"
+  - path: "nh-pai-data-service.ingress.tls[0].hosts[0]"
+    value: "data-service.${system.cluster.name}.${system.hubCluster.ingressHostname}"
+  - path: "nh-pai-data-service.ingress.hosts[0].paths[0].path"
+    value: "/"
+  - path: "nh-pai-data-service.ingress.hosts[0].paths[0].pathType"
+    value: "ImplementationSpecific"
+  - path: "nh-pai-data-service.ingress.tls[0].secretName"
+    value: "nh-pai-data-service-tls"
 output:
   - name: Open Web UI URL
     description: The URL to access Open WebUI

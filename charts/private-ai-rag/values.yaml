@@ -106,13 +106,13 @@ private-ai-rest:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/tls-acme: "true"
     hosts:
-      - host:
+      - host: # system provided
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: private-ai-rest-tls
-        hosts:
+        hosts: # system provided
   config:
     postgresHost: # system provided
     postgresSecret: # system provided
@@ -134,6 +134,7 @@ rag:
     # bgMovieAuth: # user provided
     # sector:  # user provided
   apiBaseUrl: # system provided
+  dataServiceUrl: # system provided
   allowedCorsOrigin: # system provided
   # googleAllowedExtensions: # user provided
   gcsBucketName: # user provided
@@ -219,7 +220,24 @@ juicefs-s3-gateway:
       metaurl: "" # system provided
 
 nh-pai-data-service:
-  url: # system provided
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: http
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: # system provided
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: nh-pai-data-service-tls
+        hosts: # system provided
   enabled: false
   config:
     juiceFsSecretName: "juicefs-s3-gateway"
