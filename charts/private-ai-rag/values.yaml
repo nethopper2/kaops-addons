@@ -117,6 +117,12 @@ private-ai-rest:
     postgresHost: # system provided
     postgresSecret: # system provided
 postgresql:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
   primary:
     initdb:
       scripts:
@@ -158,6 +164,12 @@ nh-rag-api:
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
 nh-rag-worker:
   enabled: false
   image:
@@ -178,6 +190,12 @@ redis:
       storageClass: "" # Optionally set your storage class
   replica:
     replicaCount: 0
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: # system provided
 
 neo4j:
   enabled: false
@@ -202,6 +220,13 @@ neo4j:
       dynamic:
         storageClassName: premium-rwo
 
+qdrant:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      additionalLabels:
+        release: # system provided
+
 langfuse:
   enabled: false
 
@@ -218,6 +243,12 @@ juicefs-s3-gateway:
       storage: "" # user provided
       bucket: "" # user provided
       metaurl: "" # system provided
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: # system provided
 
 nh-pai-data-service:
   ingress:
