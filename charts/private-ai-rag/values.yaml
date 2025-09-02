@@ -224,6 +224,7 @@ qdrant:
   metrics:
     enabled: true
     serviceMonitor:
+      enabled: true
       additionalLabels:
         release: # system provided
 
