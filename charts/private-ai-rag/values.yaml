@@ -178,6 +178,28 @@ nh-rag-worker:
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+nh-rag-api-v2:
+  enabled: false
+  image:
+    repository: nethopper/nh-rag-api
+    tag: "v0.0.53"
+  env:
+    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
+    QDRANT_URL: # system provided
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
+nh-rag-worker-v2:
+  enabled: false
+  image:
+    repository: nethopper/nh-rag-worker
+    tag: "v0.0.53"
+  env:
+    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
+    QDRANT_URL: # system provided
 redis:
   enabled: false
   architecture: standalone
