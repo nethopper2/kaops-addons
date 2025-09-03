@@ -398,6 +398,8 @@ system:
     value: "nh-pai-data-service-tls"
   - path: "nh-rag-api.metrics.serviceMonitor.labels.release"
     value: "${system.cluster.name}-observability-edge"
+  - path: "nh-rag-api-v2.metrics.serviceMonitor.labels.release"
+    value: "${system.cluster.name}-observability-edge"
   - path: "postgresql.metrics.serviceMonitor.labels.release"
     value: "${system.cluster.name}-observability-edge"
   - path: "redis.metrics.serviceMonitor.additionalLabels.release"
