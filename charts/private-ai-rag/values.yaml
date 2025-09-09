@@ -294,6 +294,7 @@ nh-pai-data-service:
         hosts: # system provided
   enabled: false
   config:
-    postgresDatabase: "private-ai-rest"
+    postgresDatabase: "pai-data-rest-service"
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
+  autoRunMigrations: true
