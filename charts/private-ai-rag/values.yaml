@@ -131,19 +131,6 @@ postgresql:
           CREATE DATABASE "private-ai-rag" WITH OWNER postgres;
           CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
           CREATE DATABASE "juicefs" WITH OWNER postgres;
-    preInitDb:
-      scripts:
-        01-pre-init.sql: |
-          SELECT "CREATE DATABASE open-webui"
-          WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = "open-webui")\gexec;
-          SELECT "CREATE DATABASE private-ai-rag"
-          WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = "private-ai-rag")\gexec;
-          SELECT "CREATE DATABASE private-ai-rest"
-          WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = "private-ai-rest")\gexec;
-          SELECT "CREATE DATABASE juicefs"
-          WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = "juicefs")\gexec;
-          SELECT "CREATE DATABASE pai-data-rest-service"
-          WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = "pai-data-rest-service")\gexec;
 rag:
   secretArgocdHook: PreSync
   custom:
