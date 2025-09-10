@@ -147,6 +147,23 @@ rag:
   googleApiScopes: # system provided
   postgresHost: # system provided
 
+initdb:
+  enabled: false
+  image:
+    repository: postgres
+    tag: "16"
+    pullPolicy: IfNotPresent
+  postgresql:
+    port: "5432"
+    database: "postgres"
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
 postInstall:
   chosenPostInstallOptions: ""
 

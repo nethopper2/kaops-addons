@@ -1,0 +1,59 @@
+{{- if .Values.initdb.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "private-ai.fullname" . }}-initdb-scripts
+  labels: 
+    {{- include "private-ai.labels" . | nindent 4 }}
+data:
+  init-databases.sql: |
+    -- Database initialization script
+    -- Creates databases if they don't already exist
+    
+    DO $$
+    BEGIN
+        -- Create open-webui database if it doesn't exist
+        IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'open-webui') THEN
+            CREATE DATABASE "open-webui" WITH OWNER postgres;
+            RAISE NOTICE 'Database "open-webui" created successfully';
+        ELSE
+            RAISE NOTICE 'Database "open-webui" already exists';
+        END IF;
+        
+        -- Create private-ai-rag database if it doesn't exist
+        IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'private-ai-rag') THEN
+            CREATE DATABASE "private-ai-rag" WITH OWNER postgres;
+            RAISE NOTICE 'Database "private-ai-rag" created successfully';
+        ELSE
+            RAISE NOTICE 'Database "private-ai-rag" already exists';
+        END IF;
+        
+        -- Create private-ai-rest database if it doesn't exist
+        IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'private-ai-rest') THEN
+            CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
+            RAISE NOTICE 'Database "private-ai-rest" created successfully';
+        ELSE
+            RAISE NOTICE 'Database "private-ai-rest" already exists';
+        END IF;
+        
+        -- Create juicefs database if it doesn't exist
+        IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'juicefs') THEN
+            CREATE DATABASE "juicefs" WITH OWNER postgres;
+            RAISE NOTICE 'Database "juicefs" created successfully';
+        ELSE
+            RAISE NOTICE 'Database "juicefs" already exists';
+        END IF;
+        
+        -- Create pai-data-rest-service database if it doesn't exist
+        IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'pai-data-rest-service') THEN
+            CREATE DATABASE "pai-data-rest-service" WITH OWNER postgres;
+            RAISE NOTICE 'Database "pai-data-rest-service" created successfully';
+        ELSE
+            RAISE NOTICE 'Database "pai-data-rest-service" already exists';
+        END IF;
+        
+    END $$;
+    
+    -- List all databases for verification
+    SELECT datname FROM pg_database WHERE datistemplate = false;
+{{- end }}

@@ -1,0 +1,83 @@
+{{- if .Values.initdb.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "private-ai.fullname" . }}-initdb-job
+  labels: 
+    {{- include "private-ai.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ include "private-ai.fullname" . }}-initdb-job
+      labels:
+        {{- include "private-ai.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      {{- if .Values.initdb.serviceAccount }}
+      serviceAccountName: {{ .Values.initdb.serviceAccount }}
+      {{- end }}
+      containers:
+        - name: postgres-initdb
+          image: {{ .Values.initdb.image.repository }}:{{ .Values.initdb.image.tag }}
+          imagePullPolicy: {{ .Values.initdb.image.pullPolicy | default "IfNotPresent" }}
+          command: 
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              echo "Starting database initialization..."
+              
+              # Wait for PostgreSQL to be ready
+              until pg_isready -h $PGHOST -p $PGPORT -U $PGUSER; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 2
+              done
+              
+              echo "PostgreSQL is ready. Running initialization script..."
+              psql -v ON_ERROR_STOP=1 -f /scripts/init-databases.sql
+              
+              echo "Database initialization completed successfully."
+          env:
+            - name: PGHOST
+              value: {{ .Values.initdb.postgresql.host | default (printf "%s-postgresql" (include "private-ai.fullname" .)) | quote }}
+            - name: PGPORT
+              value: {{ .Values.initdb.postgresql.port | default "5432" | quote }}
+            - name: PGUSER
+              value: {{ .Values.initdb.postgresql.username | default .Values.global.postgresql.auth.username | quote }}
+            - name: PGDATABASE
+              value: {{ .Values.initdb.postgresql.database | default "postgres" | quote }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.initdb.postgresql.existingSecret | default .Values.global.postgresql.auth.existingSecret | quote }}
+                  key: {{ .Values.initdb.postgresql.secretKey | default .Values.global.postgresql.auth.secretKeys.adminPasswordKey | quote }}
+          volumeMounts:
+            - name: initdb-scripts
+              mountPath: /scripts
+              readOnly: true
+          {{- if .Values.initdb.resources }}
+          resources:
+            {{- toYaml .Values.initdb.resources | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: initdb-scripts
+          configMap:
+            name: {{ include "private-ai.fullname" . }}-initdb-scripts
+            defaultMode: 0755
+      {{- if .Values.initdb.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.initdb.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.initdb.tolerations }}
+      tolerations:
+        {{- toYaml .Values.initdb.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.initdb.affinity }}
+      affinity:
+        {{- toYaml .Values.initdb.affinity | nindent 8 }}
+      {{- end }}
+{{- end }}
