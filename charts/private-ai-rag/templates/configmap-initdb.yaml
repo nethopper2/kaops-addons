@@ -1,0 +1,35 @@
+{{- if .Values.initdb.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "private-ai.fullname" . }}-initdb-scripts
+  labels: 
+    {{- include "private-ai.labels" . | nindent 4 }}
+data:
+  init-databases.sql: |
+    -- Database initialization script
+    -- Creates databases if they don't already exist
+    
+    -- Create open-webui database if it doesn't exist
+    SELECT 'CREATE DATABASE "open-webui" WITH OWNER postgres'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'open-webui')\gexec
+    
+    -- Create private-ai-rag database if it doesn't exist  
+    SELECT 'CREATE DATABASE "private-ai-rag" WITH OWNER postgres'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'private-ai-rag')\gexec
+    
+    -- Create private-ai-rest database if it doesn't exist
+    SELECT 'CREATE DATABASE "private-ai-rest" WITH OWNER postgres'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'private-ai-rest')\gexec
+    
+    -- Create juicefs database if it doesn't exist
+    SELECT 'CREATE DATABASE "juicefs" WITH OWNER postgres'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'juicefs')\gexec
+    
+    -- Create pai-data-rest-service database if it doesn't exist
+    SELECT 'CREATE DATABASE "pai-data-rest-service" WITH OWNER postgres'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'pai-data-rest-service')\gexec
+    
+    -- List all databases for verification
+    SELECT datname FROM pg_database WHERE datistemplate = false;
+{{- end }}

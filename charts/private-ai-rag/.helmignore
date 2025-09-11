@@ -24,3 +24,6 @@
 
 # custom
 config.yaml
+
+# Grafana Dashboard
+grafana_dashboard.json

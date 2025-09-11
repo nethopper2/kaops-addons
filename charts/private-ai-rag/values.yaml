@@ -117,6 +117,12 @@ private-ai-rest:
     postgresHost: # system provided
     postgresSecret: # system provided
 postgresql:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
   primary:
     initdb:
       scripts:
@@ -141,6 +147,23 @@ rag:
   googleApiScopes: # system provided
   postgresHost: # system provided
 
+initdb:
+  enabled: false
+  image:
+    repository: postgres
+    tag: "16"
+    pullPolicy: IfNotPresent
+  postgresql:
+    port: "5432"
+    database: "postgres"
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
 postInstall:
   chosenPostInstallOptions: ""
 
@@ -158,7 +181,35 @@ nh-rag-api:
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
 nh-rag-worker:
+  enabled: false
+  image:
+    repository: nethopper/nh-rag-worker
+    tag: "v0.0.53"
+  env:
+    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
+    QDRANT_URL: # system provided
+nh-rag-api-v2:
+  enabled: false
+  image:
+    repository: nethopper/nh-rag-api
+    tag: "v0.0.53"
+  env:
+    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
+    QDRANT_URL: # system provided
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
+nh-rag-worker-v2:
   enabled: false
   image:
     repository: nethopper/nh-rag-worker
@@ -178,6 +229,12 @@ redis:
       storageClass: "" # Optionally set your storage class
   replica:
     replicaCount: 0
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: # system provided
 
 neo4j:
   enabled: false
@@ -202,6 +259,14 @@ neo4j:
       dynamic:
         storageClassName: premium-rwo
 
+qdrant:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: # system provided
+
 langfuse:
   enabled: false
 
@@ -218,6 +283,12 @@ juicefs-s3-gateway:
       storage: "" # user provided
       bucket: "" # user provided
       metaurl: "" # system provided
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: # system provided
 
 nh-pai-data-service:
   ingress:
@@ -240,5 +311,7 @@ nh-pai-data-service:
         hosts: # system provided
   enabled: false
   config:
+    postgresDatabase: "pai-data-rest-service"
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
+  autoRunMigrations: "true"
