@@ -26,6 +26,7 @@ forms:
           - dataIngestionEnabled
           - gpuEnabled
           - modelsToPull
+          - awsOpenAIKeySecretRef
           - additionalHosts
           - dependencies
         ui:
@@ -128,6 +129,16 @@ variables:
       label: Data Ingestion Credentials Secret Reference
       id: dataIngestionCredentialsRef
       help: Sealed Secret Data Ingestion Credentials Reference
+  # aws bedrock variables start
+  - slug: awsOpenAIKeySecretRef
+    path: "global.awsOpenAIKeySecretRef"
+    forms: [default]
+    ui:
+      type: secret
+      label: AWS OpenAI Key (Bedrock)
+      help:  Amazon Bedrock API key.
+      validation: optional
+  # aws bedrock variables end
   # data ingestion variables end
   - slug: gDriveGoogleApplicationsCredentialsSecretRef
     path: "global.googleApplicationCredentialsSecretRef"

@@ -2,6 +2,7 @@ global:
   extraEnvVarsCM: shared-configmap-rag
   extraEnvVarsSecret: shared-secrets-rag
   googleApplicationCredentialsSecretRef: # user provided
+  awsOpenAIKeySecretRef: # user provided
   postgresql:
     auth:
       username: postgres
