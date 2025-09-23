@@ -10,7 +10,7 @@ global:
       secretKeys:
         adminPasswordKey: postgresPassword
   llmBaseUrl: http://open-webui-ollama:11434
-  secretArgocdHook: PreSync
+  secretArgocdHook: Skip
 dataIngestion:
   enabled: false
   config:
