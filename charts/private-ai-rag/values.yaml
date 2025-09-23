@@ -10,6 +10,7 @@ global:
       secretKeys:
         adminPasswordKey: postgresPassword
   llmBaseUrl: http://open-webui-ollama:11434
+  secretArgocdHook: PreSync
 dataIngestion:
   enabled: false
   config:
@@ -132,8 +133,6 @@ postgresql:
           CREATE DATABASE "private-ai-rag" WITH OWNER postgres;
           CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
           CREATE DATABASE "juicefs" WITH OWNER postgres;
-rag:
-  secretArgocdHook: PreSync
   custom:
     {}
     # logo: # user provided
