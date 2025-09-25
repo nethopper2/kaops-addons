@@ -371,8 +371,6 @@ system:
     value: "${system.cluster.name}-private-ai-rag-postgresql"
   - path: "rag.googleApiScopes"
     value: "https://www.googleapis.com/auth/drive.readonly"
-  - path: "rag.apiBaseUrl"
-    value: "https://storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "rag.dataServiceUrl"
     value: "https://data-service.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "rag.allowedCorsOrigin"
