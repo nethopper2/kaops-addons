@@ -325,4 +325,11 @@ nh-pai-data-service:
     postgresDatabase: "pai-data-rest-service"
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
+  env:
+    TOOLS_CONFIG:
+      token-replacer:
+        data-sources:
+          - name: "Mineral"
+            sourcePaths:
+              - "/Mineral/Handbooks/tokenized-documents"
   autoRunMigrations: "true"
