@@ -10,6 +10,8 @@ data:
   GCS_BUCKET_NAME: {{ .Values.rag.gcsBucketName }}
   ALLOWED_CORS_ORIGIN: {{ include "private-ai.corsOrigins" . }}
   NH_API_BASE_URL: {{ .Values.rag.apiBaseUrl }}
+  NH_RAG_API_BASE_URL: {{ .Values.rag.ragApiBaseUrl }}
+  NH_RAG_API_V2_BASE_URL: {{ .Values.rag.ragApiV2BaseUrl }}
   NH_DATA_SERVICE_URL: {{ .Values.rag.dataServiceUrl }}
   GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes }}
   NH_WEBUI_CUSTOM: {{ .Values.rag.custom | toJson | quote }}
