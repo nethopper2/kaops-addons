@@ -326,10 +326,5 @@ nh-pai-data-service:
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
   env:
-    TOOLS_CONFIG:
-      token-replacer:
-        data-sources:
-          - name: "Mineral"
-            sourcePaths:
-              - "/Mineral/Handbooks/tokenized-documents"
+    TOOLS_CONFIG: '{"token-replacer":{"data-sources":[{"name":"Mineral","sourcePaths":["/Mineral/Handbooks/tokenized-documents"]}]}}'
   autoRunMigrations: "true"
