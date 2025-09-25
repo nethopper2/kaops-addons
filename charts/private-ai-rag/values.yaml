@@ -187,6 +187,9 @@ nh-rag-api:
       enabled: true
       labels:
         release: # system provided
+  config:
+    juiceFsSecretName: "juicefs-s3-gateway"
+    juiceFsUrl: "" # system provided
 nh-rag-worker:
   enabled: false
   image:
@@ -195,6 +198,9 @@ nh-rag-worker:
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+  config:
+    juiceFsSecretName: "juicefs-s3-gateway"
+    juiceFsUrl: "" # system provided
 nh-rag-api-v2:
   enabled: false
   image:
@@ -209,6 +215,9 @@ nh-rag-api-v2:
       enabled: true
       labels:
         release: # system provided
+  config:
+    juiceFsSecretName: "juicefs-s3-gateway"
+    juiceFsUrl: "" # system provided
 nh-rag-worker-v2:
   enabled: false
   image:
@@ -217,6 +226,9 @@ nh-rag-worker-v2:
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+  config:
+    juiceFsSecretName: "juicefs-s3-gateway"
+    juiceFsUrl: "" # system provided
 redis:
   enabled: false
   architecture: standalone
