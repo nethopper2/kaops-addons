@@ -347,10 +347,6 @@ variables:
 system:
   - path: "ingress.host"
     value: "chat.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "ingress.oauth2Proxy.authSignin"
-    value: "https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}/oauth2/start?rd=$escaped_request_uri"
-  - path: "ingress.oauth2Proxy.authUrl"
-    value: "https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}/oauth2/auth"
   - path: "ingress.oauth2Proxy.authResponseHeaders"
     value: "authorization"
   - path: "private-ai-rest.ingress.hosts[0].host"
