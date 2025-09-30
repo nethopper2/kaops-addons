@@ -347,8 +347,6 @@ variables:
 system:
   - path: "ingress.host"
     value: "chat.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "ingress.oauth2Proxy.authResponseHeaders"
-    value: "authorization"
   - path: "private-ai-rest.ingress.hosts[0].host"
     value: "storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "private-ai-rest.ingress.tls[0].hosts[0]"
