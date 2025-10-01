@@ -39,3 +39,7 @@ data:
   NEO4J_URI: {{ .Values.neo4j.uri | quote }}
   NEO4J_USER: {{ .Values.neo4j.auth.user | quote }}
   LLM_BASE_URL: {{ .Values.global.llmBaseUrl | quote }}
+  {{- if .Values.global.enableSSO }}
+  WEBUI_AUTH_TRUSTED_EMAIL_HEADER: X-Auth-Request-Email
+  WEBUI_AUTH_TRUSTED_NAME_HEADER: X-Auth-Request-User
+  {{- end }}

@@ -1,4 +1,5 @@
 global:
+  enableSSO: false
   extraEnvVarsCM: shared-configmap-rag
   extraEnvVarsSecret: shared-secrets-rag
   googleApplicationCredentialsSecretRef: # user provided
