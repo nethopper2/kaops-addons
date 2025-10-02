@@ -21,6 +21,7 @@ dataIngestion:
 ingress:
   enabled: true
   ignoreSSL: false
+  increaseBuffersSize: false
   class: nginx
   oauthProviderName:
   oauth2Proxy:
