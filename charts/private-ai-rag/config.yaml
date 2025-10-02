@@ -365,8 +365,6 @@ system:
     value: "${system.cluster.name}-private-ai-rag-postgresql"
   - path: "rag.googleApiScopes"
     value: "https://www.googleapis.com/auth/drive.readonly"
-  - path: "rag.dataServiceUrl"
-    value: "https://data-service.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "rag.allowedCorsOrigin"
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}|https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "nh-rag-api.env.QDRANT_URL"
