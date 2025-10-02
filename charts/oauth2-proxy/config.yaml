@@ -50,10 +50,6 @@ variables:
       label: "OIDC Configuration"
       help: "Reference: https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview"
 
-system:
-  - path: "oauth2-proxy.ingress.hosts[0]"
-    value: "oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-
 output:
   - name: Test
     description: "test"
