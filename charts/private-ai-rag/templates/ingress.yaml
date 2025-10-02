@@ -15,6 +15,9 @@ metadata:
     nginx.ingress.kubernetes.io/auth-signin: {{ .Values.ingress.oauth2Proxy.authSignin | quote }}
     nginx.ingress.kubernetes.io/auth-response-headers: {{ .Values.ingress.oauth2Proxy.authResponseHeaders | quote }}
     {{- end }}
+    {{- if .Values.ingress.ignoreSSL }}
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "off"
+    {{- end }}
 spec:
   {{- with .Values.ingress.class }}
   ingressClassName: {{ . }}

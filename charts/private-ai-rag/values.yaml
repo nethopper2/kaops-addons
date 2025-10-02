@@ -20,6 +20,7 @@ dataIngestion:
     dataIngestionCredentialsRef:
 ingress:
   enabled: true
+  ignoreSSL: false
   class: nginx
   oauthProviderName:
   oauth2Proxy:
