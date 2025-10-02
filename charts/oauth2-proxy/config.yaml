@@ -53,10 +53,6 @@ variables:
 system:
   - path: "oauth2-proxy.ingress.hosts[0]"
     value: "oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "oauth2-proxy.ingress.tls[0].hosts[0]"
-    value: "oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "oauth2-proxy.ingress.tls[0].secretName"
-    value: "oauth-tls"
 
 output:
   - name: Test
