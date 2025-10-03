@@ -136,13 +136,15 @@ postgresql:
           CREATE DATABASE "private-ai-rag" WITH OWNER postgres;
           CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
           CREATE DATABASE "juicefs" WITH OWNER postgres;
+rag:
   custom:
     {}
     # logo: # user provided
     # bgImageAuth: # user provided
     # bgMovieAuth: # user provided
     # sector:  # user provided
-  dataServiceUrl: # system provided
+  dataServiceUrl: # user provided
+  dataServiceUrlBackend: # user provided
   allowedCorsOrigin: # system provided
   # googleAllowedExtensions: # user provided
   gcsBucketName: # user provided
