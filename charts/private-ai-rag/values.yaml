@@ -1,4 +1,7 @@
 global:
+  # This is used to allow insecure images to be pulled from the bitnamilegacy registry
+  security:
+    allowInsecureImages: true
   enableSSO: false
   extraEnvVarsCM: shared-configmap-rag
   extraEnvVarsSecret: shared-secrets-rag
@@ -122,7 +125,11 @@ private-ai-rest:
     postgresHost: # system provided
     postgresSecret: # system provided
 postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
   metrics:
+    image:
+      repository: bitnamilegacy/postgres-exporter
     enabled: true
     serviceMonitor:
       enabled: true
@@ -234,6 +241,8 @@ nh-rag-worker-v2:
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
 redis:
+  image:
+    repository: bitnamilegacy/redis
   enabled: false
   architecture: standalone
   auth:
@@ -246,6 +255,8 @@ redis:
   replica:
     replicaCount: 0
   metrics:
+    image:
+      repository: bitnamilegacy/redis-exporter
     enabled: true
     serviceMonitor:
       enabled: true
