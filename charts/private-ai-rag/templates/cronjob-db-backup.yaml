@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "private-ai.fullname" . }}-pg-backup
-  labels: 
+  labels:
     {{- include "private-ai.labels" . | nindent 4 }}
 spec:
   schedule: {{ .Values.backups.schedule }}
@@ -14,12 +14,17 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          {{- if and (eq .Values.backups.type "s3") .Values.backups.serviceAccountName }}
+          serviceAccountName: {{ .Values.backups.serviceAccountName }}
+          {{- end }}
           containers:
           - name: pg-backup
+            {{- if eq .Values.backups.type "s3" }}
+            image: postgres:17-alpine
+            {{- else }}
             image: google/cloud-sdk:524.0.0-slim
+            {{- end }}
             env:
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /secrets/gcp/key.json
             - name: PGHOST
               value: {{ .Values.rag.postgresHost }}
             - name: PGPORT
@@ -31,6 +36,26 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.global.postgresql.auth.existingSecret }}
                   key: {{ .Values.global.postgresql.auth.secretKeys.adminPasswordKey }}
+            {{- if eq .Values.backups.type "s3" }}
+            {{- if not .Values.backups.serviceAccountName }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.backups.s3AccessKeySecretRef }}
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.backups.s3AccessKeySecretRef }}
+                  key: AWS_SECRET_ACCESS_KEY
+            {{- end }}
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.backups.s3Region }}
+            - name: BACKUP_BUCKET
+              value: {{ .Values.backups.s3BucketName }}
+            {{- else }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /secrets/gcp/key.json
             - name: GOOGLE_APPLICATION_CREDENTIALS_BASE64
               valueFrom:
                 secretKeyRef:
@@ -38,8 +63,21 @@ spec:
                   key: GOOGLE_APPLICATION_CREDENTIALS_BASE64
             - name: BACKUP_BUCKET
               value: {{ .Values.backups.gcsBucketName }}
+            {{- end }}
             command: ["/bin/sh", "-c"]
             args:
+            {{- if eq .Values.backups.type "s3" }}
+            - |
+              echo "Installing AWS CLI..." && \
+              apk add --no-cache aws-cli && \
+              TS=$(date +%Y%m%d_%H%M%S) && \
+              echo "Dumping all DBs…" && \
+              pg_dumpall --host=$PGHOST --port=$PGPORT --username=$PGUSER | gzip > /tmp/all_dbs.sql.gz && \
+              echo "Uploading to S3…" && \
+              aws s3 cp /tmp/all_dbs.sql.gz s3://$BACKUP_BUCKET/postgres/$TS/all_dbs.sql.gz && \
+              echo "Upload complete: s3://$BACKUP_BUCKET/postgres/$TS/all_dbs.sql.gz" && \
+              rm /tmp/all_dbs.sql.gz
+            {{- else }}
             - |
               apt-get update && apt-get install -y curl gnupg2 lsb-release && \
               echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
@@ -58,4 +96,5 @@ spec:
                 | gzip \
                 | gsutil cp - gs://$BACKUP_BUCKET/postgres/$TS/all_dbs.sql.gz && \
               echo "Upload complete: gs://$BACKUP_BUCKET/postgres/$TS/all_dbs.sql.gz"
+            {{- end }}
 {{- end }}

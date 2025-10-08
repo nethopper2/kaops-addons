@@ -181,8 +181,15 @@ postInstall:
 backups:
   enabled: false
   schedule: "0 */8 * * *"
+  # For GCS backups:
   # gcsBucketName: # user provided
   # googleApplicationCredentialsSecretRef: defaults to global.googleApplicationCredentialsSecretRef
+  # For S3 backups:
+  # s3BucketName: # user provided
+  # s3Region: # user provided (e.g., us-east-1)
+  # s3AccessKeySecretRef: # user provided (secret name containing AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY) - not needed if using serviceAccountName
+  # serviceAccountName: # user provided (for IRSA/service account based authentication instead of access keys)
+  type: gcs # Options: gcs, s3
 
 nh-rag-api:
   enabled: false
