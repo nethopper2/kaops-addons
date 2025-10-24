@@ -354,3 +354,6 @@ nh-pai-data-service:
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
   autoRunMigrations: "true"
+
+nh-mcp-server:
+  enabled: false
