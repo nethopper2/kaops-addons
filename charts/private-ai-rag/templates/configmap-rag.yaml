@@ -11,6 +11,7 @@ data:
   ALLOWED_CORS_ORIGIN: {{ include "private-ai.corsOrigins" . }}
   NH_DATA_SERVICE_URL: {{ .Values.rag.dataServiceUrl }}
   NH_DATA_SERVICE_URL_BACKEND: {{ .Values.rag.dataServiceUrlBackend | default .Values.rag.dataServiceUrl }}
+  NH_RAG_API_URL: {{ .Values.rag.ragApiUrl }}
   GOOGLE_API_SCOPES: {{ .Values.rag.googleApiScopes }}
   NH_WEBUI_CUSTOM: {{ .Values.rag.custom | toJson | quote }}
   ALLOWED_EXTENSIONS: {{ .Values.rag.allowedExtensions }}

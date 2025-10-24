@@ -153,6 +153,7 @@ rag:
     # sector:  # user provided
   dataServiceUrl: # user provided
   dataServiceUrlBackend: # user provided
+  ragApiUrl: # user provided
   allowedCorsOrigin: # system provided
   # googleAllowedExtensions: # user provided
   gcsBucketName: # user provided
