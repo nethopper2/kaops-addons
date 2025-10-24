@@ -90,6 +90,6 @@ dependencies:
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-pai-data-service.enabled
   - name: nh-mcp-server
-    version: 0.2.0
+    version: 0.3.0
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-mcp-server.enabled
