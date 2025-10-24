@@ -395,6 +395,8 @@ system:
     value: "${system.cluster.name}-observability-edge"
   - path: "juicefs-s3-gateway.metrics.serviceMonitor.additionalLabels.release"
     value: "${system.cluster.name}-observability-edge"
+  - path: "nh-mcp-server.config.url"
+    value: "http://${system.cluster.name}-private-ai-rag-nh-mcp-server.nh-addons.svc.cluster.local:8010/mcp"
 output:
   - name: Open Web UI URL
     description: The URL to access Open WebUI

@@ -46,3 +46,6 @@ data:
   WEBUI_AUTH_TRUSTED_EMAIL_HEADER: X-Auth-Request-Email
   WEBUI_AUTH_TRUSTED_NAME_HEADER: X-Auth-Request-User
   {{- end }}
+  {{- if eq .Values.nh-mcp-server.enabled true }}
+  NH_MCP_SERVER_URL: {{ .Values.nh-mcp-server.config.url | quote }}
+  {{- end }}
