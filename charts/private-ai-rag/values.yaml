@@ -325,9 +325,13 @@ juicefs-s3-gateway:
       enabled: true
       additionalLabels:
         release: # system provided
-  juicefsConfig:
-    enabled: false
+  configMap:
     webhookEndpoint: # user provided
+  persistence:
+    enabled: true
+  sidecar:
+    enabled: true
+    keepRunning: true
 
 nh-pai-data-service:
   ingress:
