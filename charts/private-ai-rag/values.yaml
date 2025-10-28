@@ -96,6 +96,14 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: DATABASE_URL
+  copyAppData:
+    command:
+      - sh
+      - '-c'
+      - >-
+        if [ "$(ls -A /app/backend/data 2>/dev/null)" ]; then cp -r
+        /app/backend/data/* /tmp/app-data/; else echo 'No data to copy,
+        directory is empty'; fi
 private-ai-rest:
   sharedConfigMap: shared-configmap-rag
   sharedSecrets: shared-secrets-rag
