@@ -210,6 +210,15 @@ nh-rag-api:
   config:
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 65
+    periodSeconds: 60
+    timeoutSeconds: 120
+  readinessProbe:
+    failureThreshold: 3
+    periodSeconds: 30
+    timeoutSeconds: 15
 nh-rag-worker:
   enabled: false
   image:
