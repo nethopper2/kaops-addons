@@ -49,3 +49,4 @@ data:
   {{- if eq (index .Values "nh-mcp-server").enabled true }}
   NH_MCP_SERVER_URL: {{ (index .Values "nh-mcp-server").config.url | quote }}
   {{- end }}
+  NODE_ENV: {{ .Values.global.nodeEnv }}

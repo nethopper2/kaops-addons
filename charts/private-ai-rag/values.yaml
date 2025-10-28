@@ -15,6 +15,7 @@ global:
         adminPasswordKey: postgresPassword
   llmBaseUrl: http://open-webui-ollama:11434
   secretArgocdHook: Skip
+  nodeEnv: production
 dataIngestion:
   enabled: false
   config:
