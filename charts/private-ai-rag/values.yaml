@@ -44,8 +44,8 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: 0.6.25-alpha.30 # This should match the appVersion in Chart.yaml
-    pullPolicy: Always
+    tag: v0.6.33-alpha.27-slim
+    pullPolicy: IfNotPresent
   ollama:
     persistentVolume:
       enabled: true
@@ -197,7 +197,7 @@ nh-rag-api:
   enabled: false
   image:
     repository: nethopper/nh-rag-api
-    tag: "v0.0.53"
+    tag: "v0.0.90"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -214,7 +214,7 @@ nh-rag-worker:
   enabled: false
   image:
     repository: nethopper/nh-rag-worker
-    tag: "v0.0.53"
+    tag: "v0.0.90"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -261,6 +261,7 @@ redis:
       enabled: true
       size: 8Gi
       storageClass: "" # Optionally set your storage class
+    resourcesPreset: medium
   replica:
     replicaCount: 0
   metrics:
@@ -302,6 +303,11 @@ qdrant:
       enabled: true
       additionalLabels:
         release: # system provided
+  resources:
+    limits:
+      cpu: 4000m
+    requests:
+      cpu: 500m
 
 langfuse:
   enabled: false
@@ -334,6 +340,8 @@ juicefs-s3-gateway:
     keepRunning: true
 
 nh-pai-data-service:
+  image:
+    tag: 1.0.39
   ingress:
     enabled: true
     annotations:
