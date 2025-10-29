@@ -45,7 +45,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: v0.6.33-alpha.27-slim
+    tag: v0.6.33-alpha.29-slim
     pullPolicy: IfNotPresent
   ollama:
     persistentVolume:
@@ -145,6 +145,7 @@ postgresql:
       labels:
         release: # system provided
   primary:
+    resourcesPreset: medium
     initdb:
       scripts:
         01-init.sql: |
