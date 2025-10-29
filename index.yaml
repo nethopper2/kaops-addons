@@ -7497,6 +7497,85 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: v0.6.33-alpha.1
+    created: "2025-10-29T12:11:23.576413083Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 8.10.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - condition: private-ai-rest.enabled
+      name: private-ai-rest
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.22
+    - condition: gdrive-gcs-sync.enabled
+      name: gdrive-gcs-sync
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.26
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.5
+    - alias: nh-rag-worker
+      condition: nh-rag-worker.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.5
+    - alias: nh-rag-api-v2
+      condition: nh-rag-api-v2.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.5
+    - alias: nh-rag-worker-v2
+      condition: nh-rag-worker-v2.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.5
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    - condition: neo4j.enabled
+      name: neo4j
+      repository: https://neo4j.github.io/helm-charts/
+      version: 2025.6.2
+    - condition: langfuse.enabled
+      name: langfuse
+      repository: https://langfuse.github.io/langfuse-k8s
+      version: 1.3.4
+    - condition: ragflow.enabled
+      name: ragflow
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.0
+    - condition: juicefs-s3-gateway.enabled
+      name: juicefs-s3-gateway
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.29
+    - condition: nh-pai-data-service.enabled
+      name: nh-pai-data-service
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.17
+    - condition: nh-mcp-server.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.4.0
+    description: KAOPS addon to install private-ai
+    digest: 00e0473d37608969a91602fded32c105021cb9d9aede76d85e11a25ab4950794
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.378/private-ai-rag-0.1.378.tgz
+    version: 0.1.378
+  - apiVersion: v2
+    appVersion: v0.6.33-alpha.1
     created: "2025-10-28T14:59:28.632129471Z"
     dependencies:
     - condition: open-webui.enabled
@@ -21128,4 +21207,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-10-28T14:59:28.633344357Z"
+generated: "2025-10-29T12:11:23.5777187Z"
