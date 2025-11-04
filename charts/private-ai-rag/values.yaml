@@ -105,34 +105,6 @@ open-webui:
         if [ "$(ls -A /app/backend/data 2>/dev/null)" ]; then cp -r
         /app/backend/data/* /tmp/app-data/; else echo 'No data to copy,
         directory is empty'; fi
-private-ai-rest:
-  sharedConfigMap: shared-configmap-rag
-  sharedSecrets: shared-secrets-rag
-  postgresql:
-    database: private-ai-rest
-  image:
-    pullPolicy: Always
-  ingress:
-    enabled: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-      kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: "true"
-      nginx.ingress.kubernetes.io/backend-protocol: http
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/tls-acme: "true"
-    hosts:
-      - host: # system provided
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls:
-      - secretName: private-ai-rest-tls
-        hosts: # system provided
-  config:
-    postgresHost: # system provided
-    postgresSecret: # system provided
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
@@ -188,7 +160,7 @@ initdb:
       memory: 64Mi
 
 postInstall:
-  chosenPostInstallOptions: ""
+  chosenPostInstallOptions: "suggested"
 
 backups:
   enabled: false
@@ -206,7 +178,6 @@ backups:
 nh-rag-api:
   enabled: false
   image:
-    repository: nethopper/nh-rag-api
     tag: "v0.0.90"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
@@ -229,56 +200,22 @@ nh-rag-api:
     failureThreshold: 3
     periodSeconds: 30
     timeoutSeconds: 15
-nh-rag-worker:
-  enabled: false
-  image:
-    repository: nethopper/nh-rag-worker
-    tag: "v0.0.90"
-  env:
-    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
-    QDRANT_URL: # system provided
-  config:
-    juiceFsSecretName: "juicefs-s3-gateway"
-    juiceFsUrl: "" # system provided
-  livenessProbe:
-    failureThreshold: 3
-    initialDelaySeconds: 65
-    periodSeconds: 60
-    timeoutSeconds: 120
-  readinessProbe:
-    failureThreshold: 3
-    initialDelaySeconds: 30
-    periodSeconds: 60
-    timeoutSeconds: 120
-  replicaCount: 10
-nh-rag-api-v2:
-  enabled: false
-  image:
-    repository: nethopper/nh-rag-api
-    tag: "v0.0.53"
-  env:
-    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
-    QDRANT_URL: # system provided
-  metrics:
+  worker:
     enabled: true
-    serviceMonitor:
-      enabled: true
-      labels:
-        release: # system provided
-  config:
-    juiceFsSecretName: "juicefs-s3-gateway"
-    juiceFsUrl: "" # system provided
-nh-rag-worker-v2:
-  enabled: false
-  image:
-    repository: nethopper/nh-rag-worker
-    tag: "v0.0.53"
-  env:
-    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
-    QDRANT_URL: # system provided
-  config:
-    juiceFsSecretName: "juicefs-s3-gateway"
-    juiceFsUrl: "" # system provided
+    image:
+      tag: "v0.0.90"
+    livenessProbe:
+      failureThreshold: 3
+      initialDelaySeconds: 65
+      periodSeconds: 60
+      timeoutSeconds: 120
+    readinessProbe:
+      failureThreshold: 3
+      initialDelaySeconds: 30
+      periodSeconds: 60
+      timeoutSeconds: 120
+    replicaCount: 10
+
 redis:
   image:
     repository: bitnamilegacy/redis
@@ -303,29 +240,6 @@ redis:
       additionalLabels:
         release: # system provided
 
-neo4j:
-  enabled: false
-  disableLookups: true
-  auth:
-    user: neo4j
-  uri: # system provided
-  services:
-    neo4j:
-      enabled: false
-    internals:
-      enabled: true
-  neo4j:
-    name: my-standalone
-    resources:
-      cpu: "0.5"
-      memory: "2Gi"
-    passwordFromSecret: neo4j-password
-  volumes:
-    data:
-      mode: "dynamic"
-      dynamic:
-        storageClassName: premium-rwo
-
 qdrant:
   metrics:
     enabled: true
@@ -338,12 +252,6 @@ qdrant:
       cpu: 4000m
     requests:
       cpu: 500m
-
-langfuse:
-  enabled: false
-
-ragflow:
-  enabled: false
 
 juicefs-s3-gateway:
   enabled: false

@@ -39,8 +39,6 @@ data:
   ATLASSIAN_REDIRECT_URI: {{ .Values.dataIngestion.config.atlassianRedirectUrl | quote }}
   MINERAL_REDIRECT_URI: {{ .Values.dataIngestion.config.mineralRedirectUrl | quote }}
   {{- end }}
-  NEO4J_URI: {{ .Values.neo4j.uri | quote }}
-  NEO4J_USER: {{ .Values.neo4j.auth.user | quote }}
   LLM_BASE_URL: {{ .Values.global.llmBaseUrl | quote }}
   {{- if .Values.global.enableSSO }}
   WEBUI_AUTH_TRUSTED_EMAIL_HEADER: X-Auth-Request-Email

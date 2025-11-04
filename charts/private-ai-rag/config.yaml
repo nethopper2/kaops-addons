@@ -28,30 +28,8 @@ forms:
           - modelsToPull
           - awsOpenAIKeySecretRef
           - additionalHosts
-          - dependencies
         ui:
           label: Details
-      - slug: dependencies
-        variableSlugs:
-          - openWebui
-          - postgresql
-          - qdrant
-          - privateAiRest
-          - gdriveGcsSync
-          - nhRagApi
-        ui:
-          if: "$get(dependencies).value"
-          label: Dependencies
-      - slug: gDrive
-        #        isCreateOnly: true
-        variableSlugs:
-          - gDriveGoogleApplicationsCredentialsSecretRef
-          - gDriveGcsBucketName
-          - gDriveApiScopes
-          - gDriveAllowedExtensions
-        ui:
-          if: "$get(gdriveGcsSync).value !== false"
-          label: GDrive
       - slug: sso
         #        isCreateOnly: true
         variableSlugs:
@@ -156,13 +134,6 @@ variables:
       label: "Destination: GCS Bucket Name"
       help: Name of the GCS bucket sync target.
       validation: required
-  - slug: gDriveAllowedExtensions
-    path: "rag.googleAllowedExtensions"
-    forms: [default]
-    ui:
-      type: text
-      label: Allowed Extensions
-      help: Comma separated list of allowed file extensions to sync. No dots.
   - slug: gpuEnabled
     path: open-webui.ollama.ollama.gpu.enabled
     forms: [default]
@@ -170,56 +141,6 @@ variables:
       type: toggle
       label: Use GPU
       help: Install the oAuth2 Proxy Addon to use SSO.
-      value: false
-  - slug: dependencies
-    forms: [default]
-    ui:
-      type: toggle
-      label: Enable/Disable Dependencies
-      id: dependencies
-      value: false
-  - slug: openWebui
-    path: open-webui.enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: open-webui
-      value: true
-  - slug: postgresql
-    path: postgresql.enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: postgresql
-      value: true
-  - slug: qdrant
-    path: qdrant.enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: qdrant
-      value: true
-  - slug: privateAiRest
-    path: private-ai-rest.enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: private-ai-rest
-      value: true
-  - slug: gdriveGcsSync
-    path: gdrive-gcs-sync.enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: gdrive-gcs-sync
-      id: gdriveGcsSync
-      value: true
-  - slug: nhRagApi
-    path: nh-rag-api.enabled
-    forms: [default]
-    ui:
-      type: toggle
-      label: private-ai-rest
       value: false
   - slug: additionalHosts
     path: ingress.additionalHosts
@@ -347,45 +268,21 @@ variables:
 system:
   - path: "ingress.host"
     value: "chat.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "private-ai-rest.ingress.hosts[0].host"
-    value: "storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "private-ai-rest.ingress.tls[0].hosts[0]"
-    value: "storage.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "private-ai-rest.ingress.hosts[0].paths[0].path"
-    value: "/"
-  - path: "private-ai-rest.ingress.hosts[0].paths[0].pathType"
-    value: "ImplementationSpecific"
-  - path: "private-ai-rest.ingress.tls[0].secretName"
-    value: "private-ai-rest-tls"
-  - path: "private-ai-rest.config.postgresHost"
-    value: "${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local"
   - path: "rag.postgresHost"
     value: "${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local"
-  - path: "private-ai-rest.config.postgresSecret"
-    value: "${system.cluster.name}-private-ai-rag-postgresql"
   - path: "rag.googleApiScopes"
     value: "https://www.googleapis.com/auth/drive.readonly"
   - path: "rag.allowedCorsOrigin"
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}|https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "nh-rag-api.env.QDRANT_URL"
     value: "http://${system.cluster.name}-private-ai-rag-qdrant.nh-addons.svc.cluster.local:6333"
-  - path: "neo4j.uri"
-    value: "bolt://${system.cluster.name}-private-ai-rag-neo4j.nh-addons.svc.cluster.local:7687"
   - path: "juicefs-s3-gateway.secret.config.metaurl"
     value: "postgres://postgres@${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local:5432/juicefs"
   - path: "nh-pai-data-service.config.juiceFsUrl"
     value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
   - path: "nh-rag-api.config.juiceFsUrl"
     value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
-  - path: "nh-rag-worker.config.juiceFsUrl"
-    value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
-  - path: "nh-rag-worker-v2.config.juiceFsUrl"
-    value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
-  - path: "nh-rag-api-v2.config.juiceFsUrl"
-    value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
   - path: "nh-rag-api.metrics.serviceMonitor.labels.release"
-    value: "${system.cluster.name}-observability-edge"
-  - path: "nh-rag-api-v2.metrics.serviceMonitor.labels.release"
     value: "${system.cluster.name}-observability-edge"
   - path: "postgresql.metrics.serviceMonitor.labels.release"
     value: "${system.cluster.name}-observability-edge"
