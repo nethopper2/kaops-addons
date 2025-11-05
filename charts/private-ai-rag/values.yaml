@@ -45,7 +45,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: v0.6.33-alpha.29-slim
+    tag: v0.6.33-beta.1-slim
     pullPolicy: IfNotPresent
   ollama:
     persistentVolume:
@@ -178,7 +178,7 @@ backups:
 nh-rag-api:
   enabled: false
   image:
-    tag: "v0.0.90"
+    tag: "v0.0.91"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -203,7 +203,7 @@ nh-rag-api:
   worker:
     enabled: true
     image:
-      tag: "v0.0.90"
+      tag: "v0.0.91"
     livenessProbe:
       failureThreshold: 3
       initialDelaySeconds: 65
