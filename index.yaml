@@ -7497,6 +7497,50 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: v0.6.33-alpha.1
+    created: "2025-11-05T14:44:27.326757551Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 8.10.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.9
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    - condition: juicefs-s3-gateway.enabled
+      name: juicefs-s3-gateway
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.29
+    - condition: nh-pai-data-service.enabled
+      name: nh-pai-data-service
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.20
+    - condition: nh-mcp-server.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.4.0
+    description: KAOPS addon to install private-ai
+    digest: 297fd5966229c84a8116237541539c5814dc0c71f7d83e59cbd67bd354eaf914
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.385/private-ai-rag-0.1.385.tgz
+    version: 0.1.385
+  - apiVersion: v2
+    appVersion: v0.6.33-alpha.1
     created: "2025-11-05T08:40:51.942819875Z"
     dependencies:
     - condition: open-webui.enabled
@@ -21576,4 +21620,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-11-05T08:40:51.94401991Z"
+generated: "2025-11-05T14:44:27.328002075Z"
