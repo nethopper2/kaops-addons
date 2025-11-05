@@ -282,6 +282,8 @@ system:
     value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
   - path: "nh-rag-api.config.juiceFsUrl"
     value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
+  - path: "global.juiceFsUrl"
+    value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
   - path: "nh-rag-api.metrics.serviceMonitor.labels.release"
     value: "${system.cluster.name}-observability-edge"
   - path: "postgresql.metrics.serviceMonitor.labels.release"

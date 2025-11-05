@@ -48,3 +48,4 @@ data:
   NH_MCP_SERVER_URL: {{ (index .Values "nh-mcp-server").config.url | quote }}
   {{- end }}
   NODE_ENV: {{ .Values.global.nodeEnv }}
+  JUICEFS_S3_ENDPOINT: {{ .Values.global.juiceFsUrl | quote }}

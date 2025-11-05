@@ -16,6 +16,7 @@ global:
   llmBaseUrl: http://open-webui-ollama:11434
   secretArgocdHook: Skip
   nodeEnv: production
+  juiceFsUrl: # system provided
 dataIngestion:
   enabled: false
   config:
@@ -97,6 +98,21 @@ open-webui:
         secretKeyRef:
           name: shared-secrets-rag
           key: DATABASE_URL
+    - name: JUICEFS_S3_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: juicefs-s3-gateway
+          key: minio-root-user
+    - name: JUICEFS_S3_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: juicefs-s3-gateway
+          key: minio-root-password
+    - name: JUICEFS_S3_BUCKET
+      valueFrom:
+        secretKeyRef:
+          name: juicefs-s3-gateway
+          key: name
   copyAppData:
     command:
       - sh
@@ -279,7 +295,7 @@ juicefs-s3-gateway:
 
 nh-pai-data-service:
   image:
-    tag: 1.0.39
+    tag: "v1.1.0"
   ingress:
     enabled: true
     annotations:
