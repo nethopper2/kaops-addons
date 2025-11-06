@@ -194,7 +194,7 @@ backups:
 nh-rag-api:
   enabled: false
   image:
-    tag: "v0.0.91"
+    tag: "v0.0.92"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -219,7 +219,7 @@ nh-rag-api:
   worker:
     enabled: true
     image:
-      tag: "v0.0.91"
+      tag: "v0.0.92"
     livenessProbe:
       failureThreshold: 3
       initialDelaySeconds: 65
