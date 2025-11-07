@@ -46,7 +46,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: v0.6.33-beta.2-slim
+    tag: v0.6.33-beta.3-slim
     pullPolicy: IfNotPresent
   ollama:
     persistentVolume:
