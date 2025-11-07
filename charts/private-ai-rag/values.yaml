@@ -295,7 +295,7 @@ juicefs-s3-gateway:
 
 nh-pai-data-service:
   image:
-    tag: "v1.1.0"
+    tag: "v1.1.1"
   ingress:
     enabled: true
     annotations:
