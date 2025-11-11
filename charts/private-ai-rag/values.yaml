@@ -46,7 +46,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: v0.6.33-beta.3-slim
+    tag: v0.6.33-beta.5-slim
     pullPolicy: IfNotPresent
   ollama:
     persistentVolume:
@@ -116,7 +116,7 @@ open-webui:
   copyAppData:
     command:
       - sh
-      - '-c'
+      - "-c"
       - >-
         if [ "$(ls -A /app/backend/data 2>/dev/null)" ]; then cp -r
         /app/backend/data/* /tmp/app-data/; else echo 'No data to copy,
@@ -194,7 +194,7 @@ backups:
 nh-rag-api:
   enabled: false
   image:
-    tag: "v0.0.92"
+    tag: "v0.0.93"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -295,7 +295,7 @@ juicefs-s3-gateway:
 
 nh-pai-data-service:
   image:
-    tag: "v1.1.1"
+    tag: "v1.1.2"
   ingress:
     enabled: true
     annotations:
