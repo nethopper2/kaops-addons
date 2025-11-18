@@ -1,0 +1,11 @@
+# Ref: https://github.com/DandyDeveloper/charts/blob/master/charts/redis-ha/values.yaml
+redis-ha:
+  # -- Enables the Redis HA subchart
+  enabled: true
+  ## Prometheus redis-exporter sidecar
+  exporter:
+    # -- Enable Prometheus redis-exporter sidecar
+    enabled: true
+  persistentVolume:
+    # -- Configures persistence on Redis nodes
+    enabled: true

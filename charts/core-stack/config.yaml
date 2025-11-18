@@ -1,0 +1,30 @@
+metadata:
+  slug: 'core-stack'
+  name: 'Core Stack for Private AI'
+  description: 'Nethopper core stack for Private AI'
+  categories: ['Artificial Intelligence']
+  logoUrlDark: 'https://nh-addons.s3.us-east-1.amazonaws.com/core-stack/logo.png'
+  logoUrlLight: 'https://nh-addons.s3.us-east-1.amazonaws.com/core-stack/logo.png'
+  detailUrl: 'https://addons.kaops.net/ingresswarden/'
+  externalUrl: 'https://kubernetes.github.io/ingress-nginx/how-it-works/'
+  isProduction: true
+  isStaging: false
+  useSafeDelete: true
+  serverSideDiff: true
+  installTargets:
+    hub: true
+    hubRequired: false
+    edge: false
+
+forms: 
+  - slug: default
+    label: 'Core Stack'
+    description: 'Core Stack for Private AI configuration'
+variables:
+  - slug: 'redis-ha'
+    path: 'redis-ha.enabled'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Redis'
+      value: true
