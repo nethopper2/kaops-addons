@@ -1498,6 +1498,21 @@ entries:
   core-stack:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-11-19T10:26:37.96983054Z"
+    dependencies:
+    - condition: redis-ha.enabled
+      name: redis-ha
+      repository: https://dandydeveloper.github.io/charts/
+      version: 4.35.2
+    description: A Helm chart for Kubernetes
+    digest: 95dada0889e807085eba44b91c0de187e0c69b346fdb59335e039a1e8c5abb0f
+    name: core-stack
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/core-stack-0.1.1/core-stack-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-11-18T12:59:29.732769477Z"
     dependencies:
     - condition: redis-ha.enabled
@@ -21988,4 +22003,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-11-18T12:59:29.733832073Z"
+generated: "2025-11-19T10:26:37.971413101Z"
