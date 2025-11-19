@@ -9,3 +9,15 @@ redis-ha:
   persistentVolume:
     # -- Configures persistence on Redis nodes
     enabled: true
+  # -- Whether the Redis server pods should be forced to run on separate nodes.
+  hardAntiAffinity: true
+  # -- CPU/Memory for master/slave nodes resource requests/limits
+  resources:
+    requests:
+      cpu: 500m
+      ephemeral-storage: 50Mi
+      memory: 1Gi
+    limits:
+      cpu: 750m
+      ephemeral-storage: 2Gi
+      memory: 1536Mi
