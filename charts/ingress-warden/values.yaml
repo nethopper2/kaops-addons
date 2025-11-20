@@ -8,6 +8,7 @@ ingress-nginx:
     service:
       annotations:
         service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+        service.beta.kubernetes.io/aws-load-balancer-target-type: "ip"
       external: 
         enabled: true
       internal:
