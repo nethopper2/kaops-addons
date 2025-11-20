@@ -6,6 +6,8 @@ ingress-nginx:
     admissionWebhooks:
       enabled: false
     service:
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
       external: 
         enabled: true
       internal:
