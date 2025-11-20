@@ -3382,6 +3382,26 @@ entries:
   ingress-warden:
   - apiVersion: v2
     appVersion: 4.12.0
+    created: "2025-11-20T20:38:30.30612714Z"
+    dependencies:
+    - condition: ingress-nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.12.0
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.17.1
+    description: A Helm chart for Kubernetes to install NGINX Ingress Controller and
+      Cert-Manager
+    digest: f066a9479d2fc4c15ecdac11b4d37461894cc977d8c5c5e8a1bb7e096ba1f355
+    name: ingress-warden
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/ingress-warden-0.1.12/ingress-warden-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
+    appVersion: 4.12.0
     created: "2025-11-20T20:16:55.650256587Z"
     dependencies:
     - condition: ingress-nginx.enabled
@@ -22137,4 +22157,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-11-20T20:16:55.652181836Z"
+generated: "2025-11-20T20:38:30.307136105Z"
