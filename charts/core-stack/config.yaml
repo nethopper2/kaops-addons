@@ -28,3 +28,7 @@ variables:
       type: 'toggle'
       label: 'Redis'
       value: true
+
+system:
+  - path: "redis-ha.exporter.serviceMonitor.labels.release"
+    value: "${system.cluster.name}-observability-edge"

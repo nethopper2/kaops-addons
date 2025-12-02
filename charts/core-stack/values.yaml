@@ -6,6 +6,10 @@ redis-ha:
   exporter:
     # -- Enable Prometheus redis-exporter sidecar
     enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
   persistentVolume:
     # -- Configures persistence on Redis nodes
     enabled: true
