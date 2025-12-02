@@ -16,6 +16,7 @@ yarn-error.log*
 
 # global
 **/.env
+envs/
 
 # Local test values files
 # These files are used for local testing and should not be committed to the repository.
