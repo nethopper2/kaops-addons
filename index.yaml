@@ -7693,6 +7693,50 @@ entries:
   private-ai-rag:
   - apiVersion: v2
     appVersion: v1.99.0
+    created: "2025-12-08T10:33:55.205037808Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 8.10.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.9
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    - condition: juicefs-s3-gateway.enabled
+      name: juicefs-s3-gateway
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.29
+    - condition: nh-pai-data-service.enabled
+      name: nh-pai-data-service
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.20
+    - condition: nh-mcp-server.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.5.0
+    description: KAOPS addon to install private-ai
+    digest: 0dca244aef96bf91ebd0f823cb9916b61808a4ab21470f93ac7b88e74d9e5c2d
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-1.99.2/private-ai-rag-1.99.2.tgz
+    version: 1.99.2
+  - apiVersion: v2
+    appVersion: v1.99.0
     created: "2025-12-04T09:51:35.089899933Z"
     dependencies:
     - condition: open-webui.enabled
@@ -22344,4 +22388,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2025-12-04T09:51:35.091749472Z"
+generated: "2025-12-08T10:33:55.206339115Z"
