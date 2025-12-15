@@ -296,6 +296,8 @@ system:
     value: "${system.cluster.name}-observability-edge"
   - path: "nh-mcp-server.config.url"
     value: "http://${system.cluster.name}-private-ai-rag-nh-mcp-server.nh-addons.svc.cluster.local:8010/mcp"
+  - path: "data-ingestion.config.serviceUrl"
+    value: "http://${system.cluster.name}-private-ai-rag-nh-data-ingestion-api.nh-addons.svc.cluster.local:8000"
 output:
   - name: Open Web UI URL
     description: The URL to access Open WebUI

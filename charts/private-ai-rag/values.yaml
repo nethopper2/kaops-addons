@@ -7,6 +7,7 @@ global:
   extraEnvVarsSecret: shared-secrets-rag
   googleApplicationCredentialsSecretRef: # user provided
   awsOpenAIKeySecretRef: # user provided
+  sendgridSecretRef: "sendgrid-secret" 
   postgresql:
     auth:
       username: postgres
@@ -23,6 +24,7 @@ dataIngestion:
     dataSourcesUrl:
     overideWebSocketUrl:
     dataIngestionCredentialsRef:
+    serviceUrl: # system provided
 ingress:
   enabled: true
   ignoreSSL: false
@@ -319,6 +321,10 @@ nh-pai-data-service:
     postgresDatabase: "pai-data-rest-service"
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
+    feedbackEmail:
+      enabled: "true"
+      recipients: "feedback@nethopper.io"
+      customerName: "Not Provided!" # user provided
   autoRunMigrations: "true"
   livenessProbe:
     failureThreshold: 3

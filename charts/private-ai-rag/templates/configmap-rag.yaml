@@ -41,6 +41,7 @@ data:
   GITHUB_REDIRECT_URI: {{ .Values.dataIngestion.config.githubRedirectUrl | quote }}
   HUBSPOT_REDIRECT_URI: {{ .Values.dataIngestion.config.hubspotRedirectUrl | quote }}
   SALESFORCE_REDIRECT_URI: {{ .Values.dataIngestion.config.salesforceRedirectUrl | quote }}
+  NH_DATA_INGESTION_MS_URL: {{ .Values.dataIngestion.config.serviceUrl | quote }}
   {{- end }}
   LLM_BASE_URL: {{ .Values.global.llmBaseUrl | quote }}
   {{- if .Values.global.enableSSO }}
