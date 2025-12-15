@@ -59,6 +59,6 @@ dependencies:
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-mcp-server.enabled
   - name: nh-data-ingestion
-    version: 0.1.0
+    version: 0.1.1
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-data-ingestion.enabled

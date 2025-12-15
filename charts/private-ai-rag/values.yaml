@@ -7,7 +7,7 @@ global:
   extraEnvVarsSecret: shared-secrets-rag
   googleApplicationCredentialsSecretRef: # user provided
   awsOpenAIKeySecretRef: # user provided
-  sendgridSecretRef: "sendgrid-secret" 
+  sendgridSecretRef: "sendgrid-secret"
   postgresql:
     auth:
       username: postgres
@@ -354,4 +354,4 @@ nh-mcp-server:
 nh-data-ingestion:
   enabled: true
   image:
-    tag: "v1.100.0-alpha.5"
+    tag: "v1.100.0-alpha.6"
