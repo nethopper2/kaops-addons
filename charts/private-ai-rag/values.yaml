@@ -344,3 +344,8 @@ nh-mcp-server:
   enabled: true
   image:
     tag: "v1.99.0"
+
+nh-data-ingestion:
+  enabled: true
+  image:
+    tag: "v1.100.0-alpha.5"
