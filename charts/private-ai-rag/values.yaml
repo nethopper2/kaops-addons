@@ -48,7 +48,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: "v1.99.1-slim"
+    tag: "v1.100.0-slim"
     pullPolicy: IfNotPresent
   ollama:
     persistentVolume:
@@ -196,7 +196,7 @@ backups:
 nh-rag-api:
   enabled: false
   image:
-    tag: "v1.99.0"
+    tag: "v1.100.0"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -221,7 +221,7 @@ nh-rag-api:
   worker:
     enabled: true
     image:
-      tag: "v1.99.0"
+      tag: "v1.100.0"
     livenessProbe:
       failureThreshold: 3
       initialDelaySeconds: 65
@@ -297,7 +297,7 @@ juicefs-s3-gateway:
 
 nh-pai-data-service:
   image:
-    tag: "v1.99.0"
+    tag: "v1.100.0"
   ingress:
     enabled: true
     annotations:
@@ -350,9 +350,9 @@ nh-pai-data-service:
 nh-mcp-server:
   enabled: true
   image:
-    tag: "v1.99.0"
+    tag: "v1.100.0"
 
 nh-data-ingestion:
   enabled: true
   image:
-    tag: "v1.100.0-alpha.6"
+    tag: "v1.100.0"
