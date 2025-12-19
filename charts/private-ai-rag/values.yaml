@@ -354,5 +354,15 @@ nh-mcp-server:
 
 nh-data-ingestion:
   enabled: true
-  image:
-    tag: "v1.100.0"
+  api:
+    image:
+      tag: "v1.100.0"
+  flower:
+    image:
+      tag: "v1.100.0"
+  scheduler:
+    image:
+      tag: "v1.100.0"
+  worker:
+    image:
+      tag: "v1.100.0"
