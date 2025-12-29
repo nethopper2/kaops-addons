@@ -294,6 +294,8 @@ juicefs-s3-gateway:
   sidecar:
     enabled: true
     keepRunning: true
+  fuse:
+    enabled: true
 
 nh-pai-data-service:
   image:
