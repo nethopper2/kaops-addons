@@ -368,3 +368,37 @@ nh-data-ingestion:
   worker:
     image:
       tag: "v1.100.0"
+
+heartbeatMonitoring:
+  enabled: false  # Disabled by default
+  schedule: "* * * * *"  # Every minute
+  
+  image:
+    repository: curlimages/curl
+    tag: "8.5.0"
+  
+  # Health check settings
+  timeout: 10  # seconds for health check
+  retries: 3   # number of retry attempts
+  retryDelay: 5  # seconds between retries
+  
+  # Built-in services (URLs auto-resolved from release name)
+  builtInServices:
+    openWebui:
+      enabled: true
+      healthPath: "/health"
+      heartbeatUrl: ""  # UptimeRobot heartbeat URL
+    dataService:
+      enabled: true
+      healthPath: "/health"
+      heartbeatUrl: ""  # UptimeRobot heartbeat URL
+  
+  # Additional services to monitor
+  services: []
+  # - name: my-custom-service
+  #   url: "http://my-service:8080"
+  #   healthPath: "/health"
+  #   heartbeatUrl: "https://heartbeat.uptimerobot.com/xxx"
+  
+  # Optional: reference external secret for heartbeat URLs (overrides inline values)
+  externalSecretRef: ""

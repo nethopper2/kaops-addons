@@ -1,0 +1,163 @@
+{{- if .Values.heartbeatMonitoring.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "private-ai.fullname" . }}-heartbeat
+  labels:
+    {{- include "private-ai.labels" . | nindent 4 }}
+    app.kubernetes.io/component: heartbeat-monitoring
+spec:
+  schedule: {{ .Values.heartbeatMonitoring.schedule | default "*/5 * * * *" | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            {{- include "private-ai.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: heartbeat-monitoring
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: heartbeat
+            image: "{{ .Values.heartbeatMonitoring.image.repository }}:{{ .Values.heartbeatMonitoring.image.tag }}"
+            imagePullPolicy: IfNotPresent
+            env:
+            # Configuration
+            - name: TIMEOUT
+              value: {{ .Values.heartbeatMonitoring.timeout | default 10 | quote }}
+            - name: RETRIES
+              value: {{ .Values.heartbeatMonitoring.retries | default 3 | quote }}
+            - name: RETRY_DELAY
+              value: {{ .Values.heartbeatMonitoring.retryDelay | default 5 | quote }}
+            # Built-in services - URLs constructed from ingress hosts
+            {{- if .Values.heartbeatMonitoring.builtInServices.openWebui.enabled }}
+            - name: OPEN_WEBUI_URL
+              value: "https://{{ .Values.ingress.host }}{{ .Values.heartbeatMonitoring.builtInServices.openWebui.healthPath | default "/health" }}"
+            - name: OPEN_WEBUI_HEARTBEAT_URL
+              value: {{ .Values.heartbeatMonitoring.builtInServices.openWebui.heartbeatUrl | quote }}
+            {{- end }}
+            {{- if .Values.heartbeatMonitoring.builtInServices.dataService.enabled }}
+            - name: DATA_SERVICE_URL
+              value: "https://{{ index .Values "nh-pai-data-service" "ingress" "hosts" 0 "host" }}{{ .Values.heartbeatMonitoring.builtInServices.dataService.healthPath | default "/health" }}"
+            - name: DATA_SERVICE_HEARTBEAT_URL
+              value: {{ .Values.heartbeatMonitoring.builtInServices.dataService.heartbeatUrl | quote }}
+            {{- end }}
+            # Additional services from values
+            {{- range $i, $svc := .Values.heartbeatMonitoring.services }}
+            - name: SERVICE_{{ $i }}_NAME
+              value: {{ $svc.name | quote }}
+            - name: SERVICE_{{ $i }}_URL
+              value: "{{ $svc.url }}{{ $svc.healthPath }}"
+            - name: SERVICE_{{ $i }}_HEARTBEAT_URL
+              value: {{ $svc.heartbeatUrl | quote }}
+            {{- end }}
+            - name: ADDITIONAL_SERVICES_COUNT
+              value: {{ len .Values.heartbeatMonitoring.services | quote }}
+            {{- if .Values.heartbeatMonitoring.externalSecretRef }}
+            envFrom:
+            - secretRef:
+                name: {{ .Values.heartbeatMonitoring.externalSecretRef }}
+            {{- end }}
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+              #!/bin/sh
+              
+              # Function to check service health and send heartbeat
+              check_service() {
+                local name="$1"
+                local url="$2"
+                local heartbeat_url="$3"
+                
+                echo "=============================================="
+                echo "Checking service: $name"
+                echo "Health URL: $url"
+                echo "----------------------------------------------"
+                
+                # Skip if URL is empty
+                if [ -z "$url" ] || [ "$url" = "/" ]; then
+                  echo "[SKIP] Service $name - URL not configured"
+                  return 0
+                fi
+                
+                local healthy=false
+                local attempt=1
+                
+                while [ $attempt -le $RETRIES ]; do
+                  echo "Attempt $attempt/$RETRIES..."
+                  
+                  if curl -sf "$url" --max-time "$TIMEOUT" -o /dev/null 2>/dev/null; then
+                    healthy=true
+                    echo "[OK] Health check passed on attempt $attempt"
+                    break
+                  else
+                    echo "[WARN] Health check failed on attempt $attempt"
+                  fi
+                  
+                  if [ $attempt -lt $RETRIES ]; then
+                    echo "Waiting ${RETRY_DELAY}s before retry..."
+                    sleep "$RETRY_DELAY"
+                  fi
+                  
+                  attempt=$((attempt + 1))
+                done
+                
+                if [ "$healthy" = "true" ]; then
+                  if [ -n "$heartbeat_url" ]; then
+                    echo "Sending heartbeat to UptimeRobot..."
+                    if curl -sf "$heartbeat_url" --max-time 30 -o /dev/null 2>/dev/null; then
+                      echo "[OK] Heartbeat sent successfully for $name"
+                    else
+                      echo "[ERROR] Failed to send heartbeat for $name"
+                    fi
+                  else
+                    echo "[SKIP] No heartbeat URL configured for $name"
+                  fi
+                else
+                  echo "[ALERT] Service $name is UNHEALTHY - heartbeat NOT sent"
+                  echo "UptimeRobot will trigger an alert after missing heartbeats"
+                fi
+                
+                echo ""
+              }
+              
+              echo "========================================"
+              echo "Starting Heartbeat Monitoring Job"
+              echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+              echo "Timeout: ${TIMEOUT}s | Retries: ${RETRIES} | Retry Delay: ${RETRY_DELAY}s"
+              echo "========================================"
+              echo ""
+              
+              # Check built-in services
+              {{- if .Values.heartbeatMonitoring.builtInServices.openWebui.enabled }}
+              check_service "open-webui" "$OPEN_WEBUI_URL" "$OPEN_WEBUI_HEARTBEAT_URL"
+              {{- end }}
+              
+              {{- if .Values.heartbeatMonitoring.builtInServices.dataService.enabled }}
+              check_service "data-service" "$DATA_SERVICE_URL" "$DATA_SERVICE_HEARTBEAT_URL"
+              {{- end }}
+              
+              # Check additional services
+              {{- range $i, $svc := .Values.heartbeatMonitoring.services }}
+              check_service "$SERVICE_{{ $i }}_NAME" "$SERVICE_{{ $i }}_URL" "$SERVICE_{{ $i }}_HEARTBEAT_URL"
+              {{- end }}
+              
+              echo "========================================"
+              echo "Heartbeat Monitoring Job Completed"
+              echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+              echo "========================================"
+              
+              # Always exit 0 to prevent job failures from blocking future runs
+              exit 0
+            resources:
+              requests:
+                cpu: 10m
+                memory: 16Mi
+              limits:
+                cpu: 100m
+                memory: 64Mi
+{{- end }}
