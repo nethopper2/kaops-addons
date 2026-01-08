@@ -33,6 +33,8 @@ spec:
               value: {{ .Values.heartbeatMonitoring.retries | default 3 | quote }}
             - name: RETRY_DELAY
               value: {{ .Values.heartbeatMonitoring.retryDelay | default 5 | quote }}
+            - name: INSECURE_SKIP_VERIFY
+              value: {{ .Values.heartbeatMonitoring.insecureSkipVerify | default false | quote }}
             # Built-in services - URLs constructed from ingress hosts
             {{- if .Values.heartbeatMonitoring.builtInServices.openWebui.enabled }}
             - name: OPEN_WEBUI_URL
@@ -67,6 +69,13 @@ spec:
             - |
               #!/bin/sh
               
+              # Set curl insecure flag based on INSECURE_SKIP_VERIFY
+              CURL_INSECURE_FLAG=""
+              if [ "$INSECURE_SKIP_VERIFY" = "true" ]; then
+                CURL_INSECURE_FLAG="-k"
+                echo "[CONFIG] SSL certificate verification is DISABLED"
+              fi
+              
               # Function to check service health and send heartbeat
               check_service() {
                 local name="$1"
@@ -90,7 +99,7 @@ spec:
                 while [ $attempt -le $RETRIES ]; do
                   echo "Attempt $attempt/$RETRIES..."
                   
-                  if curl -sf "$url" --max-time "$TIMEOUT" -o /dev/null 2>/dev/null; then
+                  if curl -sf $CURL_INSECURE_FLAG "$url" --max-time "$TIMEOUT" -o /dev/null 2>/dev/null; then
                     healthy=true
                     echo "[OK] Health check passed on attempt $attempt"
                     break
@@ -109,7 +118,7 @@ spec:
                 if [ "$healthy" = "true" ]; then
                   if [ -n "$heartbeat_url" ]; then
                     echo "Sending heartbeat to UptimeRobot..."
-                    if curl -sf "$heartbeat_url" --max-time 30 -o /dev/null 2>/dev/null; then
+                    if curl -sf $CURL_INSECURE_FLAG "$heartbeat_url" --max-time 30 -o /dev/null 2>/dev/null; then
                       echo "[OK] Heartbeat sent successfully for $name"
                     else
                       echo "[ERROR] Failed to send heartbeat for $name"

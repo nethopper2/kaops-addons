@@ -381,6 +381,7 @@ heartbeatMonitoring:
   timeout: 10  # seconds for health check
   retries: 3   # number of retry attempts
   retryDelay: 5  # seconds between retries
+  insecureSkipVerify: false  # Set to true to ignore SSL certificate validation for all service health checks
   
   # Built-in services (URLs auto-resolved from release name)
   builtInServices:
