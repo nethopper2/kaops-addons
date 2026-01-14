@@ -358,16 +358,16 @@ nh-data-ingestion:
   enabled: true
   api:
     image:
-      tag: "v1.101.0"
+      tag: "v1.101.1"
   flower:
     image:
-      tag: "v1.101.0"
+      tag: "v1.101.1"
   scheduler:
     image:
-      tag: "v1.101.0"
+      tag: "v1.101.1"
   worker:
     image:
-      tag: "v1.101.0"
+      tag: "v1.101.1"
 
 heartbeatMonitoring:
   enabled: false  # Disabled by default
