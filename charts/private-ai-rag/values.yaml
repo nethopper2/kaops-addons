@@ -352,7 +352,7 @@ nh-pai-data-service:
 nh-mcp-server:
   enabled: true
   image:
-    tag: "v1.101.0"
+    tag: "v1.101.1"
 
 nh-data-ingestion:
   enabled: true
