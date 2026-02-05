@@ -209,6 +209,8 @@ nh-rag-api:
   config:
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
+    logLlmDebug: false
+    enableDevModelOverrides: false
   livenessProbe:
     failureThreshold: 3
     initialDelaySeconds: 65
