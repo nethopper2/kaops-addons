@@ -200,6 +200,8 @@ nh-rag-api:
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+    BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-5-20250929-v1:0
+    BEDROCK_MODEL_PROVIDER: anthropic
   metrics:
     enabled: true
     serviceMonitor:
