@@ -301,6 +301,11 @@ juicefs-s3-gateway:
     keepRunning: true
   fuse:
     enabled: true
+    securityContext:
+      privileged: true
+      runAsUser: 0
+      runAsGroup: 0
+      runAsNonRoot: false
 
 nh-pai-data-service:
   image:
