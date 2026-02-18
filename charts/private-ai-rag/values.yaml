@@ -19,6 +19,7 @@ global:
   nodeEnv: production
   juiceFsUrl: # system provided
   jiraSelfHosted: false
+  confluenceSelfHosted: false
 dataIngestion:
   enabled: false
   config:
@@ -362,7 +363,7 @@ nh-pai-data-service:
 nh-mcp-server:
   enabled: true
   image:
-    tag: "v1.104.0"
+    tag: "v1.104.1"
 
 nh-data-ingestion:
   enabled: true

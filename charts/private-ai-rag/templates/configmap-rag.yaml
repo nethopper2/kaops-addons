@@ -54,3 +54,4 @@ data:
   NODE_ENV: {{ .Values.global.nodeEnv }}
   JUICEFS_S3_ENDPOINT: {{ .Values.global.juiceFsUrl | quote }}
   JIRA_SELF_HOSTED: {{ .Values.global.jiraSelfHosted | default false | quote }}
+  CONFLUENCE_SELF_HOSTED: {{ .Values.global.confluenceSelfHosted | default false | quote }}
