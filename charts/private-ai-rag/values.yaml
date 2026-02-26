@@ -363,7 +363,7 @@ nh-pai-data-service:
 nh-mcp-server:
   enabled: true
   image:
-    tag: "v1.105.0"
+    tag: "v1.105.1"
 
 nh-data-ingestion:
   enabled: true
