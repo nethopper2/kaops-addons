@@ -50,7 +50,7 @@ ingress:
 open-webui:
   image:
     repository: nethopper/kaops-open-webui
-    tag: "v1.105.0-slim"
+    tag: "v1.105.1-slim"
     pullPolicy: IfNotPresent
   ollama:
     persistentVolume:
@@ -369,16 +369,16 @@ nh-data-ingestion:
   enabled: true
   api:
     image:
-      tag: "v1.105.1"
+      tag: "v1.105.2"
   flower:
     image:
-      tag: "v1.105.1"
+      tag: "v1.105.2"
   scheduler:
     image:
-      tag: "v1.105.1"
+      tag: "v1.105.2"
   worker:
     image:
-      tag: "v1.105.1"
+      tag: "v1.105.2"
 
 heartbeatMonitoring:
   enabled: false  # Disabled by default
