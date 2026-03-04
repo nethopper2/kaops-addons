@@ -36,6 +36,8 @@ ingress:
   oauth2Proxy:
     enabled: true
     adminEmail: "admin@nethopper.io"
+    skipAuthPaths:
+      - /api
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/tls-acme: "true"
