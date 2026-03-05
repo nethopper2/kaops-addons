@@ -37,7 +37,8 @@ ingress:
     enabled: true
     adminEmail: "admin@nethopper.io"
     skipAuthPaths:
-      - /api
+      - /api/v1/models
+      - /api/v1/chat/completions
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/tls-acme: "true"
