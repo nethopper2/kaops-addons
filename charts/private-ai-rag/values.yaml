@@ -421,8 +421,6 @@ heartbeatMonitoring:
       operator: "Equal"
       value: "true"
       effect: "NoSchedule"
-  nodeSelector:
-    nvidia.com/gpu: "true"
 
   # Optional: reference external secret for heartbeat URLs (overrides inline values)
   externalSecretRef: ""
