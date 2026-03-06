@@ -21,6 +21,14 @@ spec:
             app.kubernetes.io/component: heartbeat-monitoring
         spec:
           restartPolicy: Never
+          {{- with .Values.heartbeatMonitoring.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.heartbeatMonitoring.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
           - name: heartbeat
             image: "{{ .Values.heartbeatMonitoring.image.repository }}:{{ .Values.heartbeatMonitoring.image.tag }}"
