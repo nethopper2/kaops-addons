@@ -307,9 +307,11 @@ juicefs-s3-gateway:
     enabled: true
     securityContext:
       privileged: true
-      runAsUser: 0
       runAsGroup: 0
       runAsNonRoot: false
+      runAsUser: 0
+      seccompProfile:
+        type: Unconfined
 
 nh-pai-data-service:
   image:
