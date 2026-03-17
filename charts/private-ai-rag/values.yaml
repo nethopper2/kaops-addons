@@ -51,11 +51,25 @@ ingress:
   tls:
     - hosts:
 open-webui:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 768Mi
+    limits:
+      cpu: 500m
+      memory: 1536Mi
   image:
     repository: nethopper/kaops-open-webui
     tag: "v1.106.0-slim"
     pullPolicy: IfNotPresent
   ollama:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 4000m
+        memory: 8Gi
     persistentVolume:
       enabled: true
     ollama:
@@ -65,6 +79,14 @@ open-webui:
         pull: []
     service:
       type: ClusterIP
+  pipelines:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
   extraEnvFrom:
     - configMapRef:
         name: shared-configmap-rag
@@ -140,7 +162,14 @@ postgresql:
       labels:
         release: # system provided
   primary:
-    resourcesPreset: medium
+    resourcesPreset: none
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 2Gi
     initdb:
       scripts:
         01-init.sql: |
@@ -200,6 +229,13 @@ backups:
 
 nh-rag-api:
   enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1536Mi
+    limits:
+      cpu: 1000m
+      memory: 3Gi
   image:
     tag: "v1.106.1"
   env:
@@ -229,6 +265,13 @@ nh-rag-api:
     timeoutSeconds: 15
   worker:
     enabled: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
     image:
       tag: "v1.106.1"
     livenessProbe:
@@ -255,7 +298,14 @@ redis:
       enabled: true
       size: 8Gi
       storageClass: "" # Optionally set your storage class
-    resourcesPreset: medium
+    resourcesPreset: none
+    resources:
+      requests:
+        cpu: 100m
+        memory: 5Gi
+      limits:
+        cpu: 500m
+        memory: 6Gi
   replica:
     replicaCount: 0
   metrics:
@@ -275,13 +325,22 @@ qdrant:
       additionalLabels:
         release: # system provided
   resources:
-    limits:
-      cpu: 4000m
     requests:
       cpu: 500m
+      memory: 16Gi
+    limits:
+      cpu: 4000m
+      memory: 20Gi
 
 juicefs-s3-gateway:
   enabled: false
+  resources:
+    requests:
+      cpu: 200m
+      memory: 768Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
   secret:
     name: "juicefs-s3-gateway"
     create: true
@@ -303,8 +362,22 @@ juicefs-s3-gateway:
   sidecar:
     enabled: true
     keepRunning: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
   fuse:
     enabled: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
     securityContext:
       privileged: true
       runAsGroup: 0
@@ -314,6 +387,13 @@ juicefs-s3-gateway:
         type: Unconfined
 
 nh-pai-data-service:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
   image:
     tag: "v1.106.0"
   ingress:
@@ -364,24 +444,66 @@ nh-pai-data-service:
     timeoutSeconds: 10
   worker:
     enabled: false
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
 
 nh-mcp-server:
   enabled: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 192Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
   image:
     tag: "v1.106.1"
 
 nh-data-ingestion:
   enabled: true
   api:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 512Mi
     image:
       tag: "v1.106.0"
   flower:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 192Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
     image:
       tag: "v1.106.0"
   scheduler:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
     image:
       tag: "v1.106.0"
   worker:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 1Gi
+      limits:
+        cpu: 500m
+        memory: 3Gi
     image:
       tag: "v1.106.0"
 
