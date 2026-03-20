@@ -264,27 +264,8 @@ nh-rag-api:
     periodSeconds: 30
     timeoutSeconds: 15
   worker:
-    enabled: true
-    resources:
-      requests:
-        cpu: 50m
-        memory: 512Mi
-      limits:
-        cpu: 500m
-        memory: 1Gi
-    image:
-      tag: "v1.106.1"
-    livenessProbe:
-      failureThreshold: 3
-      initialDelaySeconds: 65
-      periodSeconds: 60
-      timeoutSeconds: 120
-    readinessProbe:
-      failureThreshold: 3
-      initialDelaySeconds: 30
-      periodSeconds: 60
-      timeoutSeconds: 120
-    replicaCount: 10
+    enabled: false
+
 
 redis:
   image:
@@ -369,6 +350,7 @@ juicefs-s3-gateway:
       limits:
         cpu: 100m
         memory: 128Mi
+    mcCommands: []
   fuse:
     enabled: true
     resources:
@@ -504,6 +486,16 @@ nh-data-ingestion:
       limits:
         cpu: 500m
         memory: 3Gi
+    image:
+      tag: "v1.106.0"
+  embedWorker:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
     image:
       tag: "v1.106.0"
 
