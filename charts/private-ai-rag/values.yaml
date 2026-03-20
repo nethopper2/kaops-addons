@@ -498,6 +498,11 @@ nh-data-ingestion:
         memory: 1Gi
     image:
       tag: "v1.106.0"
+    env:
+      LLAMAINDEX_OLLAMA_BASE_URL: "http://open-webui-ollama:11434"
+      OPEN_WEBUI_URL: "http://open-webui"
+      QDRANT_URL: # system provided
+      QDRANT_COLLECTION: # user provided
 
 heartbeatMonitoring:
   enabled: false  # Disabled by default

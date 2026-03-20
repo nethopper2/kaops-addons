@@ -298,6 +298,8 @@ system:
     value: "http://${system.cluster.name}-private-ai-rag-nh-mcp-server.nh-addons.svc.cluster.local:8010/mcp"
   - path: "dataIngestion.config.serviceUrl"
     value: "http://${system.cluster.name}-private-ai-rag-nh-data-ingestion-api.nh-addons.svc.cluster.local:8000"
+  - path: "nh-data-ingestion.embedWorker.env.QDRANT_URL"
+    value: "http://${system.cluster.name}-private-ai-rag-qdrant.nh-addons.svc.cluster.local:6333"
 output:
   - name: Open Web UI URL
     description: The URL to access Open WebUI
