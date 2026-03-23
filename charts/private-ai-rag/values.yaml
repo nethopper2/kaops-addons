@@ -449,6 +449,8 @@ nh-mcp-server:
 nh-data-ingestion:
   enabled: true
   api:
+    env:
+      LLAMAINDEX_OLLAMA_BASE_URL: "http://open-webui-ollama:11434"
     resources:
       requests:
         cpu: 10m
