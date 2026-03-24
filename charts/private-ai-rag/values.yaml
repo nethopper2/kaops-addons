@@ -82,6 +82,7 @@ open-webui:
     service:
       type: ClusterIP
   pipelines:
+    fullnameOverride: "open-webui-pipelines"
     resources:
       requests:
         cpu: 10m
