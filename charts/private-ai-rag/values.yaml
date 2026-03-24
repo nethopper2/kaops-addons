@@ -51,6 +51,7 @@ ingress:
   tls:
     - hosts:
 open-webui:
+  fullnameOverride: "open-webui"
   resources:
     requests:
       cpu: 50m
@@ -63,6 +64,7 @@ open-webui:
     tag: "v1.106.0-slim"
     pullPolicy: IfNotPresent
   ollama:
+    fullnameOverride: "open-webui-ollama"
     resources:
       requests:
         cpu: 100m

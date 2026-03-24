@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.107.1-alpha.6
+version: 1.107.1-alpha.7
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -26,7 +26,7 @@ appVersion: "v1.106.0"
 
 dependencies:
   - name: open-webui
-    version: 8.10.0
+    version: 12.10.0
     repository: https://helm.openwebui.com/
     condition: open-webui.enabled
   - name: postgresql
