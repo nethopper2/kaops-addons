@@ -499,8 +499,8 @@ nh-data-ingestion:
         cpu: 50m
         memory: 512Mi
       limits:
-        cpu: 500m
-        memory: 1Gi
+        cpu: 1000m
+        memory: 2Gi
     image:
       tag: "v1.106.0"
     env:
