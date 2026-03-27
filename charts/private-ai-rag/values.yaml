@@ -181,7 +181,7 @@ postgresql:
           CREATE DATABASE "private-ai-rest" WITH OWNER postgres;
           CREATE DATABASE "juicefs" WITH OWNER postgres;
 rag:
-  allowedExtensions: "pdf,docx,xlsx,pptx,txt,json,md"
+  allowedExtensions: "pdf,docx,xlsx,pptx,txt,json,md,csv,html"
   custom:
     {}
     # logo: # user provided
