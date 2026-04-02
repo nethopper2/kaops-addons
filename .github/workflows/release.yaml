@@ -26,6 +26,45 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check if private-ai-rag chart changed
+        id: chart-check
+        run: |
+          if git diff HEAD~1 --name-only | grep -q "charts/private-ai-rag/"; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "private-ai-rag chart has changes — will copy pipelines"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "private-ai-rag chart unchanged — skipping pipeline copy"
+          fi
+
+      - name: Determine pipelines source branch
+        if: steps.chart-check.outputs.changed == 'true'
+        id: pipelines-branch
+        run: |
+          VERSION=$(grep '^version:' charts/private-ai-rag/Chart.yaml | awk '{print $2}' | tr -d '"'"'"')
+          if [[ "$VERSION" == *-alpha* ]]; then REF="dev"
+          elif [[ "$VERSION" == *-beta* ]]; then REF="stage"
+          else REF="main"; fi
+          echo "ref=$REF" >> "$GITHUB_OUTPUT"
+          echo "Chart version: $VERSION → Branch: $REF"
+
+      - name: Checkout pipelines from private repo
+        if: steps.chart-check.outputs.changed == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: nethopper2/nh-rag-embedding
+          token: ${{ secrets.NH_RAG_EMBEDDING_PAT }}
+          ref: ${{ steps.pipelines-branch.outputs.ref }}
+          path: nh-rag-embedding
+          sparse-checkout: pipelines
+
+      - name: Copy pipeline files into chart
+        if: steps.chart-check.outputs.changed == 'true'
+        run: |
+          cp nh-rag-embedding/pipelines/*.py charts/private-ai-rag/pipelines/
+          echo "Copied pipelines:"
+          ls -la charts/private-ai-rag/pipelines/*.py
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:

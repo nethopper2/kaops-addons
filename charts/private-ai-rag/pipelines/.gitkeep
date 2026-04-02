@@ -1,0 +1,2 @@
+# This directory is populated with pipeline .py files during CI/CD build
+# Files are copied from the private repo: nethopper2/nh-rag-embedding

@@ -1,0 +1,15 @@
+{{- if .Values.pipelinesProvisioning.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-pipelines-config
+  labels:
+    {{- include "private-ai.labels" . | nindent 4 }}
+data:
+  {{- range $name, $config := .Values.pipelinesProvisioning.pipelines }}
+  {{- if $config.enabled }}
+  {{ $name }}.py: |-
+{{ $.Files.Get (printf "pipelines/%s.py" $name) | indent 4 }}
+  {{- end }}
+  {{- end }}
+{{- end }}

@@ -25,3 +25,6 @@ test-values.yaml
 # Chart dependencies files
 Chart.lock
 charts/*/charts/*
+
+# Pipeline files (copied from private repo during CI/CD build)
+charts/private-ai-rag/pipelines/*.py

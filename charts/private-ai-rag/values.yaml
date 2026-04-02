@@ -90,6 +90,34 @@ open-webui:
       limits:
         cpu: 200m
         memory: 256Mi
+    # Override default PIPELINES_URLS to prevent downloading example pipelines
+    extraEnvVars: []
+    # Init container to copy custom pipelines from ConfigMap to PVC
+    extraInitContainers:
+      - name: copy-custom-pipelines
+        image: busybox:1.37
+        command:
+          - sh
+          - -c
+          - |
+            if [ -d /pipeline-source ] && [ "$(ls -A /pipeline-source/*.py 2>/dev/null)" ]; then
+              echo "Copying custom pipelines..."
+              cp /pipeline-source/*.py /app/pipelines/
+              echo "Custom pipelines copied:"
+              ls -la /app/pipelines/*.py 2>/dev/null
+            else
+              echo "No custom pipelines to copy."
+            fi
+        volumeMounts:
+          - name: pipeline-files
+            mountPath: /pipeline-source
+          - name: data
+            mountPath: /app/pipelines
+    volumes:
+      - name: pipeline-files
+        configMap:
+          name: custom-pipelines-config
+          optional: true
   extraEnvFrom:
     - configMapRef:
         name: shared-configmap-rag
@@ -508,6 +536,22 @@ nh-data-ingestion:
       OPEN_WEBUI_URL: "http://open-webui"
       QDRANT_URL: # system provided
       QDRANT_COLLECTION: # user provided
+
+# Pipeline provisioning configuration
+# Pipeline .py files are copied from the private repo (nethopper2/nh-rag-embedding)
+# into the pipelines/ directory during CI/CD build, before helm package.
+# Only pipelines with enabled: true are included in the ConfigMap and deployed.
+pipelinesProvisioning:
+  enabled: true
+  pipelines:
+    pipeline-agent-rag:
+      enabled: true
+    pipeline-dev-only-model-compare:
+      enabled: false
+    pipeline-token-replacer:
+      enabled: true
+    private-supervisor-pipeline:
+      enabled: true
 
 heartbeatMonitoring:
   enabled: false  # Disabled by default
