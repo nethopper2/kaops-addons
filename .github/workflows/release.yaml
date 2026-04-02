@@ -41,7 +41,7 @@ jobs:
         if: steps.chart-check.outputs.changed == 'true'
         id: pipelines-branch
         run: |
-          VERSION=$(grep '^version:' charts/private-ai-rag/Chart.yaml | awk '{print $2}' | tr -d '"'"'"')
+          VERSION=$(grep '^version:' charts/private-ai-rag/Chart.yaml | awk '{print $2}' | tr -d "\"'")
           if [[ "$VERSION" == *-alpha* ]]; then REF="dev"
           elif [[ "$VERSION" == *-beta* ]]; then REF="stage"
           else REF="main"; fi
