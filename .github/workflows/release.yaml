@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: nethopper2/nh-rag-embedding
-          token: ${{ secrets.NH_RAG_EMBEDDING_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ steps.pipelines-branch.outputs.ref }}
           path: nh-rag-embedding
           sparse-checkout: pipelines
