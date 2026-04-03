@@ -370,7 +370,8 @@ juicefs-s3-gateway:
       limits:
         cpu: 100m
         memory: 128Mi
-    mcCommands: []
+    mcCommands:
+      - mc --config-dir /tmp/.mc event remove --force jfs/${BUCKET_NAME}
   fuse:
     enabled: true
     resources:
