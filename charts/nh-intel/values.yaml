@@ -1,0 +1,120 @@
+global:
+  security:
+    allowInsecureImages: true
+  extraEnvVarsCM: shared-configmap-rag
+  extraEnvVarsSecret: shared-secrets-rag
+  postgresql:
+    auth:
+      username: postgres
+      existingSecret: postgresql-password
+      secretKeys:
+        adminPasswordKey: postgresPassword
+  secretArgocdHook: Skip
+  nodeEnv: production
+  juiceFsUrl: # system provided
+
+rag:
+  postgresHost: # system provided
+  ragApiUrl: # user provided
+
+nh-rag-api:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1536Mi
+    limits:
+      cpu: 1000m
+      memory: 3Gi
+  image:
+    tag: "v1.106.1"
+  env:
+    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
+    QDRANT_URL: # system provided
+    BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-5-20250929-v1:0
+    BEDROCK_MODEL_PROVIDER: anthropic
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
+  config:
+    juiceFsSecretName: "juicefs-s3-gateway"
+    juiceFsUrl: "" # system provided
+    logLlmDebug: false
+    enableDevModelOverrides: false
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 65
+    periodSeconds: 60
+    timeoutSeconds: 120
+  readinessProbe:
+    failureThreshold: 3
+    periodSeconds: 30
+    timeoutSeconds: 15
+  worker:
+    enabled: false
+
+nh-rag-api-v2:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1536Mi
+    limits:
+      cpu: 1000m
+      memory: 3Gi
+  image:
+    tag: "v1.106.1"
+  env:
+    LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
+    QDRANT_URL: # system provided
+    BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-5-20250929-v1:0
+    BEDROCK_MODEL_PROVIDER: anthropic
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: # system provided
+  config:
+    juiceFsSecretName: "juicefs-s3-gateway"
+    juiceFsUrl: "" # system provided
+    logLlmDebug: false
+    enableDevModelOverrides: false
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 65
+    periodSeconds: 60
+    timeoutSeconds: 120
+  readinessProbe:
+    failureThreshold: 3
+    periodSeconds: 30
+    timeoutSeconds: 15
+  worker:
+    enabled: false
+
+nh-mcp-server:
+  enabled: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 192Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+  image:
+    tag: "v1.106.1"
+
+nh-mcp-server-v2:
+  enabled: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 192Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+  image:
+    tag: "v1.106.1"

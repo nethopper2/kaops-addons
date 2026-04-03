@@ -1,0 +1,62 @@
+metadata:
+  slug: nh-intel
+  name: NH Intel
+  description: Deploy NH Intel RAG API and MCP Server.
+  categories: [Artificial Intelligence]
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png"
+  detailUrl: "https://addons.kaops.net/nh-intel/"
+  externalUrl: "https://nethopper.io"
+  isProduction: false
+  isStaging: true
+  useSafeDelete: true
+  serverSideDiff: true
+  installTargets:
+    clusterMessage: Must be installed on clusters configured for Ingress.
+
+forms:
+  - slug: default
+    label: Configuration
+    steps:
+      - slug: details
+        variableSlugs:
+          - awsOpenAIKeySecretRef
+        ui:
+          label: Details
+
+variables:
+  - slug: awsOpenAIKeySecretRef
+    path: "global.awsOpenAIKeySecretRef"
+    forms: [default]
+    ui:
+      type: secret
+      label: AWS OpenAI Key (Bedrock)
+      help: Amazon Bedrock API key.
+      validation: optional
+
+system:
+  - path: "rag.postgresHost"
+    value: "${system.cluster.name}-nh-intel-postgresql.nh-addons.svc.cluster.local"
+  # nh-rag-api (v1)
+  - path: "nh-rag-api.env.QDRANT_URL"
+    value: "http://${system.cluster.name}-nh-intel-qdrant.nh-addons.svc.cluster.local:6333"
+  - path: "nh-rag-api.config.juiceFsUrl"
+    value: "http://${system.cluster.name}-nh-intel-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
+  - path: "nh-rag-api.metrics.serviceMonitor.labels.release"
+    value: "${system.cluster.name}-observability-edge"
+  # nh-rag-api-v2
+  - path: "nh-rag-api-v2.env.QDRANT_URL"
+    value: "http://${system.cluster.name}-nh-intel-qdrant.nh-addons.svc.cluster.local:6333"
+  - path: "nh-rag-api-v2.config.juiceFsUrl"
+    value: "http://${system.cluster.name}-nh-intel-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
+  - path: "nh-rag-api-v2.metrics.serviceMonitor.labels.release"
+    value: "${system.cluster.name}-observability-edge"
+  # shared
+  - path: "global.juiceFsUrl"
+    value: "http://${system.cluster.name}-nh-intel-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
+  # nh-mcp-server (v1)
+  - path: "nh-mcp-server.config.url"
+    value: "http://${system.cluster.name}-nh-intel-nh-mcp-server.nh-addons.svc.cluster.local:8010/mcp"
+  # nh-mcp-server-v2
+  - path: "nh-mcp-server-v2.config.url"
+    value: "http://${system.cluster.name}-nh-intel-nh-mcp-server-v2.nh-addons.svc.cluster.local:8010/mcp"

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-configmap-rag
+  labels:
+    {{- include "nh-intel.labels" . | nindent 4 }}
+data:
+  POSTGRES_HOST: {{ .Values.rag.postgresHost }}
+  POSTGRES_USERNAME: {{ .Values.global.postgresql.auth.username }}
+  NH_RAG_API_URL: {{ .Values.rag.ragApiUrl }}
+  {{- if eq (index .Values "nh-mcp-server").enabled true }}
+  NH_MCP_SERVER_URL: {{ (index .Values "nh-mcp-server").config.url | quote }}
+  {{- end }}
+  {{- if eq (index .Values "nh-mcp-server-v2").enabled true }}
+  NH_MCP_SERVER_V2_URL: {{ (index .Values "nh-mcp-server-v2").config.url | quote }}
+  {{- end }}
+  NODE_ENV: {{ .Values.global.nodeEnv }}
+  JUICEFS_S3_ENDPOINT: {{ .Values.global.juiceFsUrl | quote }}

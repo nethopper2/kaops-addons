@@ -1,0 +1,27 @@
+apiVersion: v2
+name: nh-intel
+description: KAOPS addon to install NH Intel (RAG API + MCP Server)
+type: application
+version: 0.1.0
+appVersion: "v1.106.0"
+
+dependencies:
+  - name: nh-rag
+    version: 0.1.14
+    alias: nh-rag-api
+    repository: https://nethopper2.github.io/helm-charts/
+    condition: nh-rag-api.enabled
+  - name: nh-rag
+    version: 0.1.14
+    alias: nh-rag-api-v2
+    repository: https://nethopper2.github.io/helm-charts/
+    condition: nh-rag-api-v2.enabled
+  - name: nh-mcp-server
+    version: 0.5.0
+    repository: https://nethopper2.github.io/helm-charts/
+    condition: nh-mcp-server.enabled
+  - name: nh-mcp-server
+    version: 0.5.0
+    alias: nh-mcp-server-v2
+    repository: https://nethopper2.github.io/helm-charts/
+    condition: nh-mcp-server-v2.enabled
