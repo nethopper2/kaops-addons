@@ -34,11 +34,7 @@ nh-rag-api:
     BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-5-20250929-v1:0
     BEDROCK_MODEL_PROVIDER: anthropic
   metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true
-      labels:
-        release: # system provided
+    enabled: false
   config:
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided
@@ -73,11 +69,7 @@ nh-rag-api-v2:
     BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-5-20250929-v1:0
     BEDROCK_MODEL_PROVIDER: anthropic
   metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true
-      labels:
-        release: # system provided
+    enabled: false
   config:
     juiceFsSecretName: "juicefs-s3-gateway"
     juiceFsUrl: "" # system provided

@@ -42,15 +42,11 @@ system:
     value: "http://${system.cluster.name}-nh-intel-qdrant.nh-addons.svc.cluster.local:6333"
   - path: "nh-rag-api.config.juiceFsUrl"
     value: "http://${system.cluster.name}-nh-intel-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
-  - path: "nh-rag-api.metrics.serviceMonitor.labels.release"
-    value: "${system.cluster.name}-observability-edge"
   # nh-rag-api-v2
   - path: "nh-rag-api-v2.env.QDRANT_URL"
     value: "http://${system.cluster.name}-nh-intel-qdrant.nh-addons.svc.cluster.local:6333"
   - path: "nh-rag-api-v2.config.juiceFsUrl"
     value: "http://${system.cluster.name}-nh-intel-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
-  - path: "nh-rag-api-v2.metrics.serviceMonitor.labels.release"
-    value: "${system.cluster.name}-observability-edge"
   # shared
   - path: "global.juiceFsUrl"
     value: "http://${system.cluster.name}-nh-intel-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
