@@ -6,10 +6,41 @@ metadata:
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
 data:
+  manage-pipelines.sh: |
+    #!/bin/sh
+    echo "Managing pipelines from manifest..."
+    if [ ! -f /pipeline-source/pipeline-manifest ]; then
+      echo "No pipeline manifest found, skipping."
+      exit 0
+    fi
+    while IFS=: read -r filename status; do
+      filename=$(echo "$filename" | tr -d '[:space:]')
+      status=$(echo "$status" | tr -d '[:space:]')
+      [ -z "$filename" ] && continue
+      if [ "$status" = "enabled" ]; then
+        if [ -f "/pipeline-source/$filename" ]; then
+          echo "Copying enabled pipeline: $filename"
+          cp "/pipeline-source/$filename" "/app/pipelines/$filename"
+        else
+          echo "WARNING: $filename is enabled but source file not found"
+        fi
+      elif [ "$status" = "disabled" ]; then
+        if [ -f "/app/pipelines/$filename" ]; then
+          echo "Removing disabled pipeline: $filename"
+          rm "/app/pipelines/$filename"
+        else
+          echo "Pipeline $filename is disabled (not present on volume)"
+        fi
+      fi
+    done < /pipeline-source/pipeline-manifest
+    echo "Pipeline management complete. Current pipelines:"
+    ls -la /app/pipelines/*.py 2>/dev/null || echo "No pipelines found."
+  pipeline-manifest: |
+    {{- range $name, $config := .Values.pipelinesProvisioning.pipelines }}
+    {{ $name }}.py:{{ if $config.enabled }}enabled{{ else }}disabled{{ end }}
+    {{- end }}
   {{- range $name, $config := .Values.pipelinesProvisioning.pipelines }}
-  {{- if $config.enabled }}
   {{ $name }}.py: |-
 {{ $.Files.Get (printf "pipelines/%s.py" $name) | indent 4 }}
-  {{- end }}
   {{- end }}
 {{- end }}

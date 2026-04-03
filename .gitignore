@@ -28,3 +28,6 @@ charts/*/charts/*
 
 # Pipeline files (copied from private repo during CI/CD build)
 charts/private-ai-rag/pipelines/*.py
+
+# Claude files
+.claude

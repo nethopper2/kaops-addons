@@ -92,22 +92,11 @@ open-webui:
         memory: 256Mi
     # Override default PIPELINES_URLS to prevent downloading example pipelines
     extraEnvVars: []
-    # Init container to copy custom pipelines from ConfigMap to PVC
+    # Init container to selectively copy enabled pipelines and remove disabled ones
     extraInitContainers:
       - name: copy-custom-pipelines
         image: busybox:1.37
-        command:
-          - sh
-          - -c
-          - |
-            if [ -d /pipeline-source ] && [ "$(ls -A /pipeline-source/*.py 2>/dev/null)" ]; then
-              echo "Copying custom pipelines..."
-              cp /pipeline-source/*.py /app/pipelines/
-              echo "Custom pipelines copied:"
-              ls -la /app/pipelines/*.py 2>/dev/null
-            else
-              echo "No custom pipelines to copy."
-            fi
+        command: ["sh", "/pipeline-source/manage-pipelines.sh"]
         volumeMounts:
           - name: pipeline-files
             mountPath: /pipeline-source
