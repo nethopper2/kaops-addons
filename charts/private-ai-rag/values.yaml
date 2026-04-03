@@ -538,7 +538,7 @@ pipelinesProvisioning:
     pipeline-dev-only-model-compare:
       enabled: false
     pipeline-token-replacer:
-      enabled: true
+      enabled: false
     private-supervisor-pipeline:
       enabled: true
 
