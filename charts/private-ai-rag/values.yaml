@@ -465,7 +465,7 @@ nh-mcp-server:
       cpu: 200m
       memory: 512Mi
   image:
-    tag: "v1.107.0"
+    tag: "v1.107.1"
 
 nh-data-ingestion:
   enabled: true
