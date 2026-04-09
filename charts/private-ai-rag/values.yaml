@@ -466,6 +466,29 @@ nh-mcp-server:
       memory: 512Mi
   image:
     tag: "v1.107.2"
+  startupProbe:
+    httpGet:
+      path: /health
+      port: 8010
+    initialDelaySeconds: 20
+    periodSeconds: 5
+    failureThreshold: 10
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8010
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8010
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
 
 nh-data-ingestion:
   enabled: true
