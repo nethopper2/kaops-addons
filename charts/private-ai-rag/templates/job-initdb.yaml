@@ -13,7 +13,7 @@ spec:
     metadata:
       name: {{ include "private-ai.fullname" . }}-initdb-job
       labels:
-        {{- include "private-ai.labels" . | nindent 8 }}
+        {{- include "private-ai.selectorLabels" . | nindent 8 }}
     spec:
       restartPolicy: OnFailure
       {{- if .Values.initdb.serviceAccount }}
