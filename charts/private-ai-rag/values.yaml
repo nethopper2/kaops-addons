@@ -257,7 +257,7 @@ nh-rag-api:
       cpu: 1000m
       memory: 3Gi
   image:
-    tag: "v1.108.1"
+    tag: "v1.108.2"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
