@@ -9,7 +9,6 @@ global:
       existingSecret: postgresql-password
       secretKeys:
         adminPasswordKey: postgresPassword
-  secretArgocdHook: Skip
   nodeEnv: production
   juiceFsUrl: # system provided
 
@@ -33,6 +32,10 @@ nh-rag-api:
     QDRANT_URL: # system provided
     BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
+  # Override shared-configmap-rag MCP URLs (values set in config.yaml system paths)
+  extraEnvVars:
+    - name: NH_MCP_SERVER_URL
+      value: ""
   metrics:
     enabled: false
   config:
@@ -68,6 +71,9 @@ nh-rag-api-v2:
     QDRANT_URL: # system provided
     BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
+  extraEnvVars:
+    - name: NH_MCP_SERVER_URL
+      value: ""
   metrics:
     enabled: false
   config:
