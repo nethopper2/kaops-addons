@@ -213,6 +213,13 @@ rag:
   gcsBucketName: # user provided
   googleApiScopes: # system provided
   postgresHost: # system provided
+  embeddings:
+    provider: "ollama"
+    dimension: 768
+    autoReembedOnConfigChange: true
+    bedrock:
+      model: "amazon.titan-embed-text-v2:0"
+      region: "us-east-1"
 
 initdb:
   enabled: false
