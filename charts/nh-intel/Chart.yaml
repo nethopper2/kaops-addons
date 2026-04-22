@@ -2,8 +2,8 @@ apiVersion: v2
 name: nh-intel
 description: KAOPS addon to install NH Intel (RAG API + MCP Server)
 type: application
-version: 0.1.5
-appVersion: "v1.106.0"
+version: 0.1.6
+appVersion: "v1.109.0"
 
 dependencies:
   - name: nh-rag
