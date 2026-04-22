@@ -51,8 +51,3 @@ system:
   # shared
   - path: "global.juiceFsUrl"
     value: "http://${system.cluster.name}-private-ai-rag-juicefs-s3-gateway.nh-addons.svc.cluster.local:9000"
-  # Override MCP URLs from shared-configmap-rag (nh-rag extraEnvVars order: [0]=v1, [1]=v2)
-  - path: "nh-rag-api.extraEnvVars[0].value"
-    value: "http://${system.cluster.name}-nh-intel-nh-mcp-server.nh-addons.svc.cluster.local:8010/mcp"
-  - path: "nh-rag-api-v2.extraEnvVars[0].value"
-    value: "http://${system.cluster.name}-nh-intel-nh-mcp-server-v2.nh-addons.svc.cluster.local:8010/mcp"
