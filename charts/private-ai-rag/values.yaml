@@ -554,8 +554,9 @@ nh-data-ingestion:
     env:
       LLAMAINDEX_OLLAMA_BASE_URL: "http://open-webui-ollama:11434"
       OPEN_WEBUI_URL: "http://open-webui"
-      QDRANT_URL: # system provided
-      QDRANT_COLLECTION: # user provided
+  qdrant:
+    url: # system provided 
+    collection: # user provided
 
 # Pipeline provisioning configuration
 # Pipeline .py files are copied from the private repo (nethopper2/nh-rag-embedding)
