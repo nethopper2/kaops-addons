@@ -554,6 +554,7 @@ nh-data-ingestion:
     env:
       LLAMAINDEX_OLLAMA_BASE_URL: "http://open-webui-ollama:11434"
       OPEN_WEBUI_URL: "http://open-webui"
+      QDRANT_TIMEOUT: "180"
   qdrant:
     url: # system provided 
     collection: # user provided
