@@ -399,11 +399,11 @@ juicefs-s3-gateway:
 nh-pai-data-service:
   resources:
     requests:
-      cpu: 10m
-      memory: 128Mi
-    limits:
-      cpu: 200m
+      cpu: 100m
       memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
   image:
     tag: "v1.109.0"
   ingress:
@@ -456,11 +456,11 @@ nh-pai-data-service:
     enabled: false
     resources:
       requests:
-        cpu: 10m
-        memory: 128Mi
-      limits:
-        cpu: 200m
+        cpu: 100m
         memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
 
 nh-mcp-server:
   enabled: true
@@ -542,6 +542,8 @@ nh-data-ingestion:
     image:
       tag: "v1.109.0"
   embedWorker:
+    celery:
+      concurrency: "6"
     resources:
       requests:
         cpu: 50m
