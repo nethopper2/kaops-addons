@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sourcemapreader.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "sourcemapreader.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "sourcemapreader.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "sourcemapreader.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "sourcemapreader.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      shareProcessNamespace: true
+      {{- include "openreplay.pod.hostAliases" . | nindent 6 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- if .Values.global.enterpriseEditionLicense }}
+          image: "{{ tpl .Values.image.registry . }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}-ee"
+          {{- else }}
+          image: "{{ tpl .Values.image.registry . }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.healthCheck}}
+          {{- .Values.healthCheck | toYaml | nindent 10}}
+          {{- end}}
+          env:
+            {{- include "openreplay.env" (dict "ctx" .) | nindent 12}}
+            {{- include "openreplay.secretEnv" (dict "ctx" .) | nindent 12}}
+            - name: S3_HOST
+              value: {{ .Values.global.s3.endpoint }}
+            - name: S3_KEY
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "access-key" "ctx" . )| nindent 18 }}
+            - name: S3_SECRET
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "secret-key" "ctx" . )| nindent 18 }}
+            - name: AWS_REGION
+              value: '{{ .Values.global.s3.region }}'
+            - name: LICENSE_KEY
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "license-key" "ctx" .) | nindent 18 }}
+            # We need to check what is the object store endpoint.
+            # There can be 4 options
+            # 1. Using minio inside kube clster
+            # 2. Using minio managed external cluster, like aws minio offering
+            # 3. Using GCP or other object stores compatible with s3 apis
+            # 4. Using AWS itself.
+            # AWS uses bucketname.endpoint/object while others use endpoint/bucketname/object
+            - name: ASSETS_ORIGIN
+              value: {{ include "openreplay.assets_origin" . }}
+          ports:
+            {{- range $key, $val := .Values.service.ports }}
+            - name: {{ $key }}
+              containerPort: {{ $val }}
+              protocol: TCP
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

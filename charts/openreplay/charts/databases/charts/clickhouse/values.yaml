@@ -1,0 +1,158 @@
+# Default values for clickhouse.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: clickhouse/clickhouse-server
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "25.11-alpine"
+
+backupImage:
+  repository: alexakulov/clickhouse-backup
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+username: default
+password: ""
+
+# Use existing secret for password instead of plain text
+existingSecret: ""
+existingSecretPasswordKey: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+  # Enable delay accounting for IOWait metrics (requires kubelet --allowed-unsafe-sysctls=kernel.task_delayacct):
+  # sysctls:
+  # - name: kernel.task_delayacct
+  #   value: "1"
+  # Recommended node-level ulimits (set via DaemonSet or cloud-init, not settable per-pod in k8s):
+  #   nofile:  262144
+  #   nproc:   65535
+  #   memlock: unlimited
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+env: {}
+backupEnv:
+  API_LISTEN: "0.0.0.0:7171"
+  BACKUPS_TO_KEEP_LOCAL: "1"
+  CLICKHOUSE_HOST: "localhost"
+  CLICKHOUSE_PORT: "9000"
+# REMOTE_STORAGE=s3
+# S3_ACCESS_KEY=key
+# S3_SECRET_KEY=password
+# LOG_LEVEL=debug
+# ALLOW_EMPTY_BACKUPS="true"
+# API_LISTEN=0.0.0.0:7171
+# API_CREATE_INTEGRATION_TABLES="true"
+# BACKUPS_TO_KEEP_REMOTE="3"
+# S3_ACL=private
+# S3_ENDPOINT=http://minio.db.svc.cluster.local:9000
+# S3_BUCKET=clickhouse
+# S3_PATH=backup
+# S3_FORCE_PATH_STYLE="true"
+# S3_DISABLE_SSL="true"
+# S3_DEBUG="true"
+
+service:
+  webPort: 8123
+  dataPort: 9000
+
+resources:
+  requests: {}
+    # cpu: 1
+    # memory: 4Gi
+  limits: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+storageSize: 100Gi
+
+# Kernel / OS tuning (optional, disabled by default)
+# These require privileged initContainers and may need cluster-level configuration.
+kernelTuning:
+  # Transparent HugePages — ClickHouse recommends 'madvise' over 'always'.
+  # Deploys a privileged initContainer to set THP mode on the node.
+  # WARNING: this is a node-wide setting — affects ALL pods on the same node.
+  thp:
+    enabled: false
+    mode: madvise
+
+configOverride:
+  serverConfig:
+    00-server-override.xml: |-
+      <clickhouse>
+        <logger>
+            <level>information</level>
+            <console>true</console>
+        <log remove="1"></log>
+        <merge_tree>
+          <escape_variant_subcolumn_filenames>0</escape_variant_subcolumn_filenames>
+        </merge_tree>
+        <errorlog remove="1"></errorlog>
+        </logger>
+        <listen_host>0.0.0.0</listen_host>
+        <keep_alive_timeout>100</keep_alive_timeout>
+      </clickhouse>
+    # 01-server-tuning.xml: |-
+    #   <clickhouse>
+    #     <!-- Requires resources.limits.memory on the pod; ratio is applied to detected RAM. -->
+    #     <merges_mutations_memory_usage_to_ram_ratio>0.7</merges_mutations_memory_usage_to_ram_ratio>
+    #     <!-- max_server_memory_usage: 0 = auto (~90% of RAM). Uncomment to cap explicitly. -->
+    #     <!-- <max_server_memory_usage>0</max_server_memory_usage> -->
+    #     <!--
+    #     <concurrent_threads_soft_limit_num>64</concurrent_threads_soft_limit_num>
+    #     <concurrent_threads_soft_limit_ratio_to_cores>2</concurrent_threads_soft_limit_ratio_to_cores>
+    #     <concurrent_threads_scheduler>fair_round_robin</concurrent_threads_scheduler>
+    #     <max_thread_pool_size>10000</max_thread_pool_size>
+    #     <max_server_memory_usage_to_ram_ratio>0.8</max_server_memory_usage_to_ram_ratio>
+    #     <uncompressed_cache_size remove="remove"></uncompressed_cache_size>
+    #     <mmap_cache_size>26214</mmap_cache_size>
+    #     -->
+    #   </clickhouse>
+  userConfig:
+    00-user-override.xml: |-
+      <clickhouse>
+        <profiles>
+          <default>
+              <allow_experimental_json_type>1</allow_experimental_json_type>
+              <use_query_cache>1</use_query_cache>
+              <query_cache_min_query_duration>5000</query_cache_min_query_duration>
+              <query_cache_ttl>900</query_cache_ttl>
+              <query_cache_nondeterministic_function_handling>ignore</query_cache_nondeterministic_function_handling>
+              <query_cache_system_table_handling>ignore</query_cache_system_table_handling>
+          </default>
+        </profiles>
+        <users>
+          <default>
+            <profile>default</profile>
+          </default>
+        </users>
+      </clickhouse>

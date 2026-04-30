@@ -25,9 +25,14 @@ test-values.yaml
 # Chart dependencies files
 Chart.lock
 charts/*/charts/*
+# OpenReplay vendors its upstream subcharts into the repo (commit-time vendoring)
+# because OpenReplay does not publish a Helm registry. Refresh via scripts/vendor-openreplay.sh.
+!charts/openreplay/charts/
+!charts/openreplay/charts/**
 
 # Pipeline files (copied from private repo during CI/CD build)
 charts/private-ai-rag/pipelines/*.py
 
 # Claude files
 .claude
+CLAUDE.md

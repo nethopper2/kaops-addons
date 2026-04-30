@@ -1,0 +1,202 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chalice.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "chalice.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "chalice.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "chalice.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "chalice.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      shareProcessNamespace: true
+      {{- include "openreplay.pod.hostAliases" . | nindent 6 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- if .Values.global.enterpriseEditionLicense }}
+          image: "{{ tpl .Values.image.registry . }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}-ee"
+          {{- else }}
+          image: "{{ tpl .Values.image.registry . }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.healthCheck}}
+          {{- .Values.healthCheck | toYaml | nindent 10}}
+          {{- end}}
+          env:
+            {{- include "openreplay.env.redis_string" .Values.global.redis | nindent 12 }}
+            - name: KAFKA_SERVERS
+              value: "{{ .Values.global.kafka.kafkaHost }}"
+            - name: ch_user
+              value: "{{ .Values.global.clickhouse.username }}"
+            - name: ch_password
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "clickhouse-password" "ctx" .) | nindent 18 }}
+            - name: ch_host
+              value: "{{ .Values.global.clickhouse.chHost }}"
+            - name: ch_port
+              value: "{{ .Values.global.clickhouse.service.dataPort }}"
+            - name: ch_port_http
+              value: "{{ .Values.global.clickhouse.service.webPort }}"
+            - name: sourcemaps_reader
+              value: "http://sourcemapreader-openreplay.{{.Release.Namespace}}.{{.Values.global.clusterDomain}}:9000/{}/sourcemaps"
+            - name: ASSIST_URL
+              value: {{ include "openreplay.assist_url" . }}
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "jwt-refresh-secret" "ctx" .) | nindent 18 }}
+            - name: JWT_SPOT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "jwt-spot-refresh-secret" "ctx" .) | nindent 18 }}
+            - name: ASSIST_JWT_SECRET
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "assist-jwt-secret" "ctx" .) | nindent 18 }}
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "jwt-secret" "ctx" .) | nindent 18 }}
+            - name: ASSIST_KEY
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "assist-key" "ctx" .) | nindent 18 }}
+            - name: JWT_SPOT_SECRET
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "jwt-spot-secret" "ctx" .) | nindent 18 }}
+            - name: LICENSE_KEY
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "license-key" "ctx" .) | nindent 18 }}
+            - name: version_number
+              value: '{{ .Chart.AppVersion }}'
+            - name: pg_host
+              value: '{{ .Values.global.postgresql.postgresqlHost }}'
+            - name: pg_port
+              value: '{{ .Values.global.postgresql.postgresqlPort }}'
+            - name: pg_dbname
+              value: "{{ .Values.global.postgresql.postgresqlDatabase }}"
+            - name: pg_user
+              value: '{{ .Values.global.postgresql.postgresqlUser }}'
+            - name: pg_password
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "postgresql-password" "ctx" .) | nindent 18 }}
+            - name: SITE_URL
+              value: '{{- include "openreplay.domainURL" . }}'
+            - name: S3_HOST
+              value: {{ if .Values.global.s3.endpoint }}{{ include "openreplay.s3Endpoint" . }}{{ end }}
+            - name: S3_KEY
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "access-key" "ctx" .) | nindent 18 }}
+            - name: S3_SECRET
+              valueFrom:
+                secretKeyRef: {{- include "openreplay.secrets" (dict "key" "secret-key" "ctx" .) | nindent 18 }}
+            - name: AWS_DEFAULT_REGION
+              value: '{{ .Values.global.s3.region }}'
+            - name: sessions_region
+              value: '{{ .Values.global.s3.region }}' 
+            - name: ASSIST_RECORDS_BUCKET
+              value: {{ .Values.global.s3.assistRecordsBucket }}
+            - name: sessions_bucket
+              value: {{ .Values.global.s3.recordingsBucket }}
+            - name: IOS_VIDEO_BUCKET
+              value: {{ .Values.global.s3.recordingsBucket }}
+            - name: sourcemaps_bucket
+              value: {{ .Values.global.s3.sourcemapsBucket }} 
+            - name: js_cache_bucket
+              value: {{ .Values.global.s3.assetsBucket }} 
+            - name: EMAIL_HOST
+              value: '{{ .Values.global.email.emailHost }}'
+            - name: EMAIL_PORT
+              value: '{{ .Values.global.email.emailPort }}'
+            - name: EMAIL_USER
+              value: '{{ .Values.global.email.emailUser }}'
+            - name: EMAIL_PASSWORD
+              value: '{{ .Values.global.email.emailPassword }}'
+            - name: EMAIL_USE_TLS
+              value: '{{ .Values.global.email.emailUseTls }}'
+            - name: EMAIL_USE_SSL
+              value: '{{ .Values.global.email.emailUseSsl }}'
+            - name: EMAIL_SSL_KEY
+              value: '{{ .Values.global.email.emailSslKey }}'
+            - name: EMAIL_SSL_CERT
+              value: '{{ .Values.global.email.emailSslCert }}'
+            - name: EMAIL_FROM
+              value: '{{ .Values.global.email.emailFrom }}'
+            - name: SCIM_ACCESS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  {{- include "openreplay.secrets" (dict "key" "scim-access-secret-key" "ctx" .) | nindent 18 }}
+                  optional: true
+            - name: SCIM_REFRESH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  {{- include "openreplay.secrets" (dict "key" "scim-refresh-secret-key" "ctx" .) | nindent 18 }}
+                  optional: true
+            {{- $skippedKeys := list "JWT_REFRESH_SECRET" "JWT_SPOT_REFRESH_SECRET" -}}
+            {{- include "openreplay.env" (dict "ctx" . "skippedKeys" $skippedKeys) | nindent 12}}
+            {{- include "openreplay.secretEnv" (dict "ctx" .) | nindent 12 }}
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            {{- range $key, $val := .Values.service.ports }}
+            - name: {{ $key }}
+              containerPort: {{ $val }}
+              protocol: TCP
+            {{- end }}
+          volumeMounts:
+            - name: datadir
+              mountPath: /mnt/efs
+          {{- with .Values.persistence.mounts  }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- if eq (tpl .Values.pvc.name . ) "hostPath" }}
+      volumes:
+      - name: datadir
+        hostPath:
+          # Ensure the file directory is created.
+          path: {{ tpl .Values.pvc.hostMountPath . }}
+          type: DirectoryOrCreate
+      {{- with .Values.persistence.volumes  }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- else }}
+      volumes:
+      - name: datadir
+        persistentVolumeClaim:
+          claimName: "{{ tpl .Values.pvc.name . }}"
+      {{- with .Values.persistence.volumes  }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

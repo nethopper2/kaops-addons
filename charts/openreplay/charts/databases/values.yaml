@@ -1,0 +1,236 @@
+# Default values for databases.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+
+
+## Child charts
+redis:
+  image:
+    registry: ghcr.io
+    repository: openreplay/valkey
+    tag: 8
+  enabled: true
+  fullnameOverride: redis
+  usePassword: false
+  cluster:
+    enabled: false
+  redis:
+    resources:
+      limits:
+        cpu: 250m
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+postgresql:
+  # postgresqlPassword: asayerPostgres
+  fullnameOverride: postgresql
+  postgresqlSharedPreloadLibraries: "pgaudit,pg_stat_statements"
+  image:
+    registry: ghcr.io
+    repository: openreplay/postgres
+    tag: 17
+  enabled: true
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+minio:
+  # global:
+  #  minio:
+  #    accessKey: "{{ minio_access_key }}"
+  #    secretKey: "{{ minio_secret_key }}"
+  image:
+    repository: openreplay/minio
+    tag: 2025
+  fullnameOverride: minio
+  enabled: true
+  resources:
+    limits:
+      cpu: 256m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  persistence:
+    enabled: true
+    size: 5Gi
+
+kafka:
+  enabled: false
+  fullnameOverride: kafka
+  replicaCount: 2
+  image:
+    repository: ghcr.io/openreplay/kafka
+    pullPolicy: IfNotPresent
+    tag: "3"
+
+  kraft:
+    enabled: true
+    clusterId: "Sjg_Rr1iQbO9xpahgDbYpQ"
+    processRoles: "broker,controller"
+    controllerListenerNames: "INTERNAL"
+
+  listeners:
+    client:
+      enabled: true
+      port: 9092
+      protocol: PLAINTEXT
+    internal:
+      enabled: true
+      port: 9093
+      protocol: PLAINTEXT
+    ssl:
+      enabled: false
+      port: 9094
+      protocol: SSL
+
+  tls:
+    enabled: false
+    secretName: kafka-tls-certs
+    clientAuth: "required"
+    endpointIdentificationAlgorithm: ""
+
+  service:
+    type: ClusterIP
+    client:
+      port: 9092
+    ssl:
+      port: 9094
+
+  persistence:
+    enabled: true
+    size: 100Gi
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+  # Kafka configuration
+  kafka:
+    messageMaxBytes: "3145728"
+    replicaFetchMaxBytes: "3145728"
+    logRetentionHours: "168"
+    logRetentionBytes: "1073741824"
+    logSegmentBytes: "1073741824"
+    logFlushIntervalMessages: "10000"
+    logFlushIntervalMs: "1000"
+    logRetentionCheckIntervalMs: "300000"
+    defaultReplicationFactor: "1"
+    offsetsTopicReplicationFactor: "1"
+    transactionStateLogReplicationFactor: "1"
+    transactionStateLogMinIsr: "1"
+    numIoThreads: "8"
+    numNetworkThreads: "3"
+    numPartitions: "1"
+    numRecoveryThreadsPerDataDir: "1"
+    socketReceiveBufferBytes: "102400"
+    socketRequestMaxBytes: "104857600"
+    socketSendBufferBytes: "102400"
+    autoCreateTopicsEnable: "true"
+    deleteTopicEnable: "false"
+    allowEveryoneIfNoAclFound: "true"
+    superUsers: "User:admin"
+
+  ## To use Redpanda instead of Kafka, see values-redpanda.yaml overlay:
+  ##   helm install ... -f values.yaml -f values-redpanda.yaml
+
+
+# Enterprise dbs
+clickhouse:
+  image:
+    tag: "25.12.3.21-alpine"
+  enabled: false
+
+# For enterpriseEdition Only
+vault:
+  enabled: false

@@ -1,0 +1,1 @@
+OpenReplay Installation is complete. Follow along with the SSL configuration from [doc](https://docs.openreplay.com/deployment/deploy-aws#configuretls/ssl).

@@ -1,0 +1,146 @@
+migrationJob:
+  podAnnotations:
+    linkerd.io/inject: disabled
+
+# Safety guard: the openreplay-version ConfigMap template aborts helm at
+# render time if the cluster already has a newer version than Chart.AppVersion.
+# Set to true to allow intentional rollbacks / downgrades.
+allowDowngrade: false
+
+# Offline migration using pre-built migration image (for air-gapped environments)
+# When enabled, uses bundled schema files instead of cloning from GitHub
+offlineMigration:
+  enabled: false
+  image:
+    registry: ghcr.io/openreplay
+    repository: migration
+    # Defaults to Chart.AppVersion if not specified
+    tag: ""
+
+postgresql:
+  image:
+    registry: ghcr.io/openreplay
+    repository: postgres
+    tag: 17
+
+kafka: {}
+
+# Kafka CLI image for migration job (topic creation).
+# Kept separate from kafka chart image so broker overrides (e.g. Redpanda)
+# don't break the migration job which needs kafka-topics.sh.
+kafkaMigration:
+  image:
+    registry: ghcr.io/openreplay
+    repository: kafka
+    tag: 3
+
+migration:
+  env:
+    SKIP_PERMISSION_CHANGE: "false"
+
+deployment:
+  argo: false
+forceMigration: false
+forceKafkaMigration: false
+skipMigration: false
+
+redis: &redis
+  tls:
+    enabled: false
+
+# For enterpriseEdition Only
+vault: &vault
+  vaultHost: databases-vault.db.svc.cluster.local:8200
+  annotations:
+    vault.hashicorp.com/agent-cache-enable: "true"
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/agent-inject-token: "true"
+    vault.hashicorp.com/template-static-secret-render-interval: 2m
+    vault.hashicorp.com/agent-run-as-same-user: "true"
+    vault.hashicorp.com/agent-inject-command-processor.properties: |
+      pkill -TERM openreplay
+    vault.hashicorp.com/role: pgaccess
+    vault.hashicorp.com/agent-inject-secret-processor.properties: database/creds/db-app
+    vault.hashicorp.com/agent-inject-template-processor.properties: |
+      {{- with secret "database/creds/db-app" -}}
+      POSTGRES_STRING=postgres://{{.Data.username}}:{{.Data.password}}@postgresql.db.svc.cluster.local:5432/postgres
+      {{- end -}}
+
+ingress-nginx:
+  enabled: true
+  controller:
+    image:
+      tag: 5.4-alpine
+    enableSnippets: true
+    # Keep k8s ingress compatible health check for LB
+    healthStatus: true
+    healthStatusURI: /healthz
+    ingressClass:
+      name: openreplay
+      create: true
+      setAsDefaultIngress: false
+    pod:
+      extraLabels:
+        app.kubernetes.io/component: controller
+    config:
+      entries:
+        worker-connections: "1024"
+        http-snippets: |-
+          proxy_headers_hash_max_size 1024;
+          proxy_headers_hash_bucket_size 128;
+          client_header_buffer_size 16k;
+          large_client_header_buffers 4 16k;
+          # Extract sessionid from peerId, it'll be used for sticky session.
+          map $arg_peerId $sessionid {
+            default "";
+            "~.*-(\d+)(?:-.*|$)" $1;
+          }
+        server-tokens: "false"
+        server-snippets: |-
+          # Security headers
+          add_header X-XSS-Protection "1; mode=block" always;
+          add_header X-Content-Type-Options "nosniff" always;
+          add_header Referrer-Policy "same-origin" always;
+        # Proxy buffer configuration for large responses (session recordings, etc.)
+        proxy-buffering: "true"
+        proxy-buffers: "32 64k" # 32 buffers, each 64KB in size (2MB total)
+        proxy-buffer-size: "64k"
+        proxy-busy-buffers-size: "128k"
+        proxy-max-temp-file-size: "2048m"
+        # Client body buffer configuration for large POST requests (ingestion data)
+        client-body-buffer-size: "512k"
+
+assist-api:
+  enabled: false
+
+minio:
+  # Force initialize minio, even if the instance is not provisioned by OR
+  forceInit: false
+  image:
+    registry: ghcr.io/openreplay
+    repository: minio
+    tag: "2025"
+
+clickhouse: &clickhouse
+  password: ""
+  image:
+    registry: docker.io
+    repository: clickhouse/clickhouse-server
+    tag: 25.9-alpine
+
+global:
+  clickhouse: *clickhouse
+  orAppSecrets: {}
+  appLabels: {}
+  vault: *vault
+  redis: *redis
+  clusterDomain: "svc.cluster.local"
+  env: {}
+  # If you're accessing OpenReplay with http, then update the value to http
+  ORSecureAccess: true
+  orTmpDir: "/openreplay/storage/nfs"
+
+chalice:
+  env:
+    CH_COMPRESSION: "false"
+

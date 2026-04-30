@@ -1,0 +1,285 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "kafka.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kafka.labels" . | nindent 4 }}
+    {{- include "kafka.componentLabels" . | nindent 4 }}
+spec:
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "kafka.selectorLabels" . | nindent 6 }}
+      {{- include "kafka.componentLabels" . | nindent 6 }}
+  serviceName: {{ include "kafka.fullname" . }}-headless
+  updateStrategy:
+    {{- toYaml .Values.updateStrategy | nindent 4 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kafka.selectorLabels" . | nindent 8 }}
+        {{- include "kafka.componentLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      hostNetwork: false
+      hostIPC: false
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "kafka.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tls.enabled }}
+      initContainers:
+        - name: setup-certs
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              POD_ID=$(echo $POD_NAME | sed 's/{{ include "kafka.fullname" . }}-//')
+              cp /tls-secret/ca-cert.pem /tls/ca-cert.pem
+              cp /tls-secret/kafka-${POD_ID}-cert.pem /tls/server-cert.pem
+              cp /tls-secret/kafka-${POD_ID}-key.pem /tls/server-key.pem
+              chmod 644 /tls/*.pem
+              chmod 600 /tls/server-key.pem
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: tls-secret
+              mountPath: /tls-secret
+              readOnly: true
+            - name: tls
+              mountPath: /tls
+      {{- end }}
+      containers:
+        - name: kafka
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.command }}
+          command:
+            {{- toYaml .Values.command | nindent 12 }}
+          {{- if or .Values.args (and .Values.redpanda .Values.resources .Values.resources.limits .Values.resources.limits.cpu) }}
+          args:
+            {{- if .Values.args }}
+            {{- toYaml .Values.args | nindent 12 }}
+            {{- end }}
+            {{- if and .Values.redpanda .Values.resources .Values.resources.limits .Values.resources.limits.cpu }}
+            {{- $cpu := .Values.resources.limits.cpu | toString }}
+            {{- if hasSuffix "m" $cpu }}
+            - "--smp={{ max 1 (div (trimSuffix "m" $cpu | int) 1000) }}"
+            {{- else }}
+            - "--smp={{ max 1 ($cpu | int) }}"
+            {{- end }}
+            {{- end }}
+          {{- end }}
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            {{- with .Values.extraEnvVars }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- else }}
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KAFKA_NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{- if .Values.kraft.enabled }}
+            - name: KAFKA_CLUSTER_ID
+              value: {{ .Values.kraft.clusterId | quote }}
+            - name: KAFKA_PROCESS_ROLES
+              value: {{ .Values.kraft.processRoles | quote }}
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: {{ include "kafka.controllerQuorumVoters" . | quote }}
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              value: {{ .Values.kraft.controllerListenerNames | quote }}
+            {{- end }}
+            - name: KAFKA_LISTENERS
+              value: {{ include "kafka.listeners" . | quote }}
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: {{ include "kafka.advertisedListeners" . | quote }}
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: {{ include "kafka.listenerSecurityProtocolMap" . | quote }}
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "{{ .Values.listeners.client.enabled | ternary "CLIENT" "INTERNAL" }}"
+            {{- if .Values.tls.enabled }}
+            - name: KAFKA_SSL_CERT_FILE
+              value: "/tls/server-cert.pem"
+            - name: KAFKA_SSL_KEY_FILE
+              value: "/tls/server-key.pem"
+            - name: KAFKA_SSL_CA_FILE
+              value: "/tls/ca-cert.pem"
+            - name: KAFKA_SSL_CLIENT_AUTH
+              value: {{ .Values.tls.clientAuth | quote }}
+            - name: KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM
+              value: {{ .Values.tls.endpointIdentificationAlgorithm | quote }}
+            {{- end }}
+            - name: KAFKA_LOG_DIRS
+              value: "/bitnami/kafka/data"
+            - name: LOG_DIR
+              value: "/bitnami/kafka/logs"
+            - name: KAFKA_MESSAGE_MAX_BYTES
+              value: {{ .Values.kafka.messageMaxBytes | quote }}
+            - name: KAFKA_REPLICA_FETCH_MAX_BYTES
+              value: {{ .Values.kafka.replicaFetchMaxBytes | quote }}
+            - name: KAFKA_LOG_RETENTION_HOURS
+              value: {{ .Values.kafka.logRetentionHours | quote }}
+            - name: KAFKA_LOG_RETENTION_BYTES
+              value: {{ .Values.kafka.logRetentionBytes | quote }}
+            - name: KAFKA_LOG_SEGMENT_BYTES
+              value: {{ .Values.kafka.logSegmentBytes | quote }}
+            - name: KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES
+              value: {{ .Values.kafka.logFlushIntervalMessages | quote }}
+            - name: KAFKA_CFG_LOG_FLUSH_INTERVAL_MS
+              value: {{ .Values.kafka.logFlushIntervalMs | quote }}
+            - name: KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS
+              value: {{ .Values.kafka.logRetentionCheckIntervalMs | quote }}
+            - name: KAFKA_CFG_DEFAULT_REPLICATION_FACTOR
+              value: {{ .Values.kafka.defaultReplicationFactor | quote }}
+            - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: {{ .Values.kafka.offsetsTopicReplicationFactor | quote }}
+            - name: KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              value: {{ .Values.kafka.transactionStateLogReplicationFactor | quote }}
+            - name: KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR
+              value: {{ .Values.kafka.transactionStateLogMinIsr | quote }}
+            - name: KAFKA_CFG_NUM_IO_THREADS
+              value: {{ .Values.kafka.numIoThreads | quote }}
+            - name: KAFKA_CFG_NUM_NETWORK_THREADS
+              value: {{ .Values.kafka.numNetworkThreads | quote }}
+            - name: KAFKA_CFG_NUM_PARTITIONS
+              value: {{ .Values.kafka.numPartitions | quote }}
+            - name: KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR
+              value: {{ .Values.kafka.numRecoveryThreadsPerDataDir | quote }}
+            - name: KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES
+              value: {{ .Values.kafka.socketReceiveBufferBytes | quote }}
+            - name: KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES
+              value: {{ .Values.kafka.socketRequestMaxBytes | quote }}
+            - name: KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES
+              value: {{ .Values.kafka.socketSendBufferBytes | quote }}
+            - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+              value: {{ .Values.kafka.autoCreateTopicsEnable | quote }}
+            - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
+              value: {{ .Values.kafka.deleteTopicEnable | quote }}
+            - name: KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND
+              value: {{ .Values.kafka.allowEveryoneIfNoAclFound | quote }}
+            - name: KAFKA_CFG_SUPER_USERS
+              value: {{ .Values.kafka.superUsers | quote }}
+            {{- with .Values.extraEnvVars }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          ports:
+            {{- if .Values.listeners.client.enabled }}
+            - name: kafka-client
+              containerPort: {{ .Values.listeners.client.port }}
+            {{- end }}
+            {{- if .Values.listeners.internal.enabled }}
+            - name: kafka-internal
+              containerPort: {{ .Values.listeners.internal.port }}
+            {{- end }}
+            {{- if .Values.listeners.ssl.enabled }}
+            - name: kafka-ssl
+              containerPort: {{ .Values.listeners.ssl.port }}
+            {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/kafka
+            - name: logs
+              mountPath: /bitnami/kafka/logs
+            {{- if .Values.tls.enabled }}
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: logs
+          emptyDir: {}
+        {{- if .Values.tls.enabled }}
+        - name: tls-secret
+          secret:
+            secretName: {{ .Values.tls.secretName }}
+            defaultMode: 0644
+        - name: tls
+          emptyDir: {}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        {{- with .Values.persistence.annotations }}
+        annotations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      spec:
+        accessModes:
+          {{- toYaml .Values.persistence.accessModes | nindent 10 }}
+        {{- if .Values.persistence.storageClass }}
+        storageClassName: {{ .Values.persistence.storageClass }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+  {{- end }}

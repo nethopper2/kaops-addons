@@ -1,0 +1,55 @@
+metadata:
+  slug: openreplay
+  name: OpenReplay
+  description: Self-hosted session replay and product analytics
+  categories: ['Observability']
+  externalUrl: 'https://openreplay.com/'
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/openreplay/logo.jpeg"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/openreplay/logo.jpeg"
+  detailUrl: 'https://docs.openreplay.com/en/deployment/deploy-kubernetes/'
+  isProduction: true
+  serverSideDiff: false
+  installTargets:
+    hub: true
+    hubRequired: false
+    edge: true
+    clusterMessage: Requires NGINX Ingress Controller and Cert-Manager already installed cluster-wide (install via the Ingress Warden addon). OpenReplay only creates Ingress resources; it does not deploy its own controller.
+    infoMessage: First user to sign up becomes the admin. There is no admin seed step.
+
+forms:
+  - slug: default
+    label: 'OpenReplay configuration'
+    description: 'Self-hosted session replay'
+    steps:
+      - slug: 'details'
+        variableSlugs:
+          - 'adminEmail'
+        ui:
+          label: 'Details'
+
+variables:
+  - slug: 'adminEmail'
+    path: 'openreplay.adminEmail'
+    forms: ['default']
+    ui:
+      type: 'text'
+      label: 'Admin Email'
+      placeholder: 'admin@example.com'
+      validation: 'email'
+
+system:
+  # Domain name flows through global.domainName (read by upstream's per-app
+  # Ingress templates: api, assist, chalice, frontend, http, integrations, spot).
+  # The openreplay subchart's own global.domainName is duplicated for the
+  # subchart-scoped reads. Both must be set to the same value.
+  - path: 'global.domainName'
+    value: 'openreplay.${system.cluster.name}.${system.hubCluster.ingressHostname}'
+  - path: 'openreplay.global.domainName'
+    value: 'openreplay.${system.cluster.name}.${system.hubCluster.ingressHostname}'
+
+output:
+  - name: OpenReplay URL
+    description: 'URL to access OpenReplay (sign up the first user to claim admin)'
+    value: 'https://openreplay.${system.cluster.name}.${system.hubCluster.ingressHostname}'
+    type: 'url'
+    slug: default

@@ -1,0 +1,660 @@
+{{/*
+Don't have to trigger migration if there is no version change
+Don't have to trigger migration if skipMigration is set
+Have to trigger migration if forceMigration is set
+
+versionChange is true when:
+    Release.IsUpgrade is false.
+    Or .Values.deployment.argo is set.
+    Or Release.IsUpgrade is true and the previous version is not equal to .Chart.AppVersion.
+    
+Previous version preference:
+    1. OPENREPLAY_VERSION from openreplay-version ConfigMap (if exists)
+    2. .Values.fromVersion (fallback)
+*/}}
+
+{{- $existingConfigMap := lookup "v1" "ConfigMap" .Release.Namespace "openreplay-version" }}
+{{- $previousVersion := .Values.fromVersion }}
+{{- if $existingConfigMap }}
+  {{- $previousVersion = index $existingConfigMap.data "version" | default .Values.fromVersion }}
+{{- end }}
+{{- $versionChange := (or (not .Release.IsUpgrade) .Values.deployment.argo (and .Release.IsUpgrade (not (eq $previousVersion .Chart.AppVersion)))) }}
+{{- if or .Values.forceMigration (and (not .Values.skipMigration) $versionChange) }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-migration-script
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "-6" # Higher precidence, so the first the config map will get created.
+data:
+  {{- (.Files.Glob "files/*").AsConfig | nindent 2 }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: databases-migrate
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    app: databases
+    or.workload/type: db-migrate
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  backoffLimit: 1 # One retry; resume logic picks up from last successful step
+  activeDeadlineSeconds: {{ .Values.migrationJob.activeDeadlineSeconds | default 3600 }}
+  template:
+    metadata:
+      name: postgresqlMigrate
+      {{- with .Values.migrationJob.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+      {{- if .Values.offlineMigration.enabled }}
+      # Offline migration: copy schema files from pre-built migration image
+      - name: migration
+        image: "{{ .Values.offlineMigration.image.registry }}/{{ .Values.offlineMigration.image.repository }}:{{ .Values.offlineMigration.image.tag | default .Chart.AppVersion }}"
+        env:
+          - name: ENTERPRISE_EDITION_LICENSE
+            value: "{{ .Values.global.enterpriseEditionLicense }}"
+          - name: PG_HOST
+            value: "{{ .Values.global.postgresql.postgresqlHost }}"
+          - name: PG_PORT
+            value: "{{ .Values.global.postgresql.postgresqlPort }}"
+          - name: CH_HOST
+            value: "{{ .Values.global.clickhouse.chHost }}"
+          - name: CH_PORT
+            value: "{{ .Values.global.clickhouse.service.dataPort }}"
+        command:
+          - /bin/bash
+          - -c
+        args:
+          - |
+            set -x
+            echo "[info] Offline migration: copying schema files from migration image"
+            mkdir -p /opt/openreplay/openreplay
+            cp -rf /work/scripts /opt/openreplay/openreplay/
+            if [ -n "$ENTERPRISE_EDITION_LICENSE" ]; then
+              echo "[info] Copying enterprise schema files"
+              cp -rf /work/ee /opt/openreplay/openreplay/
+            fi
+            echo "[info] Schema files copied successfully"
+            ls -la /opt/openreplay/openreplay/scripts/
+
+            # Wait for PostgreSQL
+            exit_count=0
+            while [ $exit_count -le 20 ]; do
+              nc -zv ${PG_HOST} ${PG_PORT} -w 1 && break
+              echo "[info] PostgreSQL is not up; retrying in 5 seconds"
+              sleep 4
+              exit_count=$((exit_count+1))
+            done
+            [ $exit_count -gt 20 ] && { echo "[error] PostgreSQL is not running"; exit 100; }
+
+            # Wait for ClickHouse
+            exit_count=0
+            while [ $exit_count -le 20 ]; do
+              nc -zv ${CH_HOST} ${CH_PORT} -w 1 && break
+              echo "[info] ClickHouse is not up; retrying in 5 seconds"
+              sleep 4
+              exit_count=$((exit_count+1))
+            done
+            [ $exit_count -gt 20 ] && { echo "[error] ClickHouse is not running"; exit 100; }
+
+            echo "[info] All databases are available"
+        volumeMounts:
+        - name: shared
+          mountPath: /opt/openreplay
+      {{- end }}
+      - name: git
+        image: alpine/git
+        env:
+          {{- range $key, $val := .Values.global.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          {{- range $key, $val := .Values.migration.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          - name: ENTERPRISE_EDITION_LICENSE
+            value: "{{ .Values.global.enterpriseEditionLicense }}"
+        command:
+          - /bin/sh
+          - -c
+        args:
+          - |
+            set -x
+            mkdir -p /opt/openreplay/openreplay && cd /opt/openreplay/openreplay
+
+            # Check if offline migration scripts are already available (from migration image or mounted)
+            # ## Usage:
+            # Option 1: Enable offlineMigration.enabled=true to use pre-built migration image
+            # Option 2: Mount your scripts directory to `/mnt/efs` with the following structure:
+            # ```
+            # /mnt/efs/
+            # ├── scripts/
+            # │   ├── schema/
+            # │   └── helmcharts/
+            # └── ee/           # Optional: for enterprise edition
+            #     └── scripts/
+            # ```
+            #
+            # The job will automatically detect and use these pre-mounted scripts instead of cloning from GitHub.
+
+            # Check if migration init container already provided files
+            if [ -d "/opt/openreplay/openreplay/scripts/schema" ]; then
+              echo "[info] Offline migration detected. Schema files already available (from migration image)"
+            elif [ -d "/mnt/efs/scripts/schema" ] && [ -d "/mnt/efs/scripts/helmcharts" ]; then
+              echo "[info] Offline migration detected. Using pre-mounted scripts from /mnt/efs"
+              cp -rf /mnt/efs/scripts /opt/openreplay/openreplay/
+              if [ "x$ENTERPRISE_EDITION_LICENSE" != "x" ] && [ -d "/mnt/efs/ee/scripts" ]; then
+                echo "[info] Copying enterprise scripts from /mnt/efs"
+                mkdir -p /opt/openreplay/openreplay/ee
+                cp -rf /mnt/efs/ee /opt/openreplay/openreplay/
+              fi
+              echo "[info] Offline migration scripts copied successfully"
+              # Else for an upgrade, it won't pull the latest change. 
+              # If you want offline, you can copy it prior, and do the update.
+              rm -rf /mnt/efs/scripts
+              echo "[info] Offline migration scripts deleted from shared successfully"
+            else
+              echo "[info] No offline scripts found. Proceeding with online migration from GitHub"
+              
+              # Function to check if GitHub is available
+              check_github() {
+                for i in {1..10}; do
+                  if ping -c 1 github.com &> /dev/null || wget -q --spider https://github.com; then
+                    echo "GitHub is available."
+                    break
+                  else
+                    echo "GitHub is not available. Retrying in 3 seconds..."
+                    sleep 3
+                  fi
+                done
+              }
+
+              check_github
+
+              # Modern sparse checkout using Git 2.25+ features with cone mode
+              # Only fetch required directories: scripts/schema, scripts/helmcharts, ee/scripts
+              git clone --depth 1 --filter=blob:none --sparse \
+                {{ .Values.global.dbMigrationUpstreamRepoURL | default "https://github.com/openreplay/openreplay" }} \
+                -b {{ default .Chart.AppVersion .Values.dbMigrationUpstreamBranch }} . || exit 10
+              git sparse-checkout set scripts/schema scripts/helmcharts ee/scripts || exit 10
+              
+              ls /opt/openreplay/openreplay
+              git log -1
+            fi
+
+            {{ .Values.global.dbMigrationPreCommand | default "" }}
+
+            exit_count=0
+
+            exit_count=0
+            error_connection=1
+
+            while [ $exit_count -le 20 ];do
+              nc -zv {{.Values.global.postgresql.postgresqlHost}} {{.Values.global.postgresql.postgresqlPort}} -w 1
+              if [ $? -ne 0 ]; then
+                echo "[info] postgresql is not up; retrying in 5 seconds"
+                sleep 4
+                exit_count=$(($exit_count+1))
+                echo $exit_count
+              else
+                error_connection=0
+                break
+              fi
+            done
+
+            if [ $error_connection -eq 1 ]; then
+              echo "[error] postgres is not running. Check kubectl get po -n db; exiting"
+              exit 100
+            fi
+
+            # Checking variable is empty. Shell independant method.
+            exit_count=0
+            error_connection=1
+
+            while [ $exit_count -le 20 ];do
+              nc -zv {{.Values.global.clickhouse.chHost}} {{.Values.global.clickhouse.service.dataPort}} -w 1
+              if [ $? -ne 0 ]; then
+                echo "[info] clickhouse is not up; retrying in 5 seconds"
+                sleep 4
+                exit_count=$(($exit_count+1))
+                echo $exit_count
+              else
+                error_connection=0
+                break
+              fi
+            done
+
+            if [ $error_connection -eq 1 ]; then
+              echo "[error] clickhouse is not running. Check kubectl get po -n db; exiting"
+              exit 100
+            fi
+
+            if [ "x$ENTERPRISE_EDITION_LICENSE" != "x" ]; then
+              echo "Copying enterprise code"
+              cp -rf ee/scripts/* scripts/
+            fi
+            echo "Changing RWX to proper permission"
+            if [ "$SKIP_PERMISSION_CHANGE" != "true" ]; then
+              chown 1001:1001 /mnt/efs
+            fi
+        volumeMounts:
+        - name: shared
+          mountPath: /opt/openreplay
+        - name: datadir
+          mountPath: /mnt/efs
+      - name: postgres-check
+        image: "{{.Values.postgresql.image.registry}}/{{.Values.postgresql.image.repository}}:{{.Values.postgresql.image.tag}}"
+        env:
+          - name: PGHOST
+            value: "{{ .Values.global.postgresql.postgresqlHost }}"
+          - name: PGPORT
+            value: "{{ .Values.global.postgresql.postgresqlPort }}"
+          - name: PGDATABASE
+            value: "{{ .Values.global.postgresql.postgresqlDatabase }}"
+          - name: PGUSER
+            value: "{{ .Values.global.postgresql.postgresqlUser }}"
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef: {{- include "openreplay.secrets" (dict "key" "postgresql-password" "ctx" .) | nindent 16 }}
+        command:
+          - /bin/bash
+          - -c
+        args:
+          - |
+            lowVersion=16.4
+            highVersion=17
+            pg_version=`psql -c "SHOW server_version;" -t | tr -d ' '`
+            echo $pg_version |\
+              awk -v pg_version=$pg_version -v low="$lowVersion" -v high="$highVersion" -F. '{
+                split(low, lowArr, ".");
+                split(high, highArr, ".");
+                if ($1 < lowArr[1] ) {
+                  print "Need version " low " or higher. Current version: " pg_version;
+                  exit 100
+                } else if ($1 > highArr[1]) {
+                  print "Version " pg_version " is higher than the allowed maximum version " high ".";
+                  exit 100
+                } else if ($1 == lowArr[1] && $2 < lowArr[2]) {
+                  exit 100
+                }
+              }' || {
+              echo "[error] postgresql version is $pg_version which is not within the allowed range ${lowVersion} - ${highVersion}. Exiting."
+              echo For upgrade steps, refer: https://docs.openreplay.com/en/deployment/openreplay-admin/#upgrade-postgresql
+              exit 101
+            }
+      - name: clickhouse-check
+        image: "{{.Values.clickhouse.image.registry}}/{{.Values.clickhouse.image.repository}}:{{.Values.clickhouse.image.tag}}"
+        env:
+          {{- range $key, $val := .Values.global.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          {{- range $key, $val := .Values.migration.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          - name: CH_HOST
+            value: "{{.Values.global.clickhouse.chHost}}"
+          - name: CH_PORT
+            value: "{{.Values.global.clickhouse.service.dataPort}}"
+          - name: CH_PORT_HTTP
+            value: "{{.Values.global.clickhouse.service.webPort}}"
+          - name: CH_USERNAME
+            value: "{{.Values.global.clickhouse.username}}"
+          - name: CH_PASSWORD
+            valueFrom:
+              secretKeyRef: {{- include "openreplay.secrets" (dict "key" "clickhouse-password" "ctx" .) | nindent 16 }}
+          - name: CH_USE_TLS
+            value: "{{.Values.global.clickhouse.use_tls}}"
+        command:
+          - /bin/bash
+          - -c
+        args:
+          - |
+            lowVersion=25.1
+            highVersion=25
+            [[ "${CH_PASSWORD}" != "" ]] && {
+              CH_PASSWORD="--password $CH_PASSWORD"
+            }
+            [[ "${CH_USE_TLS}" == "true" ]] && CH_TLS_FLAGS="--secure --accept-invalid-certificate" || CH_TLS_FLAGS=""
+            ch_client=`echo clickhouse-client -h ${CH_HOST} --user ${CH_USERNAME} ${CH_PASSWORD} --port ${CH_PORT} ${CH_TLS_FLAGS}`
+            echo $ch_client
+            ch_version=`$ch_client -q "SELECT version()"`
+            echo $ch_version |\
+            awk -v low="$lowVersion" -v high="$highVersion" '{split($1, ver, ".");
+              split(low, lowArr, ".");
+              split(high, highArr, ".");
+              if (ver[1] < lowArr[1]) {
+                # print "Need version " low " or higher. Current version: " ver[1] "." ver[2];
+                exit 100
+              } else if (ver[1] > highArr[1]) {
+                # print "Version " ver[1] "." ver[2] " is higher than the allowed maximum version " high ".";
+                exit 100
+              } else if (ver[1] == lowArr[1] && ver[2] < lowArr[2]) {
+                exit 100
+              }
+            }' || {
+              echo "[error] Clickhouse server version $ch_version which is not within the allowed range >${lowVersion} - ${highVersion}.x Exiting."
+              echo For upgrade steps, refer: https://docs.openreplay.com/en/deployment/openreplay-admin/#upgrade-clickhouse
+              exit 101
+            }
+        volumeMounts:
+          - name: shared
+            mountPath: /opt/openreplay
+          - name: datadir
+            mountPath: /mnt/efs
+      containers:
+      - name: postgres
+        env:
+          - name: OPENREPLAY_VERSION
+            valueFrom:
+              configMapKeyRef:
+                name: openreplay-version
+                key: version
+                optional: true
+          - name: FORCE_MIGRATION
+            value: "{{ .Values.forceMigration }}"
+          - name: PREVIOUS_APP_VERSION
+            value: "{{ .Values.fromVersion }}"
+          - name: CHART_APP_VERSION
+            value: "{{ .Chart.AppVersion }}"
+          - name: PGHOST
+            value: "{{ .Values.global.postgresql.postgresqlHost }}"
+          - name: PGPORT
+            value: "{{ .Values.global.postgresql.postgresqlPort }}"
+          - name: PGDATABASE
+            value: "{{ .Values.global.postgresql.postgresqlDatabase }}"
+          - name: PGUSER
+            value: "{{ .Values.global.postgresql.postgresqlUser }}"
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef: {{- include "openreplay.secrets" (dict "key" "postgresql-password" "ctx" .) | nindent 16 }}
+          {{- range $key, $val := .Values.migration.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          {{- range $key, $val := .Values.global.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+        image: "{{.Values.postgresql.image.registry}}/{{.Values.postgresql.image.repository}}:{{.Values.postgresql.image.tag}}"
+        command: 
+        - /bin/bash
+        - /opt/migrations/dbops.sh
+        - "{{ .Release.IsUpgrade }}"
+        - "postgresql"
+        volumeMounts:
+        - name: shared
+          mountPath: /opt/openreplay
+        - name: dbmigrationscript
+          mountPath: /opt/migrations/
+      {{- if or .Values.minio.enabled .Values.minio.forceInit }}
+      - name: minio
+        image: "{{.Values.minio.image.registry}}/{{.Values.minio.image.repository}}:{{.Values.minio.image.tag}}"
+        env:
+          - name: OPENREPLAY_VERSION
+            valueFrom:
+              configMapKeyRef:
+                name: openreplay-version
+                key: version
+                optional: true
+          {{- range $key, $val := .Values.global.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          {{- range $key, $val := .Values.migration.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          - name: FORCE_MIGRATION
+            value: "{{ .Values.forceMigration }}"
+          - name: UPGRADE_FRONTENT
+            value: "{{ .Values.forceUpgradeFrontend }}"
+          - name: PREVIOUS_APP_VERSION
+            value: "{{ .Values.fromVersion }}"
+          - name: CHART_APP_VERSION
+            value: "{{ .Chart.AppVersion }}"
+          - name: MINIO_ACCESS_KEY
+            valueFrom:
+              secretKeyRef: {{- include "openreplay.secrets" (dict "key" "access-key" "ctx" .) | nindent 16 }}
+          - name: MINIO_SECRET_KEY
+            valueFrom:
+              secretKeyRef: {{- include "openreplay.secrets" (dict "key" "secret-key" "ctx" .) | nindent 16 }}
+          - name: MINIO_HOST
+            value: "{{ .Values.global.s3.endpoint }}"
+        command: 
+        - /bin/bash
+        - /opt/migrations/dbops.sh
+        - "{{ .Release.IsUpgrade }}"
+        - minio
+        volumeMounts:
+        - name: shared
+          mountPath: /opt/openreplay
+        - name: dbmigrationscript
+          mountPath: /opt/migrations/
+      {{- end}}
+      {{- if .Values.global.enterpriseEditionLicense }}
+      # Enterprise migration
+      {{- if .Values.vault.enabled }}
+      - name: vault
+        env:
+          {{- range $key, $val := .Values.global.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          {{- range $key, $val := .Values.migration.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          - name: FORCE_MIGRATION
+            value: "{{ .Values.forceMigration }}"
+          - name: PGHOST
+            value: "{{ .Values.global.postgresql.postgresqlHost }}"
+          - name: PGPORT
+            value: "{{ .Values.global.postgresql.postgresqlPort }}"
+          - name: PGDATABASE
+            value: "{{ .Values.global.postgresql.postgresqlDatabase }}"
+          - name: PGUSER
+            value: "{{ .Values.global.postgresql.postgresqlUser }}"
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef: {{- include "openreplay.secrets" (dict "key" "postgresql-password" "ctx" .) | nindent 16 }}
+          - name: VAULT_ADDR
+            value: "{{ .Values.global.vault.vaultHost }}"
+        image: hashicorp/vault:1.12.0
+        command: 
+        - /bin/sh
+        - /opt/migrations/vault.sh
+        volumeMounts:
+        - name: shared
+          mountPath: /opt/openreplay
+        - name: dbmigrationscript
+          mountPath: /opt/migrations/
+      - name: vault-s3-upload
+        env:
+          {{- range $key, $val := .Values.global.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          {{- range $key, $val := .Values.migration.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          - name: AWS_ACCESS_KEY_ID
+            value: "{{ .Values.global.s3.accessKey }}"
+          - name: AWS_SECRET_ACCESS_KEY
+            value: "{{ .Values.global.s3.secretKey }}"
+          - name: AWS_DEFAULT_REGION
+            value: "{{ .Values.global.s3.region }}"
+          - name: AWS_ENDPOINT
+            value: "{{- include "openreplay.s3Endpoint" . }}"
+          - name: VAULT_BUCKET
+            value: "{{ .Values.global.s3.vaultBucket }}"
+        image: amazon/aws-cli
+        command: 
+        - /bin/bash
+        - -c
+        args:
+        - |
+          while true; do
+          [[ -f /opt/openreplay/vault_creds.txt ]] && {
+            aws s3 cp --endpoint ${AWS_ENDPOINT} /opt/openreplay/vault_creds.txt s3://${VAULT_BUCKET}/vault/
+            exit 0
+          } || {
+            [[ -f /opt/openreplay/err.txt ]] && {
+              (cat /opt/openreplay/err.txt | grep -i "vault is already initialized") && { 
+                  cat /opt/openreplay/err.txt
+                  echo vault already initialized
+                  exit 0
+                } || {
+                  echo Unknown error
+                  cat /opt/openreplay/err.txt
+                  exit 2
+              }
+            }
+          } || {
+            echo vault not yet initialized;
+            sleep 2
+          };
+          done
+        volumeMounts:
+        - name: shared
+          mountPath: /opt/openreplay
+      {{- end }}
+      {{- end}}
+      {{- if or .Values.global.enterpriseEditionLicense .Values.forceKafkaMigration }}
+      - name: kafka
+        image: "{{.Values.kafkaMigration.image.registry}}/{{.Values.kafkaMigration.image.repository}}:{{.Values.kafkaMigration.image.tag}}"
+        env:
+          - name: OPENREPLAY_VERSION
+            valueFrom:
+              configMapKeyRef:
+                name: openreplay-version
+                key: version
+                optional: true
+          {{- range $key, $val := .Values.global.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          {{- range $key, $val := .Values.migration.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          - name: RETENTION_TIME
+            value: "{{ .Values.global.kafka.retentionTime }}"
+          - name: KAFKA_HOST
+            value: "{{ .Values.global.kafka.kafkaHost }}"
+          - name: KAFKA_PORT
+            value: "{{ .Values.global.kafka.kafkaPort }}"
+          - name: KAFKA_SSL
+            value: "{{ .Values.global.kafka.kafkaUseSsl }}"
+          - name: REPLICATION_FACTOR
+            value: "{{ .Values.global.kafka.replicationFactor | default 2 }}"
+          - name: FORCE_MIGRATION
+            value: "{{ .Values.forceMigration }}"
+          - name: PREVIOUS_APP_VERSION
+            value: "{{ .Values.fromVersion }}"
+          - name: CHART_APP_VERSION
+            value: "{{ .Chart.AppVersion }}"
+        command: 
+        - /bin/bash
+        - /opt/migrations/dbops.sh
+        - "{{ .Release.IsUpgrade }}"
+        - kafka
+        volumeMounts:
+        - name: shared
+          mountPath: /opt/openreplay
+        - name: dbmigrationscript
+          mountPath: /opt/migrations/
+      {{- end}}
+      - name: clickhouse
+        image: "{{.Values.clickhouse.image.registry}}/{{.Values.clickhouse.image.repository}}:{{.Values.clickhouse.image.tag}}"
+        env:
+          - name: OPENREPLAY_VERSION
+            valueFrom:
+              configMapKeyRef:
+                name: openreplay-version
+                key: version
+                optional: true
+          {{- range $key, $val := .Values.global.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          {{- range $key, $val := .Values.migration.env }}
+          - name: {{ $key }}
+            value: '{{ $val }}'
+          {{- end }}
+          - name: FORCE_MIGRATION
+            value: "{{ .Values.forceMigration }}"
+          - name: PREVIOUS_APP_VERSION
+            value: "{{ .Values.fromVersion }}"
+          - name: CHART_APP_VERSION
+            value: "{{ .Chart.AppVersion }}"
+          - name: CH_HOST
+            value: "{{.Values.global.clickhouse.chHost}}"
+          - name: CH_PORT
+            value: "{{.Values.global.clickhouse.service.dataPort}}"
+          - name: CH_PORT_HTTP
+            value: "{{.Values.global.clickhouse.service.webPort}}"
+          - name: CH_USERNAME
+            value: "{{.Values.global.clickhouse.username}}"
+          - name: CH_PASSWORD
+            valueFrom:
+              secretKeyRef: {{- include "openreplay.secrets" (dict "key" "clickhouse-password" "ctx" .) | nindent 16 }}
+          - name: CH_USE_TLS
+            value: "{{.Values.global.clickhouse.use_tls}}"
+        command: 
+        - /bin/bash
+        - /opt/migrations/dbops.sh
+        - "{{ .Release.IsUpgrade }}"
+        - clickhouse
+        volumeMounts:
+        - name: shared
+          mountPath: /opt/openreplay
+        - name: dbmigrationscript
+          mountPath: /opt/migrations/
+      volumes:
+      - name: dbmigrationscript
+        configMap:
+          name: db-migration-script
+      - name: shared
+        emptyDir: {}
+      {{- if eq .Values.global.pvcRWXName  "hostPath" }}
+      - name: datadir
+        hostPath:
+          # Ensure the file directory is created.
+          path: {{.Values.global.orTmpDir}}
+          type: DirectoryOrCreate
+      {{- else }}
+      - name: datadir
+        persistentVolumeClaim:
+          claimName: "{{ .Values.global.pvcRWXName }}"
+      {{- end }}
+      restartPolicy: Never
+{{- end}}

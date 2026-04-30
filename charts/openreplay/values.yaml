@@ -1,0 +1,144 @@
+# Umbrella values for the OpenReplay KAOPS addon.
+#
+# Top-level `global:` propagates to all subcharts (databases + openreplay).
+# Upstream's openreplay subchart and its nested charts (storage, sink, chalice,
+# connector, etc.) dereference many `Values.global.<key>.<sub>` paths, so each
+# of those parent dicts must exist to avoid nil-pointer errors at render time.
+#
+# Connection details (postgresqlHost, chHost, redisHost, kafkaHost, etc.) are
+# left empty in v1 and need to be filled with in-cluster service DNS once the
+# bundled databases come up. See README "Verification of upstream value
+# mappings" — these are the v1 follow-up TODOs.
+
+global:
+  # domainName is the FQDN OpenReplay is reachable at (https://<host>).
+  # System-injected by KAOPS hub via config.yaml.
+  domainName: ""
+
+  # All four existingSecret refs point at the bootstrap-Job-created Secret
+  # (templates/bootstrap-secret-job.yaml). With these set, upstream's
+  # or-secrets template skips its own render — our Secret is the single
+  # source of truth.
+  postgresql:
+    existingSecret: openreplay-shared-secrets
+    existingSecretPasswordKey: postgresql-password
+    postgresqlHost: ""           # TODO post-vendoring: in-cluster postgres DNS
+    postgresqlPort: "5432"
+    postgresqlUser: postgres
+    postgresqlDatabase: postgres
+    postgresqlPassword: ""       # unused when existingSecret is set
+  clickhouse:
+    existingSecret: openreplay-shared-secrets
+    existingSecretPasswordKey: clickhouse-password
+    chHost: ""                   # TODO post-vendoring: in-cluster clickhouse DNS
+    username: default
+    password: ""                 # unused when existingSecret is set
+    use_tls: false
+    service:
+      webPort: 8123
+      dataPort: 9000
+  s3:
+    existingSecret: openreplay-shared-secrets
+    region: us-east-1
+    endpoint: ""                 # TODO post-vendoring: in-cluster minio endpoint
+    accessKey: ""                # unused when existingSecret is set
+    secretKey: ""                # unused when existingSecret is set
+    assetsBucket: sessions-assets
+    assistRecordsBucket: assist-records
+    recordingsBucket: mobs
+    sourcemapsBucket: sourcemaps
+    spotsBucket: spots
+    vaultBucket: vault
+  orAppSecrets:
+    existingSecret: openreplay-shared-secrets
+
+  redis:
+    redisHost: ""                # TODO post-vendoring: in-cluster redis DNS
+  kafka:
+    kafkaHost: ""                # TODO post-vendoring: in-cluster kafka DNS
+    kafkaPort: "9092"
+    kafkaUseSsl: false
+    replicationFactor: 1
+    retentionTime: 86400
+  vault:
+    vaultHost: ""                # TODO post-vendoring: in-cluster vault DNS
+
+  # Email (SMTP) — left disabled in v1; surface in v2 form when needed.
+  email:
+    emailFrom: ""
+    emailHost: ""
+    emailPort: ""
+    emailUser: ""
+    emailPassword: ""
+    emailUseTls: false
+    emailUseSsl: false
+    emailSslCert: ""
+    emailSslKey: ""
+
+  ingress:
+    controller:
+      ingressClassResource:
+        name: nginx
+      service:
+        ports:
+          http: 80
+          https: 443
+    externalProxyPorts:
+      http: ""
+      https: ""
+
+  connector:
+    env: {}
+
+# Secret bootstrap Job (templates/bootstrap-secret-job.yaml). Creates
+# `openreplay-shared-secrets` once, idempotent on subsequent syncs. See README
+# "Secrets and rotation" for the lifecycle and rotation procedure.
+bootstrap:
+  image:
+    repository: bitnami/kubectl
+    tag: "1.31"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+databases:
+  enabled: true
+  # All bundled in v1. External-DB toggles deferred to v2.
+  postgresql:
+    enabled: true
+  redis:
+    enabled: true
+  clickhouse:
+    enabled: true
+  kafka:
+    enabled: true
+  minio:
+    enabled: true
+  vault:
+    enabled: true
+
+openreplay:
+  enabled: true
+
+  # Disable upstream's bundled NGINX Ingress Controller. KAOPS clusters install
+  # ingress-nginx + cert-manager cluster-wide via the `ingress-warden` addon;
+  # we only want OpenReplay to *create Ingress resources*, not stand up another
+  # controller + IngressClass. Per-app subcharts (api, assist, chalice,
+  # frontend, http, integrations, spot) each render their own Ingress that
+  # picks up the className from global.ingress.controller.ingressClassResource.name
+  # ("nginx", set on the umbrella's top-level global block above) and the
+  # cert-manager.io/cluster-issuer annotation hardcoded in upstream's
+  # frontend/ingress-master.yaml ("letsencrypt-prod" — matches the
+  # ClusterIssuer that ingress-warden ships).
+  ingress-nginx:
+    enabled: false
+
+  # User-input email surfaced in the install form. Purely informational in v1
+  # (no admin seed job) — OpenReplay's onboarding makes the first signup the
+  # admin. Kept available so future SSO/seed work can read it.
+  adminEmail: ""

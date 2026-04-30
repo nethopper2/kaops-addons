@@ -1,0 +1,21 @@
+1. Get the application URL by running these commands:
+{{- if .Values.listeners.client.enabled }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "kafka.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit Kafka at kafka.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.client.port }}"
+  
+  To connect from within the cluster:
+  - Bootstrap servers: {{ include "kafka.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.client.port }}
+  - Headless service: {{ include "kafka.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.client.port }}
+{{- end }}
+
+{{- if .Values.listeners.ssl.enabled }}
+  SSL endpoint: {{ include "kafka.fullname" . }}-ssl.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ssl.port }}
+{{- end }}
+
+Kafka cluster configuration:
+- Replicas: {{ .Values.replicaCount }}
+- KRaft mode: {{ .Values.kraft.enabled }}
+{{- if .Values.kraft.enabled }}
+- Cluster ID: {{ .Values.kraft.clusterId }}
+{{- end }}
+- TLS enabled: {{ .Values.tls.enabled }}

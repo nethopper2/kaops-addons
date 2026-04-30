@@ -1,0 +1,195 @@
+# Default values for kafka.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Kafka cluster configuration
+replicaCount: 2
+
+image:
+  repository: ghcr.io/openreplay/kafka
+  pullPolicy: IfNotPresent
+  tag: "3"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Service Account configuration
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Pod annotations and labels
+podAnnotations: {}
+podLabels: {}
+
+# Pod security context
+podSecurityContext:
+  fsGroup: 1001
+
+# Container security context
+securityContext:
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  runAsUser: 1001
+
+# KRaft configuration
+kraft:
+  enabled: true
+  # Cluster ID (must be a valid base64 UUID, generate with: kafka-storage.sh random-uuid)
+  clusterId: "Sjg_Rr1iQbO9xpahgDbYpQ"
+  processRoles: "broker,controller"
+  controllerListenerNames: "INTERNAL"
+
+# Listener configuration
+listeners:
+  client:
+    enabled: true
+    port: 9092
+    protocol: PLAINTEXT
+  internal:
+    enabled: true
+    port: 9093
+    protocol: PLAINTEXT
+  ssl:
+    enabled: false
+    port: 9094
+    protocol: SSL
+
+# TLS configuration
+tls:
+  enabled: false
+  # Secret name containing TLS certificates
+  # Expected keys: ca-cert.pem, kafka-{0,1,2,...}-cert.pem, kafka-{0,1,2,...}-key.pem
+  secretName: kafka-tls-certs
+  clientAuth: "required"
+  # Disable hostname verification (empty string disables it)
+  endpointIdentificationAlgorithm: ""
+
+# Kafka configuration
+kafka:
+  # Message size (3MB default)
+  messageMaxBytes: "3145728"
+  replicaFetchMaxBytes: "3145728"
+  
+  # Retention settings (7 days / 1GB)
+  logRetentionHours: "168"
+  logRetentionBytes: "1073741824"
+  logSegmentBytes: "1073741824"
+  
+  # Flush settings
+  logFlushIntervalMessages: "10000"
+  logFlushIntervalMs: "1000"
+  logRetentionCheckIntervalMs: "300000"
+  
+  # Replication settings
+  defaultReplicationFactor: "1"
+  offsetsTopicReplicationFactor: "1"
+  transactionStateLogReplicationFactor: "1"
+  transactionStateLogMinIsr: "1"
+  
+  # Performance settings
+  numIoThreads: "8"
+  numNetworkThreads: "3"
+  numPartitions: "1"
+  numRecoveryThreadsPerDataDir: "1"
+  
+  # Network buffers
+  socketReceiveBufferBytes: "102400"
+  socketRequestMaxBytes: "104857600"
+  socketSendBufferBytes: "102400"
+  
+  # Security settings
+  autoCreateTopicsEnable: "true"
+  deleteTopicEnable: "false"
+  allowEveryoneIfNoAclFound: "true"
+  superUsers: "User:admin"
+
+# Service configuration
+service:
+  type: ClusterIP
+  client:
+    port: 9092
+  ssl:
+    port: 9094
+
+# Headless service for StatefulSet
+headlessService:
+  enabled: true
+
+# Resources
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+
+# Probes configuration
+livenessProbe:
+  tcpSocket:
+    port: kafka-client
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+readinessProbe:
+  tcpSocket:
+    port: kafka-client
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+# Persistence configuration
+persistence:
+  enabled: true
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+# Pod management
+podManagementPolicy: Parallel
+
+# Update strategy
+updateStrategy:
+  type: RollingUpdate
+
+# Affinity configuration
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: kafka
+              app.kubernetes.io/component: kafka
+
+nodeSelector: {}
+
+tolerations: []
+
+# Extra environment variables
+extraEnvVars: []
+# - name: KAFKA_CFG_CUSTOM_SETTING
+#   value: "custom_value"
+
+# Extra volumes
+extraVolumes: []
+# - name: custom-volume
+#   emptyDir: {}
+
+# Extra volume mounts
+extraVolumeMounts: []
+# - name: custom-volume
+#   mountPath: /custom/path

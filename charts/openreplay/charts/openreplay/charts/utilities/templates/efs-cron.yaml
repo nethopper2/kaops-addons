@@ -1,0 +1,78 @@
+{{- $kubeTargetVersion := .Capabilities.KubeVersion.GitVersion }}
+{{- if semverCompare ">=1.22.0-0" $kubeTargetVersion }}
+apiVersion: batch/v1
+{{- else }}
+apiVersion: batch/v1beta1
+{{- end }}
+kind: CronJob
+metadata:
+  name: efs-cleaner
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "utilities.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.cron }}"
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0 # Don't restart the failed jobs
+      template:
+        metadata:
+          {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        spec:
+          restartPolicy: Never
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+          - name: efs-cleaner
+            image: debian:stable-slim
+            command:
+            - /bin/sh
+            - -c
+            args:
+            - |
+              # Delete all the files older than {{.Values.efsCleaner.retention}} days
+              set -x
+              echo "Cleaning NFS strorage for data older than {{.Values.efsCleaner.retention}} days"
+              storage=$(df -h /mnt/efs | awk 'NR==2 {print $2}')
+              {{- $time := mul .Values.efsCleaner.retention 1440 }}
+              {{- if .Values.efsCleaner.retentionHours }}
+              {{- $time = mul .Values.efsCleaner.retentionHours 60 }} 
+              {{- end}}
+              find /mnt/efs -type f -mmin +{{ $time }} -exec /bin/bash -c "ls -lah {}; rm {}" \;
+              echo "Storage before cleaning"
+              echo ${storage}
+              echo "Storage after cleaning"
+              df -h /mnt/efs | awk 'NR==2 {print $2}'
+            volumeMounts:
+            - mountPath: /mnt/efs
+              name: datadir
+          {{- if eq (tpl .Values.efsCleaner.pvc.name . ) "hostPath" }}
+          volumes:
+          - name: datadir
+            hostPath:
+              # Ensure the file directory is created.
+              path: {{ tpl .Values.efsCleaner.pvc.hostMountPath . }}
+              type: DirectoryOrCreate
+          {{- else }}
+          volumes:
+          - name: datadir
+            persistentVolumeClaim:
+              claimName: {{ tpl .Values.efsCleaner.pvc.name . }}
+          {{- end }}
+
