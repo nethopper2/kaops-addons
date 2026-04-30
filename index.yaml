@@ -5613,6 +5613,26 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/opencost-0.1.0/opencost-0.1.0.tgz
     version: 0.1.0
+  openreplay:
+  - apiVersion: v2
+    appVersion: v1.26.0
+    created: "2026-04-30T15:34:56.185325154Z"
+    dependencies:
+    - condition: databases.enabled
+      name: databases
+      repository: file://./charts/databases
+      version: 0.1.0
+    - condition: openreplay.enabled
+      name: openreplay
+      repository: file://./charts/openreplay
+      version: 0.1.0
+    description: KAOPS addon to install OpenReplay session replay
+    digest: f0e528fa6382da7b695b73cdc4fb291669ef49a51c5225dc5211926b05a2823d
+    name: openreplay
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/openreplay-0.1.0/openreplay-0.1.0.tgz
+    version: 0.1.0
   prefect-server:
   - apiVersion: v2
     appVersion: 3.2.5
@@ -26439,4 +26459,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-04-28T11:01:45.420538986Z"
+generated: "2026-04-30T15:34:56.186429222Z"
