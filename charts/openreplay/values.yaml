@@ -10,6 +10,30 @@
 # bundled databases come up. See README "Verification of upstream value
 # mappings" — these are the v1 follow-up TODOs.
 
+# Pin the entire OpenReplay workload (apps + bundled databases) to a dedicated,
+# tainted node group. The node group must exist before install with the label
+# AND matching taint below; pods will otherwise stay Pending. The convention
+# is generic ("tools") so the same node group can host other tools-class
+# addons later.
+#
+# Anchors below (&dedicatedNodeSelector / &dedicatedTolerations) are referenced
+# at every subchart-component path further down. To change the convention, edit
+# these two values once.
+#
+# `enabled` is surfaced in the KAOPS install form as a toggle. Note: turning
+# it OFF in the form does NOT remove nodeSelector/tolerations from the 28+
+# subchart pods (KAOPS form variables don't fan out across paths). To install
+# on shared nodes, override the per-component values directly via Helm.
+nodeGroup:
+  enabled: true
+  podNodeSelector: &dedicatedNodeSelector
+    nethopper.io/dedicated: tools
+  podTolerations: &dedicatedTolerations
+    - key: nethopper.io/dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
+
 global:
   # domainName is the FQDN OpenReplay is reachable at (https://<host>).
   # System-injected by KAOPS hub via config.yaml.
@@ -111,16 +135,43 @@ databases:
   # All bundled in v1. External-DB toggles deferred to v2.
   postgresql:
     enabled: true
+    # Bundled chart uses old Bitnami naming (master/slave, not primary/readReplicas).
+    master:
+      nodeSelector: *dedicatedNodeSelector
+      tolerations: *dedicatedTolerations
+    slave:
+      nodeSelector: *dedicatedNodeSelector
+      tolerations: *dedicatedTolerations
   redis:
     enabled: true
+    master:
+      nodeSelector: *dedicatedNodeSelector
+      tolerations: *dedicatedTolerations
+    slave:
+      nodeSelector: *dedicatedNodeSelector
+      tolerations: *dedicatedTolerations
   clickhouse:
     enabled: true
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
   kafka:
     enabled: true
+    # Top-level kafka.affinity (podAntiAffinity for hostname spreading) is
+    # preserved as the bundled subchart default — only narrow scheduling here.
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
   minio:
     enabled: true
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
   vault:
     enabled: true
+    server:
+      nodeSelector: *dedicatedNodeSelector
+      tolerations: *dedicatedTolerations
+    injector:
+      nodeSelector: *dedicatedNodeSelector
+      tolerations: *dedicatedTolerations
 
 openreplay:
   enabled: true
@@ -142,3 +193,70 @@ openreplay:
   # (no admin seed job) — OpenReplay's onboarding makes the first signup the
   # admin. Kept available so future SSO/seed work can read it.
   adminEmail: ""
+
+  # Pin every application microservice to the dedicated node group.
+  # Field shape verified against each subchart's values.yaml at chart-package
+  # time (charts/openreplay/charts/openreplay/charts/<name>/values.yaml).
+  alerts:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  api:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  assets:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  assist:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  assist-api:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  assist-stats:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  canvases:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  chalice:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  connector:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  db:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  ender:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  frontend:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  heuristics:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  http:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  images:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  integrations:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  sink:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  sourcemapreader:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  spot:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  storage:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations
+  utilities:
+    nodeSelector: *dedicatedNodeSelector
+    tolerations: *dedicatedTolerations

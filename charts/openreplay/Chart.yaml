@@ -2,7 +2,7 @@ apiVersion: v2
 name: openreplay
 description: KAOPS addon to install OpenReplay session replay
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "v1.26.0"
 dependencies:
   - name: databases

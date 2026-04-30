@@ -13,7 +13,7 @@ metadata:
     hub: true
     hubRequired: false
     edge: true
-    clusterMessage: Requires NGINX Ingress Controller and Cert-Manager already installed cluster-wide (install via the Ingress Warden addon). OpenReplay only creates Ingress resources; it does not deploy its own controller.
+    clusterMessage: Requires NGINX Ingress Controller and Cert-Manager already installed cluster-wide (install via the Ingress Warden addon). Also requires a dedicated node group labeled `nethopper.io/dedicated=tools` and tainted `nethopper.io/dedicated=tools:NoSchedule` — OpenReplay pods (apps and bundled databases) are pinned to that node group.
     infoMessage: First user to sign up becomes the admin. There is no admin seed step.
 
 forms:
@@ -24,6 +24,7 @@ forms:
       - slug: 'details'
         variableSlugs:
           - 'adminEmail'
+          - 'dedicatedNodeGroup'
         ui:
           label: 'Details'
 
@@ -36,6 +37,18 @@ variables:
       label: 'Admin Email'
       placeholder: 'admin@example.com'
       validation: 'email'
+  # v1: informational toggle. Hardcoded pinning in values.yaml applies to all
+  # 28+ subchart pods regardless of this value (KAOPS form variables don't
+  # fan out across multiple paths). To install on shared nodes, override the
+  # per-component nodeSelector/tolerations via Helm values directly.
+  - slug: 'dedicatedNodeGroup'
+    path: 'nodeGroup.enabled'
+    forms: ['default']
+    ui:
+      type: 'toggle'
+      label: 'Pin to dedicated node group'
+      help: 'OpenReplay pods are pinned to a node group labeled nethopper.io/dedicated=tools (taint nethopper.io/dedicated=tools:NoSchedule). Create the node group before install.'
+      value: true
 
 system:
   # Domain name flows through global.domainName (read by upstream's per-app
