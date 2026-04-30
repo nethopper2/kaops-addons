@@ -4,8 +4,8 @@ metadata:
   description: Self-hosted session replay and product analytics
   categories: ['Observability']
   externalUrl: 'https://openreplay.com/'
-  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/openreplay/logo.jpeg"
-  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/openreplay/logo.jpeg"
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/openreplay/logo.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/openreplay/logo.png"
   detailUrl: 'https://docs.openreplay.com/en/deployment/deploy-kubernetes/'
   isProduction: true
   serverSideDiff: false
