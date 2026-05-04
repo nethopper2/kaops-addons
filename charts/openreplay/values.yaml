@@ -39,6 +39,18 @@ global:
   # System-injected by KAOPS hub via config.yaml.
   domainName: ""
 
+  # Container registry hosting the OpenReplay app microservice images
+  # (chalice, api, frontend, http, sink, storage, alerts, assets, assist,
+  # assist-api, canvases, connector, db, ender, heuristics, images,
+  # integrations, sourcemapreader, spot, utilities). Each app subchart
+  # at charts/openreplay/charts/<name>/values.yaml references this via
+  # `image.registry: "{{ .Values.global.openReplayContainerRegistry }}"`.
+  # Upstream leaves this unset; without a value pods render as
+  # `image: "/<name>:v1.26.x"` which kubelet rejects with InvalidImageName.
+  # Same namespace as the infra images already pinned in the chart
+  # (`ghcr.io/openreplay/postgres`, `.../kafka`, `.../migration`).
+  openReplayContainerRegistry: ghcr.io/openreplay
+
   # RWX shared scratch volume mounted by the databases-migrate Job (git
   # checkout of schema files at /mnt/efs) and several app pods (sink, storage,
   # chalice, etc.) for temp/cache files. Upstream does NOT auto-create this
@@ -236,6 +248,15 @@ databases:
 
 openreplay:
   enabled: true
+
+  # Scheduling for the openreplay subchart's own pods — anything rendered
+  # by templates under charts/openreplay/charts/openreplay/templates/, NOT
+  # by an inner per-app subchart. The `databases-migrate` Job is the main
+  # consumer here. Without these the migrate Job lands on default-pool and
+  # fails Multi-Attach on the RWO `openreplay-rwx` PVC, which is already
+  # bound to the pool-1 node where the app pods live.
+  nodeSelector: *dedicatedNodeSelector
+  tolerations: *dedicatedTolerations
 
   # Disable upstream's bundled NGINX Ingress Controller. KAOPS clusters install
   # ingress-nginx + cert-manager cluster-wide via the `ingress-warden` addon;
