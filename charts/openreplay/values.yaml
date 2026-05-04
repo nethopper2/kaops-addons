@@ -249,18 +249,17 @@ databases:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
   vault:
-    enabled: true
-    # Pin the Service name to `vault` so global.vault.vaultHost resolves the
-    # same regardless of release name. Without this, hashicorp/vault's helper
-    # falls back to <release-name>-vault, which would force the host to be
-    # rewritten per install.
-    fullnameOverride: vault
-    server:
-      nodeSelector: *dedicatedNodeSelector
-      tolerations: *dedicatedTolerations
-    injector:
-      nodeSelector: *dedicatedNodeSelector
-      tolerations: *dedicatedTolerations
+    # Vault is only consumed by the EE migration container in
+    # charts/openreplay/charts/openreplay/templates/job.yaml (gated by
+    # `global.enterpriseEditionLicense`). With EE off there is no FOSS
+    # consumer, and a fresh hashicorp/vault pod stays sealed/uninitialized
+    # forever (Ready=False), so we keep it disabled.
+    #
+    # To re-enable for an EE install: flip `enabled: true`, restore
+    # `fullnameOverride: vault` (so global.vault.vaultHost resolves
+    # release-name-independently), set `enterpriseEditionLicense`, and
+    # plan an init/unseal flow (KMS auto-unseal recommended).
+    enabled: false
 
 openreplay:
   enabled: true
