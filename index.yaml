@@ -5616,6 +5616,25 @@ entries:
   openreplay:
   - apiVersion: v2
     appVersion: v1.26.0
+    created: "2026-05-04T11:55:34.092260775Z"
+    dependencies:
+    - condition: databases.enabled
+      name: databases
+      repository: file://./charts/databases
+      version: 0.1.0
+    - condition: openreplay.enabled
+      name: openreplay
+      repository: file://./charts/openreplay
+      version: 0.1.0
+    description: KAOPS addon to install OpenReplay session replay
+    digest: 36354bfe6a7bec7431872921d1956c5c6f1637fc40c3bc134fb729f9371b22da
+    name: openreplay
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/openreplay-0.2.2/openreplay-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v2
+    appVersion: v1.26.0
     created: "2026-05-04T11:46:29.669471567Z"
     dependencies:
     - condition: databases.enabled
@@ -26497,4 +26516,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-05-04T11:46:29.671013386Z"
+generated: "2026-05-04T11:55:34.093584117Z"
