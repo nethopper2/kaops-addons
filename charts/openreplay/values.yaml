@@ -39,6 +39,15 @@ global:
   # System-injected by KAOPS hub via config.yaml.
   domainName: ""
 
+  # RWX shared scratch volume mounted by the databases-migrate Job (git
+  # checkout of schema files at /mnt/efs) and several app pods (sink, storage,
+  # chalice, etc.) for temp/cache files. Upstream does NOT auto-create this
+  # PVC — by default the umbrella creates one (see `rwx:` below). To use a
+  # pre-existing PVC instead, set rwx.create: false and override
+  # pvcRWXName to the existing PVC name.
+  pvcRWXName: openreplay-rwx
+  orTmpDir: "/mnt/efs"           # mount path inside pods (informational; only used by the hostPath sentinel path)
+
   # All four existingSecret refs point at the bootstrap-Job-created Secret
   # (templates/bootstrap-secret-job.yaml). With these set, upstream's
   # or-secrets template skips its own render — our Secret is the single
@@ -113,6 +122,29 @@ global:
 
   connector:
     env: {}
+
+# Chart-managed RWX PVC (templates/rwx-pvc.yaml). Mounted by the databases-
+# migrate Job (pre-install hook) and several app pods. The PVC is created as
+# a Helm pre-install,pre-upgrade hook with weight -10 so it provisions before
+# the migrate Job (weight -5). Hook-delete-policy is intentionally omitted so
+# the PVC persists across upgrades.
+#
+# GKE: enable the Filestore CSI driver on the cluster, then `standard-rwx`
+# (Filestore Basic HDD, 1TiB minimum) or `enterprise-rwx` (Filestore Enterprise)
+# StorageClasses become available. EKS: use efs-sc with the EFS CSI driver.
+# To use an existing PVC instead, set `create: false` and override
+# `global.pvcRWXName` above.
+rwx:
+  create: true
+  size: 1Ti
+  # Empty string => cluster default (only works if the default SC supports RWX).
+  # Override to your cluster's RWX StorageClass:
+  #   GKE Filestore Basic:      standard-rwx
+  #   GKE Filestore Enterprise: enterprise-rwx
+  #   EKS EFS:                  efs-sc
+  storageClassName: standard-rwx
+  accessModes:
+    - ReadWriteMany
 
 # Secret bootstrap Job (templates/bootstrap-secret-job.yaml). Creates
 # `openreplay-shared-secrets` once, idempotent on subsequent syncs. See README

@@ -1,0 +1,45 @@
+{{- /*
+Chart-managed RWX PersistentVolumeClaim shared by:
+  - the databases-migrate Job (mounted at /mnt/efs for git checkout of
+    OpenReplay schema scripts; runs as a pre-install,pre-upgrade hook
+    at weight -5 in upstream's openreplay/templates/job.yaml)
+  - several app subcharts that template `pvc.name` from
+    `.Values.global.pvcRWXName` (api, canvases, chalice, connector,
+    images, sink, spot, storage, utilities)
+
+Lifecycle:
+  helm.sh/hook: pre-install,pre-upgrade with weight -10 — guarantees the
+  PVC is bound before the migrate Job (weight -5) is created in both Helm
+  and ArgoCD installs (ArgoCD honors helm.sh/hook annotations and translates
+  hook-weight to sync-wave equivalent).
+
+  hook-delete-policy is intentionally OMITTED so Helm/ArgoCD never delete
+  the PVC. PVCs hold persistent state and the same PVC is reused across
+  upgrades. Drift on size or storageClassName is rejected by the K8s API
+  (PVCs are mostly immutable post-bind), which is the desired safety.
+
+Opt out via `rwx.create: false` if supplying a pre-existing PVC.
+*/ -}}
+{{- if .Values.rwx.create }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.global.pvcRWXName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-10"
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  accessModes:
+    {{- toYaml .Values.rwx.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.rwx.size }}
+  {{- with .Values.rwx.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+{{- end }}
