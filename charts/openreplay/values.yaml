@@ -123,28 +123,33 @@ global:
   connector:
     env: {}
 
-# Chart-managed RWX PVC (templates/rwx-pvc.yaml). Mounted by the databases-
-# migrate Job (pre-install hook) and several app pods. The PVC is created as
-# a Helm pre-install,pre-upgrade hook with weight -10 so it provisions before
-# the migrate Job (weight -5). Hook-delete-policy is intentionally omitted so
+# Chart-managed PVC (templates/rwx-pvc.yaml). Mounted by the databases-
+# migrate Job (pre-install hook) and several app pods. Created as a Helm
+# pre-install,pre-upgrade hook with weight -10 so it provisions before the
+# migrate Job (weight -5). Hook-delete-policy is intentionally omitted so
 # the PVC persists across upgrades.
 #
-# GKE: enable the Filestore CSI driver on the cluster, then `standard-rwx`
-# (Filestore Basic HDD, 1TiB minimum) or `enterprise-rwx` (Filestore Enterprise)
-# StorageClasses become available. EKS: use efs-sc with the EFS CSI driver.
+# Defaults: ReadWriteOnce on a standard cloud disk (cheap, ~50 GiB). RWO
+# means "one node" — multiple pods can share an RWO PVC if they all land
+# on the same node, which is exactly what our nodeGroup pinning gives us
+# while the dedicated node group has 1 node. **Switch to a true RWX
+# StorageClass before scaling the dedicated pool to multiple nodes** —
+# otherwise pods on different nodes won't be able to mount this PVC.
+#
+# RWX options when scaling out:
+#   GKE Filestore Basic:      standard-rwx (enable GcpFilestoreCsiDriver addon; 1 TiB min, ~$200/mo)
+#   GKE Filestore Enterprise: enterprise-rwx
+#   EKS EFS:                  efs-sc (EFS CSI driver)
+# Then also flip accessModes to [ReadWriteMany].
+#
 # To use an existing PVC instead, set `create: false` and override
 # `global.pvcRWXName` above.
 rwx:
   create: true
-  size: 1Ti
-  # Empty string => cluster default (only works if the default SC supports RWX).
-  # Override to your cluster's RWX StorageClass:
-  #   GKE Filestore Basic:      standard-rwx
-  #   GKE Filestore Enterprise: enterprise-rwx
-  #   EKS EFS:                  efs-sc
-  storageClassName: standard-rwx
+  size: 50Gi
+  storageClassName: standard-rwo
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
 
 # Secret bootstrap Job (templates/bootstrap-secret-job.yaml). Creates
 # `openreplay-shared-secrets` once, idempotent on subsequent syncs. See README
