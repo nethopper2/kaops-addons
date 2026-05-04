@@ -45,11 +45,13 @@ global:
   # integrations, sourcemapreader, spot, utilities). Each app subchart
   # at charts/openreplay/charts/<name>/values.yaml references this via
   # `image.registry: "{{ .Values.global.openReplayContainerRegistry }}"`.
-  # Upstream leaves this unset; without a value pods render as
-  # `image: "/<name>:v1.26.x"` which kubelet rejects with InvalidImageName.
-  # Same namespace as the infra images already pinned in the chart
-  # (`ghcr.io/openreplay/postgres`, `.../kafka`, `.../migration`).
-  openReplayContainerRegistry: ghcr.io/openreplay
+  # Matches upstream's default in scripts/helmcharts/vars.yaml. The app
+  # microservice packages on ghcr.io/openreplay (api, chalice, frontend,
+  # ...) are *private* — anonymous pulls return 403. The infra helper
+  # images upstream pins separately (ghcr.io/openreplay/postgres,
+  # .../kafka, .../minio, .../migration) are public on ghcr and stay
+  # there; only the per-app registry is overridden here.
+  openReplayContainerRegistry: public.ecr.aws/p1t3u8a3
 
   # RWX shared scratch volume mounted by the databases-migrate Job (git
   # checkout of schema files at /mnt/efs) and several app pods (sink, storage,
@@ -220,6 +222,14 @@ databases:
       tolerations: *dedicatedTolerations
   clickhouse:
     enabled: true
+    # Bundled clickhouse subchart reads `Values.existingSecret` directly
+    # (its statefulset.yaml does not consult Values.global.clickhouse),
+    # so the umbrella's global wiring doesn't cascade down. Without this
+    # the ClickHouse pod's CLICKHOUSE_PASSWORD env is empty while the
+    # migration Job and app pods send the random password from
+    # openreplay-shared-secrets, producing AUTHENTICATION_FAILED.
+    existingSecret: openreplay-shared-secrets
+    existingSecretPasswordKey: clickhouse-password
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
   kafka:
@@ -230,6 +240,12 @@ databases:
     tolerations: *dedicatedTolerations
   minio:
     enabled: true
+    # Same pattern as clickhouse above. Without this the minio subchart
+    # auto-generates its own `minio` Secret with random keys, while app
+    # pods send credentials from openreplay-shared-secrets. The expected
+    # secret keys (`access-key`/`secret-key`) match what
+    # templates/bootstrap-secret-job.yaml already creates.
+    existingSecret: openreplay-shared-secrets
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
   vault:
