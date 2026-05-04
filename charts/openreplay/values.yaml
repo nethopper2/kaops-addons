@@ -287,6 +287,18 @@ openreplay:
   ingress-nginx:
     enabled: false
 
+  # Disable Enterprise-Edition-only subcharts. Their images on
+  # public.ecr.aws/p1t3u8a3 only ship `-ee` tags (no FOSS `vX.Y.Z`),
+  # so without an EE license the Deployments stay in ImagePullBackOff.
+  # Conditions are declared in charts/openreplay/charts/openreplay/Chart.yaml:
+  #   - assist-api → `global.ee-components.enabled`
+  #   - connector  → `connector.enabled`
+  global:
+    ee-components:
+      enabled: false
+  connector:
+    enabled: false
+
   # User-input email surfaced in the install form. Purely informational in v1
   # (no admin seed job) — OpenReplay's onboarding makes the first signup the
   # admin. Kept available so future SSO/seed work can read it.
@@ -307,9 +319,7 @@ openreplay:
   assist:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
-  assist-api:
-    nodeSelector: *dedicatedNodeSelector
-    tolerations: *dedicatedTolerations
+  # assist-api is gated off above (global.ee-components.enabled: false).
   assist-stats:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
@@ -319,9 +329,7 @@ openreplay:
   chalice:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
-  connector:
-    nodeSelector: *dedicatedNodeSelector
-    tolerations: *dedicatedTolerations
+  # connector is gated off above (connector.enabled: false).
   db:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
