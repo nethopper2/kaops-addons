@@ -52,10 +52,14 @@ global:
   # (templates/bootstrap-secret-job.yaml). With these set, upstream's
   # or-secrets template skips its own render — our Secret is the single
   # source of truth.
+  # Hostnames below resolve to bundled databases-subchart Services in the
+  # release namespace via cluster DNS search (bare names → in-namespace).
+  # Names are tied to the bundled subcharts' fullnameOverride values; only
+  # change them in lockstep with charts/openreplay/charts/databases/values.yaml.
   postgresql:
     existingSecret: openreplay-shared-secrets
     existingSecretPasswordKey: postgresql-password
-    postgresqlHost: ""           # TODO post-vendoring: in-cluster postgres DNS
+    postgresqlHost: postgresql
     postgresqlPort: "5432"
     postgresqlUser: postgres
     postgresqlDatabase: postgres
@@ -63,7 +67,7 @@ global:
   clickhouse:
     existingSecret: openreplay-shared-secrets
     existingSecretPasswordKey: clickhouse-password
-    chHost: ""                   # TODO post-vendoring: in-cluster clickhouse DNS
+    chHost: clickhouse-openreplay-clickhouse
     username: default
     password: ""                 # unused when existingSecret is set
     use_tls: false
@@ -73,7 +77,7 @@ global:
   s3:
     existingSecret: openreplay-shared-secrets
     region: us-east-1
-    endpoint: ""                 # TODO post-vendoring: in-cluster minio endpoint
+    endpoint: http://minio:9000
     accessKey: ""                # unused when existingSecret is set
     secretKey: ""                # unused when existingSecret is set
     assetsBucket: sessions-assets
@@ -86,15 +90,15 @@ global:
     existingSecret: openreplay-shared-secrets
 
   redis:
-    redisHost: ""                # TODO post-vendoring: in-cluster redis DNS
+    redisHost: redis-master
   kafka:
-    kafkaHost: ""                # TODO post-vendoring: in-cluster kafka DNS
+    kafkaHost: kafka
     kafkaPort: "9092"
     kafkaUseSsl: false
     replicationFactor: 1
     retentionTime: 86400
   vault:
-    vaultHost: ""                # TODO post-vendoring: in-cluster vault DNS
+    vaultHost: vault:8200        # see databases.vault.fullnameOverride below
 
   # Email (SMTP) — left disabled in v1; surface in v2 form when needed.
   email:
@@ -116,9 +120,16 @@ global:
         ports:
           http: 80
           https: 443
+    # Must mirror controller.service.ports above; the openreplay.domainURL
+    # helper builds asset URLs as `<scheme>://<domain>:<externalPort>` and
+    # only suppresses the port suffix when externalPort is "80" or "443".
+    # Leaving these empty produces a trailing-colon URL like
+    # `https://example.com:` which trips YAML parsing for the S3_HOST env
+    # in chalice/etc. (where the value is unquoted). Default to the standard
+    # ports.
     externalProxyPorts:
-      http: ""
-      https: ""
+      http: 80
+      https: 443
 
   connector:
     env: {}
@@ -211,6 +222,11 @@ databases:
     tolerations: *dedicatedTolerations
   vault:
     enabled: true
+    # Pin the Service name to `vault` so global.vault.vaultHost resolves the
+    # same regardless of release name. Without this, hashicorp/vault's helper
+    # falls back to <release-name>-vault, which would force the host to be
+    # rewritten per install.
+    fullnameOverride: vault
     server:
       nodeSelector: *dedicatedNodeSelector
       tolerations: *dedicatedTolerations
