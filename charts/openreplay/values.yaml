@@ -147,7 +147,15 @@ global:
 rwx:
   create: true
   size: 50Gi
-  storageClassName: standard-rwo
+  # MUST be a StorageClass with volumeBindingMode: Immediate. The PVC is an
+  # ArgoCD PreSync hook (so it provisions before the databases-migrate Job
+  # in the same phase) — PreSync hooks need to reach a "complete" state
+  # before the next phase runs. SCs with WaitForFirstConsumer (the GKE CSI
+  # default `standard-rwo`/`premium-rwo`) deadlock here: PVC waits for a
+  # consumer Pod, consumer Pod waits for PreSync to finish, PreSync waits
+  # for the PVC to bind. `standard` (legacy gce-pd provisioner, Immediate
+  # binding) avoids this and works fine for the scratch use case.
+  storageClassName: standard
   accessModes:
     - ReadWriteOnce
 
