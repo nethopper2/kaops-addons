@@ -28,15 +28,13 @@ metadata:
   namespace: "{{ .Release.Namespace }}"
   labels:
     {{- include "openreplay.labels" . | nindent 4 }}
-  annotations:
-    # Local override: dropped `pre-install` so the ConfigMap renders in the
-    # Sync wave alongside the bundled databases-subchart workloads. With the
-    # upstream `pre-install` annotation, ArgoCD PreSync would block on the
-    # paired databases-migrate Job, which can't connect to postgres until
-    # postgres pods are applied in Sync — a deadlock. The pre-upgrade path
-    # is preserved so upgrades still get the new script before app rollout.
-    "helm.sh/hook": pre-upgrade
-    "helm.sh/hook-weight": "-6" # Higher precidence, so the first the config map will get created.
+  # Local override: dropped the entire `helm.sh/hook` annotation (was
+  # `pre-install, pre-upgrade`). ArgoCD maps BOTH `pre-install` and
+  # `pre-upgrade` to the PreSync phase, which would block on the paired
+  # databases-migrate Job — and the Job can't connect to postgres until
+  # the postgres pods are applied in Sync. With the hook removed, this
+  # ConfigMap renders as a regular Sync-wave resource so the migrate Job
+  # can mount it alongside the database workloads.
 data:
   {{- (.Files.Glob "files/*").AsConfig | nindent 2 }}
 ---
@@ -49,14 +47,18 @@ metadata:
     app: databases
     or.workload/type: db-migrate
     {{- include "openreplay.labels" . | nindent 4 }}
-  annotations:
-    # Local override: see the matching note on the ConfigMap above. Keeping
-    # only `pre-upgrade` lets first install render this Job in the Sync wave,
-    # so its init container's `nc` polling loop can wait for the bundled
-    # postgres/clickhouse Services to come up in the same wave.
-    "helm.sh/hook": pre-upgrade
-    "helm.sh/hook-weight": "-5"
-    "helm.sh/hook-delete-policy": before-hook-creation
+  # Local override: dropped the entire `helm.sh/hook` annotation (was
+  # `pre-install, pre-upgrade`). See the matching note on the ConfigMap
+  # above for the full reasoning. The Job now applies in the Sync wave;
+  # its init container's `nc` polling loop waits for the bundled postgres
+  # and clickhouse Services to come up in the same wave.
+  #
+  # Tradeoff: on upgrades, this Job no longer runs strictly before the new
+  # app pods roll. The migration scripts are designed to run idempotently
+  # and the app pods themselves wait on DB readiness, so this is safe in
+  # practice — but if upgrade-time migrate-before-app ordering is ever
+  # needed, add `argocd.argoproj.io/sync-wave: "-1"` (and `"-2"` on the
+  # ConfigMap above) to order this ahead of the app deployments.
 spec:
   backoffLimit: 1 # One retry; resume logic picks up from last successful step
   activeDeadlineSeconds: {{ .Values.migrationJob.activeDeadlineSeconds | default 3600 }}
