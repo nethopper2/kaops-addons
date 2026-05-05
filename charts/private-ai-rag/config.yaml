@@ -301,7 +301,7 @@ system:
   - path: "nh-data-ingestion.qdrant.url"
     value: "http://${system.cluster.name}-private-ai-rag-qdrant.nh-addons.svc.cluster.local:6333"
   - path: "global.openreplayIngestUrl"
-    value: "openreplay.${system.cluster.name}.${system.hubCluster.ingressHostname}"
+    value: "https://openreplay.${system.cluster.name}.${system.hubCluster.ingressHostname}/ingest"
 output:
   - name: Open Web UI URL
     description: The URL to access Open WebUI
