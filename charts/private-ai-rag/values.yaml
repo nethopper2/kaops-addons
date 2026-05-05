@@ -8,6 +8,7 @@ global:
   googleApplicationCredentialsSecretRef: # user provided
   awsOpenAIKeySecretRef: # user provided
   sendgridSecretRef: "sendgrid-secret"
+  openreplaySecretRef: "openreplay-secret"
   postgresql:
     auth:
       username: postgres
@@ -20,6 +21,11 @@ global:
   juiceFsUrl: # system provided
   jiraSelfHosted: false
   confluenceSelfHosted: false
+  openreplayIngestUrl: # system provided
+  enableCommunitySharing: false
+  userPermissionsNotesAllowPublicSharing: false
+  enableCalendar: false
+  enableAutomations: false
 dataIngestion:
   enabled: false
   config:
@@ -162,6 +168,12 @@ open-webui:
         secretKeyRef:
           name: juicefs-s3-gateway
           key: name
+    - name: PUBLIC_OPENREPLAY_PROJECT_KEY
+      valueFrom:
+        secretKeyRef:
+          name: openreplay-secret
+          key: PUBLIC_OPENREPLAY_PROJECT_KEY
+          optional: true
   copyAppData:
     command:
       - sh

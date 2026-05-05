@@ -55,6 +55,11 @@ data:
   JUICEFS_S3_ENDPOINT: {{ .Values.global.juiceFsUrl | quote }}
   JIRA_SELF_HOSTED: {{ .Values.global.jiraSelfHosted | default false | quote }}
   CONFLUENCE_SELF_HOSTED: {{ .Values.global.confluenceSelfHosted | default false | quote }}
+  PUBLIC_OPENREPLAY_INGEST_URL: {{ .Values.global.openreplayIngestUrl | quote }}
+  ENABLE_COMMUNITY_SHARING: {{ .Values.global.enableCommunitySharing | quote }}
+  USER_PERMISSIONS_NOTES_ALLOW_PUBLIC_SHARING: {{ .Values.global.userPermissionsNotesAllowPublicSharing | quote }}
+  ENABLE_CALENDAR: {{ .Values.global.enableCalendar | quote }}
+  ENABLE_AUTOMATIONS: {{ .Values.global.enableAutomations | quote }}
   EMBEDDINGS_PROVIDER: {{ .Values.rag.embeddings.provider | quote }}
   EMBEDDINGS_DIMENSION: {{ .Values.rag.embeddings.dimension | quote }}
   EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: {{ .Values.rag.embeddings.autoReembedOnConfigChange | quote }}
