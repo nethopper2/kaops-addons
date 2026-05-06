@@ -8,7 +8,7 @@ metadata:
   logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/openreplay/logo.png"
   detailUrl: 'https://docs.openreplay.com/en/deployment/deploy-kubernetes/'
   isProduction: true
-  serverSideDiff: false
+  serverSideDiff: true
   installTargets:
     hub: true
     hubRequired: true
