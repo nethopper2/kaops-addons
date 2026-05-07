@@ -133,6 +133,12 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    # Event batches (`/v1/web/i`) routinely exceed ingress-nginx's 1m default —
+    # canvas-heavy SPAs (e.g. open-webui chat) push 1-5 MB per batch. Without
+    # this the http service receives a truncated body and rejects with
+    # `code: 413, can't create gzip reader: EOF`, leaving sessions empty in
+    # the OpenReplay UI. 64m matches upstream's `client-max-body-size` default.
+    nginx.ingress.kubernetes.io/proxy-body-size: "64m"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
     nginx.ingress.kubernetes.io/cors-allow-methods: "POST, OPTIONS"
