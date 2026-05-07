@@ -1,0 +1,347 @@
+{{- /*
+  Replacement Ingresses for the OSS k8s.io/ingress-nginx controller.
+
+  Upstream's per-app Ingress templates (charts/openreplay/charts/openreplay/
+  charts/<app>/templates/ingress.yaml) hard-code `nginx.org/...` annotations
+  that only NGINX Inc.'s controller honors. KAOPS clusters run the OSS
+  ingress-nginx controller (`controller: k8s.io/ingress-nginx`, installed by
+  `ingress-warden`), which silently drops `nginx.org/*` — so upstream's path
+  rewrites, CORS preflights, websocket upgrades and tracker proxy never run.
+
+  This template renders the same routing surface using
+  `nginx.ingress.kubernetes.io/...` annotations:
+
+    /                  -> frontend SPA (TLS owner, cert-manager-annotated)
+    /script(/|$)(.*)   -> openreplay-tracker (ExternalName -> static.openreplay.com)
+    /ingest(/|$)(.*)   -> http (session ingest, CORS, X-Forwarded-For hash)
+    /api(/|$)(.*)      -> chalice (no-cache headers)
+    /v2/api(/|$)(.*)   -> api (CORS with credentials)
+    /integrations(/|$)(.*) -> integrations (CORS)
+    /spot(/|$)(.*)     -> spot (CORS)
+    /ws-assist(/|$)(.*) -> assist (websocket, sessionid hash, long timeouts)
+
+  Upstream Ingresses are suppressed via `openreplay.<app>.ingress.enabled:
+  false` in values.yaml. The minio bucket Ingress (rendered by the http
+  subchart on a separate `global.s3.endpoint` gate, with no rewrites) is
+  left in place — prefix routing works unchanged on OSS ingress-nginx.
+
+  TLS: only the frontend Ingress carries `cert-manager.io/cluster-issuer`
+  to avoid duplicate Certificate resources. The other Ingresses reference
+  the same `secretName: openreplay-ssl` so the controller serves HTTPS
+  consistently across paths on the host.
+*/ -}}
+{{- if .Values.appIngress.enabled -}}
+{{- $host := .Values.global.domainName -}}
+{{- $cls := .Values.global.ingress.controller.ingressClassResource.name -}}
+{{- $tlsSecret := .Values.appIngress.tlsSecretName -}}
+{{- $issuer := .Values.appIngress.clusterIssuer -}}
+{{- if not $host }}{{ fail "appIngress requires global.domainName to be set" }}{{- end }}
+---
+# openreplay-tracker ExternalName: rebuilt here because upstream's copy in
+# frontend/templates/ingress.yaml is gated on frontend.ingress.enabled, which
+# we flip off to suppress the nginx.org-annotated tracker Ingress.
+apiVersion: v1
+kind: Service
+metadata:
+  name: openreplay-tracker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+spec:
+  type: ExternalName
+  externalName: static.openreplay.com
+---
+# Frontend SPA — TLS owner for the host.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openreplay-frontend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    cert-manager.io/cluster-issuer: {{ $issuer | quote }}
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: {{ $cls | quote }}
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ $tlsSecret | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-openreplay
+                port:
+                  number: 8080
+---
+# Tracker JS proxy: /script/<ver>/openreplay*.js -> static.openreplay.com
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openreplay-tracker-script
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/upstream-vhost: static.openreplay.com
+    nginx.ingress.kubernetes.io/proxy-ssl-server-name: "on"
+    nginx.ingress.kubernetes.io/proxy-ssl-name: static.openreplay.com
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-body-size: "8m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: {{ $cls | quote }}
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ $tlsSecret | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /script(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: openreplay-tracker
+                port:
+                  number: 443
+---
+# Session ingest: tracker JS POSTs sessions here.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openreplay-http-ingest
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization, Content-Encoding, X-Openreplay-Batch"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length"
+    nginx.ingress.kubernetes.io/cors-max-age: "1728000"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
+spec:
+  ingressClassName: {{ $cls | quote }}
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ $tlsSecret | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /ingest(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: http-openreplay
+                port:
+                  number: 8080
+---
+# Chalice API (legacy /api/* surface). Cache-Control headers prevent
+# stale auth responses from intermediate proxies.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openreplay-chalice
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header Cache-Control "no-store,no-cache" always;
+      add_header Pragma "no-cache" always;
+spec:
+  ingressClassName: {{ $cls | quote }}
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ $tlsSecret | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: chalice-openreplay
+                port:
+                  number: 8000
+---
+# v2 API: methods/origin echo + credentials, mirroring upstream's CORS.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openreplay-api-v2
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "POST, GET, PATCH, DELETE, OPTIONS, PUT"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization, Content-Encoding, X-Openreplay-Batch"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length"
+    nginx.ingress.kubernetes.io/cors-max-age: "3600"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+spec:
+  ingressClassName: {{ $cls | quote }}
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ $tlsSecret | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /v2/api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: api-openreplay
+                port:
+                  number: 8080
+---
+# Integrations.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openreplay-integrations
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "POST, PATCH, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization, Content-Encoding, X-Openreplay-Batch"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length"
+    nginx.ingress.kubernetes.io/cors-max-age: "3600"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
+spec:
+  ingressClassName: {{ $cls | quote }}
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ $tlsSecret | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /integrations(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: integrations-openreplay
+                port:
+                  number: 8080
+---
+# Spot.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openreplay-spot
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "POST, PATCH, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization, Content-Encoding, X-Openreplay-Batch"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length"
+    nginx.ingress.kubernetes.io/cors-max-age: "3600"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
+spec:
+  ingressClassName: {{ $cls | quote }}
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ $tlsSecret | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /spot(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: spot-openreplay
+                port:
+                  number: 8080
+---
+# Assist (live co-browsing) — WebSocket upgrade with $sessionid affinity
+# and 1h timeouts so long-lived sessions don't drop.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openreplay-assist
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openreplay.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_sessionid"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "sessionid, Content-Type, Authorization"
+    nginx.ingress.kubernetes.io/cors-max-age: "1728000"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
+spec:
+  ingressClassName: {{ $cls | quote }}
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ $tlsSecret | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /ws-assist(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: assist-openreplay
+                port:
+                  number: 9001
+{{- end -}}

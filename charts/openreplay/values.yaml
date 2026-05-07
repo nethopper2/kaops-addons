@@ -184,6 +184,21 @@ rwx:
   accessModes:
     - ReadWriteOnce
 
+# Replacement Ingresses for the OSS k8s.io/ingress-nginx controller.
+# Settings consumed by templates/ingress-app.yaml. See that file's header
+# comment for the routing surface and rationale.
+appIngress:
+  enabled: true
+  # Shared TLS Secret name. cert-manager (issued via clusterIssuer below
+  # on the frontend Ingress only) populates this Secret; the other
+  # umbrella Ingresses reference the same name so the controller serves
+  # HTTPS consistently across paths on the host.
+  tlsSecretName: openreplay-ssl
+  # Must match a ClusterIssuer in the cluster. `letsencrypt-prod` is what
+  # the `ingress-warden` addon ships and what upstream's deleted
+  # frontend/ingress-master.yaml hard-coded.
+  clusterIssuer: letsencrypt-prod
+
 # Secret bootstrap Job (templates/bootstrap-secret-job.yaml). Creates
 # `openreplay-shared-secrets` once, idempotent on subsequent syncs. See README
 # "Secrets and rotation" for the lifecycle and rotation procedure.
@@ -274,17 +289,21 @@ openreplay:
   tolerations: *dedicatedTolerations
 
   # Disable upstream's bundled NGINX Ingress Controller. KAOPS clusters install
-  # ingress-nginx + cert-manager cluster-wide via the `ingress-warden` addon;
-  # we only want OpenReplay to *create Ingress resources*, not stand up another
-  # controller + IngressClass. Per-app subcharts (api, assist, chalice,
-  # frontend, http, integrations, spot) each render their own Ingress that
-  # picks up the className from global.ingress.controller.ingressClassResource.name
-  # ("nginx", set on the umbrella's top-level global block above) and the
-  # cert-manager.io/cluster-issuer annotation hardcoded in upstream's
-  # frontend/ingress-master.yaml ("letsencrypt-prod" — matches the
-  # ClusterIssuer that ingress-warden ships).
+  # ingress-nginx + cert-manager cluster-wide via the `ingress-warden` addon.
   ingress-nginx:
     enabled: false
+
+  # Disable upstream's per-app Ingress resources. The vendored subcharts
+  # hard-code `nginx.org/...` annotations (NGINX Inc. controller dialect:
+  # mergeable-ingress-type, location-snippets, lb-method, websocket-services,
+  # ssl-services, …) which the OSS k8s.io/ingress-nginx controller installed
+  # by `ingress-warden` silently ignores — breaking path rewrites, CORS,
+  # WebSocket upgrades and the tracker proxy. Replacement Ingresses with
+  # `nginx.ingress.kubernetes.io/...` annotations are rendered from the
+  # umbrella at templates/ingress-app.yaml. The minio bucket Ingress is
+  # rendered by the http subchart on a separate gate (`global.s3.endpoint`
+  # contains "minio") and only does prefix routing — it works under OSS
+  # ingress-nginx as-is, so we leave it.
 
   # Disable Enterprise-Edition-only subcharts. Their images on
   # public.ecr.aws/p1t3u8a3 only ship `-ee` tags (no FOSS `vX.Y.Z`),
@@ -312,12 +331,16 @@ openreplay:
   api:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
+    ingress:
+      enabled: false
   assets:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
   assist:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
+    ingress:
+      enabled: false
   # assist-api is gated off above (global.ee-components.enabled: false).
   assist-stats:
     nodeSelector: *dedicatedNodeSelector
@@ -328,6 +351,8 @@ openreplay:
   chalice:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
+    ingress:
+      enabled: false
   # connector is gated off above (connector.enabled: false).
   db:
     nodeSelector: *dedicatedNodeSelector
@@ -338,18 +363,28 @@ openreplay:
   frontend:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
+    # Also kills frontend-openreplay-master (TLS owner) and the /script
+    # tracker Ingress — both rendered by the same subchart on this gate.
+    ingress:
+      enabled: false
   heuristics:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
   http:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
+    # Disables only the /ingest Ingress; the minio bucket Ingress in the
+    # same template is on a separate gate and continues to render.
+    ingress:
+      enabled: false
   images:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
   integrations:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
+    ingress:
+      enabled: false
   sink:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
@@ -359,6 +394,8 @@ openreplay:
   spot:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
+    ingress:
+      enabled: false
   storage:
     nodeSelector: *dedicatedNodeSelector
     tolerations: *dedicatedTolerations
