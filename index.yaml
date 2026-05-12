@@ -4099,6 +4099,36 @@ entries:
   nh-intel:
   - apiVersion: v2
     appVersion: v1.109.0
+    created: "2026-05-12T09:26:33.702837551Z"
+    dependencies:
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.14
+    - alias: nh-rag-api-v2
+      condition: nh-rag-api-v2.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.14
+    - condition: nh-mcp-server.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.5.0
+    - alias: nh-mcp-server-v2
+      condition: nh-mcp-server-v2.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.5.0
+    description: KAOPS addon to install NH Intel (RAG API + MCP Server)
+    digest: fc459214c2b5d63ce5508eecebcb2be417274b3d75e0ef5955fe6b3da97d6f1f
+    name: nh-intel
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/nh-intel-0.1.7/nh-intel-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    appVersion: v1.109.0
     created: "2026-04-22T12:49:21.29148871Z"
     dependencies:
     - alias: nh-rag-api
@@ -27051,4 +27081,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-05-08T08:55:47.149958318Z"
+generated: "2026-05-12T09:26:33.705712557Z"
