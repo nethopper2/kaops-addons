@@ -44,6 +44,8 @@ ingress:
     skipAuthPaths:
       - /api/v1/models
       - /api/v1/chat/completions
+      - /_app/immutable
+      - /static
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/tls-acme: "true"
