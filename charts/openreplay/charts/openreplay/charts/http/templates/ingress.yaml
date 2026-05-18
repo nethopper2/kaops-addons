@@ -63,6 +63,7 @@ metadata:
   namespace: "{{(split "." .Values.global.s3.endpoint)._1}}"
   annotations:
     nginx.org/mergeable-ingress-type: "minion"
+    nginx.ingress.kubernetes.io/proxy-body-size: "128m"
 spec:
   ingressClassName: {{ tpl .Values.ingress.className . }}
   rules:

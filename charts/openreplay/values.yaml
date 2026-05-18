@@ -279,6 +279,9 @@ databases:
 openreplay:
   enabled: true
 
+  minio:
+    forceInit: true
+
   # Scheduling for the openreplay subchart's own pods — anything rendered
   # by templates under charts/openreplay/charts/openreplay/templates/, NOT
   # by an inner per-app subchart. The `databases-migrate` Job is the main
