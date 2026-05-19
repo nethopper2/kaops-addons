@@ -46,6 +46,8 @@ ingress:
       - /api/v1/chat/completions
       - /_app/immutable
       - /static
+      - /assets
+      - /themes
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/tls-acme: "true"
