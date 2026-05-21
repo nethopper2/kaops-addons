@@ -38,6 +38,7 @@ data:
   MICROSOFT_REDIRECT_URI: {{ .Values.dataIngestion.config.microsoftRedirectUrl | quote }}
   ATLASSIAN_REDIRECT_URI: {{ .Values.dataIngestion.config.atlassianRedirectUrl | quote }}
   MINERAL_REDIRECT_URI: {{ .Values.dataIngestion.config.mineralRedirectUrl | quote }}
+  NETSUITE_REDIRECT_URI: {{ .Values.dataIngestion.config.netsuiteRedirectUrl | quote }}
   GITHUB_REDIRECT_URI: {{ .Values.dataIngestion.config.githubRedirectUrl | quote }}
   HUBSPOT_REDIRECT_URI: {{ .Values.dataIngestion.config.hubspotRedirectUrl | quote }}
   SALESFORCE_REDIRECT_URI: {{ .Values.dataIngestion.config.salesforceRedirectUrl | quote }}
