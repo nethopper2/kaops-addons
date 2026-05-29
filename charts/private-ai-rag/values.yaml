@@ -553,6 +553,7 @@ nh-data-ingestion:
   embedWorker:
     celery:
       concurrency: "6"
+      queues: "embedding_queue, embedding_maintenance_queue"
     resources:
       requests:
         cpu: 50m
