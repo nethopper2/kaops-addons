@@ -32,6 +32,10 @@ nh-rag-api:
     QDRANT_URL: # system provided
     BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
+    EMBEDDINGS_PROVIDER: bedrock
+    EMBEDDINGS_DIMENSION: "1024"
+    EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: "true"
+    BEDROCK_EMBEDDINGS_REGION: eu-central-1
   metrics:
     enabled: false
   config:
@@ -67,6 +71,10 @@ nh-rag-api-v2:
     QDRANT_URL: # system provided
     BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
+    EMBEDDINGS_PROVIDER: bedrock
+    EMBEDDINGS_DIMENSION: "1024"
+    EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: "true"
+    BEDROCK_EMBEDDINGS_REGION: eu-central-1
   metrics:
     enabled: false
   config:
