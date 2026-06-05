@@ -1,0 +1,96 @@
+{{- if .Values.backfillSourceMetadata.enabled }}
+{{- /*
+One-shot backfill of metadata.provider / metadata.layer on existing Qdrant
+points (parsed from metadata.filename). Required so multi_source_search's
+per-source fan-out can see historical points embedded before the provider/layer
+schema shipped (commit #60). New points are already tagged by ingestion, so this
+is a one-time catch-up per environment.
+
+Design notes:
+  * Plain Job (NO argocd/helm sync hook): it runs once when enabled and synced.
+    Tying it to a sync hook would re-scroll the whole collection on every sync.
+    To force a rerun, bump `backfillSourceMetadata.runId` (new Job name).
+  * Idempotent + resumable: points that already have both fields are skipped,
+    and an offset file (on the emptyDir below) lets a restarted container resume
+    instead of rescanning from zero.
+  * Reuses the nh-data-ingestion WORKER image — it carries
+    app/scripts/backfill_source_metadata.py and all deps. No AWS/Bedrock needed
+    (the script does not re-embed).
+  * QDRANT_URL / QDRANT_COLLECTION default to the same values the data-ingestion
+    workers use in this environment, so each env targets its own Qdrant+collection.
+*/}}
+{{- $b := .Values.backfillSourceMetadata }}
+{{- $coll := $b.collection | default (index .Values "nh-data-ingestion" "qdrant" "collection") }}
+{{- if not $coll }}{{ fail "backfillSourceMetadata.enabled=true but no collection: set backfillSourceMetadata.collection or nh-data-ingestion.qdrant.collection" }}{{- end }}
+{{- $url := $b.qdrantUrl | default (index .Values "nh-data-ingestion" "qdrant" "url") | default (printf "http://%s-qdrant:6333" (include "private-ai.fullname" .)) }}
+{{- $tag := $b.image.tag | default (index .Values "nh-data-ingestion" "worker" "image" "tag") }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "private-ai.fullname" . }}-backfill-source-metadata-{{ $b.runId }}
+  labels:
+    {{- include "private-ai.labels" . | nindent 4 }}
+spec:
+  backoffLimit: {{ $b.backoffLimit | default 6 }}
+  {{- if $b.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ $b.ttlSecondsAfterFinished }}
+  {{- end }}
+  template:
+    metadata:
+      name: {{ include "private-ai.fullname" . }}-backfill-source-metadata-{{ $b.runId }}
+      labels:
+        {{- include "private-ai.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      {{- if $b.serviceAccount }}
+      serviceAccountName: {{ $b.serviceAccount }}
+      {{- end }}
+      containers:
+        - name: backfill-source-metadata
+          image: {{ $b.image.repository }}:{{ $tag }}
+          imagePullPolicy: {{ $b.image.pullPolicy | default "IfNotPresent" }}
+          workingDir: /tmp/backfill
+          command:
+            - python
+            - -m
+            - app.scripts.backfill_source_metadata
+            - --collection
+            - {{ $coll | quote }}
+            {{- if $b.batchSize }}
+            - --batch-size
+            - {{ $b.batchSize | quote }}
+            {{- end }}
+            {{- if $b.dryRun }}
+            - --dry-run
+            {{- end }}
+          env:
+            - name: QDRANT_URL
+              value: {{ $url | quote }}
+            - name: QDRANT_COLLECTION
+              value: {{ $coll | quote }}
+            {{- with $b.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: offset
+              mountPath: /tmp/backfill
+          {{- if $b.resources }}
+          resources:
+            {{- toYaml $b.resources | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: offset
+          emptyDir: {}
+      {{- with $b.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $b.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $b.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

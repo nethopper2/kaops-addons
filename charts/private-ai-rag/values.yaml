@@ -628,3 +628,48 @@ heartbeatMonitoring:
 
   # Optional: reference external secret for heartbeat URLs (overrides inline values)
   externalSecretRef: ""
+
+# ---------------------------------------------------------------------------
+# One-shot backfill of metadata.provider / metadata.layer on existing Qdrant
+# points. Required so multi_source_search's per-source fan-out can see points
+# embedded before the provider/layer schema shipped. New points are already
+# tagged by ingestion, so this is a one-time catch-up PER ENVIRONMENT.
+#
+# To run in an env:
+#   1. backfillSourceMetadata.enabled: true
+#   2. (optional) verify collection resolves to that env's Qdrant collection
+#   3. sync the ArgoCD app — a Job runs once and exits
+#   4. confirm Completed, then optionally set enabled: false again
+# Bump `runId` to force a rerun (idempotent: already-tagged points are skipped).
+# ---------------------------------------------------------------------------
+backfillSourceMetadata:
+  enabled: false
+  # Identifier baked into the Job name. Change it to force a rerun.
+  runId: "1"
+  image:
+    # Worker image carries app/scripts/backfill_source_metadata.py + deps.
+    repository: nethopper/nh-data-ingestion-worker
+    # tag: defaults to nh-data-ingestion.worker.image.tag when unset.
+    tag: ""
+    pullPolicy: IfNotPresent
+  # collection: defaults to nh-data-ingestion.qdrant.collection when unset.
+  collection: ""
+  # qdrantUrl: defaults to nh-data-ingestion.qdrant.url, else <fullname>-qdrant:6333.
+  qdrantUrl: ""
+  # dryRun: scan + report counts only, no writes. Good for a first pass.
+  dryRun: false
+  batchSize: 1000
+  backoffLimit: 6
+  # ttlSecondsAfterFinished: 86400   # auto-clean the Job a day after it finishes
+  serviceAccount: ""
+  extraEnv: []
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
