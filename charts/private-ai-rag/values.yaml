@@ -191,6 +191,8 @@ postgresql:
       labels:
         release: # system provided
   primary:
+    extendedConfiguration: |
+      max_connections = 200
     resourcesPreset: none
     resources:
       requests:
