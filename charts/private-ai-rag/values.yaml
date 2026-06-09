@@ -645,7 +645,7 @@ heartbeatMonitoring:
 # Bump `runId` to force a rerun (idempotent: already-tagged points are skipped).
 # ---------------------------------------------------------------------------
 backfillSourceMetadata:
-  enabled: true
+  enabled: false
   # Identifier baked into the Job name. Change it to force a rerun.
   runId: "1"
   image:
