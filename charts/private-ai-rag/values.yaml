@@ -586,7 +586,7 @@ pipelinesProvisioning:
       enabled: false
     pipeline-token-replacer:
       enabled: false
-    private-supervisor-pipeline:
+    private-ai-supervisor-pipeline:
       enabled: true
 
 heartbeatMonitoring:
