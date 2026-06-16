@@ -1,0 +1,80 @@
+metadata:
+  slug: nh-ai-benchmark
+  name: NH AI Benchmark
+  description: Deploy NH AI Benchmark — API and UI for benchmarking Private AI capabilities.
+  categories: [Artificial Intelligence]
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png"
+  detailUrl: "https://addons.kaops.net/nh-ai-benchmark/"
+  externalUrl: "https://nethopper.io"
+  isProduction: true
+  isStaging: true
+  useSafeDelete: true
+  serverSideDiff: true
+  installTargets:
+    clusterMessage: Must be installed on clusters configured for Ingress.
+
+forms:
+  - slug: default
+    label: Configuration
+    steps:
+      - slug: details
+        variableSlugs:
+          - openWebuiUid
+          - defaultModel
+          - qdrantUrl
+          - envFromSecrets
+        ui:
+          label: Details
+
+variables:
+  - slug: openWebuiUid
+    path: "nh-ai-benchmark.env.OPEN_WEBUI_UID"
+    forms: [default]
+    ui:
+      type: text
+      label: OpenWebUI Admin User UID
+      help: UID of the OpenWebUI admin user used for benchmark API calls.
+      validation: required
+
+  - slug: defaultModel
+    path: "nh-ai-benchmark.env.DEFAULT_MODEL"
+    forms: [default]
+    ui:
+      type: text
+      label: Default Model
+      help: Default model name for benchmark runs (e.g. private-ai-supervisor-agent).
+      validation: required
+
+  - slug: qdrantUrl
+    path: "nh-ai-benchmark.env.QDRANT_URL"
+    forms: [default]
+    ui:
+      type: text
+      label: Qdrant URL
+      help: URL of the Qdrant instance. Defaults to the one deployed by private-ai-rag.
+      validation: optional
+
+  - slug: envFromSecrets
+    path: "nh-ai-benchmark.envFromSecrets"
+    forms: [default]
+    ui:
+      type: taglist
+      label: Secret Names (envFrom)
+      help: Names of Kubernetes secrets whose keys will be injected as env vars.
+      allowNewValues: true
+      validation: optional
+
+system:
+  # OpenWebUI (standalone service, no cluster-name prefix)
+  - path: "nh-ai-benchmark.env.OI_BASE_URL"
+    value: "http://open-webui.nh-addons.svc.cluster.local"
+  - path: "nh-ai-benchmark.env.PIPELINES_BASE_URL"
+    value: "http://open-webui-pipelines.nh-addons.svc.cluster.local:9099"
+  # Services from private-ai-rag addon (prefixed with cluster name)
+  - path: "nh-ai-benchmark.env.RAG_BASE_URL"
+    value: "http://${system.cluster.name}-private-ai-rag-nh-rag-api.nh-addons.svc.cluster.local:8000"
+  - path: "nh-ai-benchmark.env.MCP_BASE_URL"
+    value: "http://${system.cluster.name}-private-ai-rag-nh-mcp-server.nh-addons.svc.cluster.local:8010"
+  - path: "nh-ai-benchmark.env.QDRANT_URL"
+    value: "http://${system.cluster.name}-private-ai-rag-qdrant.nh-addons.svc.cluster.local:6333"
