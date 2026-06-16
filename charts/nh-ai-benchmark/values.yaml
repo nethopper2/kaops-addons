@@ -1,0 +1,45 @@
+nh-ai-benchmark:
+  enabled: true
+
+  image:
+    pullPolicy: IfNotPresent
+
+  ui:
+    enabled: true
+    image:
+      pullPolicy: IfNotPresent
+    ingress:
+      enabled: true
+      className: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        kubernetes.io/tls-acme: "true"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+  secretName: "nh-ai-benchmark-secrets"
+
+  env:
+    # Populated via system section in config.yaml
+    OI_BASE_URL: ""
+    RAG_BASE_URL: ""
+    PIPELINES_BASE_URL: ""
+    MCP_BASE_URL: ""
+    QDRANT_URL: ""
+    QDRANT_COLLECTION: "docs"
+    # Populated via form variables in config.yaml
+    OPEN_WEBUI_UID: ""
+    DEFAULT_MODEL: ""
+    # Defaults — override in values if needed
+    BEDROCK_REGION: "us-east-1"
+    BEDROCK_EMBEDDINGS_MODEL: "amazon.titan-embed-text-v2:0"
+    CLAUDE_MODEL_ID: "us.anthropic.claude-sonnet-4-6"
