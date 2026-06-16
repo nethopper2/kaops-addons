@@ -26,7 +26,11 @@ nh-ai-benchmark:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
-  secretName: "nh-ai-benchmark-secrets"
+  # -- List of Kubernetes secret names to mount via envFrom.
+  # Each secret's keys are injected as env var names, values as env var values.
+  envFromSecrets:
+    - nh-ai-benchmark-secrets
+    - aws-open-ai-api-key-nethopper
 
   env:
     # Populated via system section in config.yaml

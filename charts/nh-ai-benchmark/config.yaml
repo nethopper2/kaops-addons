@@ -22,6 +22,8 @@ forms:
         variableSlugs:
           - openWebuiUid
           - defaultModel
+          - qdrantUrl
+          - envFromSecrets
         ui:
           label: Details
 
@@ -43,6 +45,25 @@ variables:
       label: Default Model
       help: Default model name for benchmark runs (e.g. private-ai-supervisor-agent).
       validation: required
+
+  - slug: qdrantUrl
+    path: "nh-ai-benchmark.env.QDRANT_URL"
+    forms: [default]
+    ui:
+      type: text
+      label: Qdrant URL
+      help: URL of the Qdrant instance. Defaults to the one deployed by private-ai-rag.
+      validation: optional
+
+  - slug: envFromSecrets
+    path: "nh-ai-benchmark.envFromSecrets"
+    forms: [default]
+    ui:
+      type: taglist
+      label: Secret Names (envFrom)
+      help: Names of Kubernetes secrets whose keys will be injected as env vars.
+      allowNewValues: true
+      validation: optional
 
 system:
   # OpenWebUI (standalone service, no cluster-name prefix)
