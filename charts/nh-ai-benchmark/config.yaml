@@ -22,7 +22,7 @@ forms:
         variableSlugs:
           - openWebuiUid
           - defaultModel
-          - qdrantUrl
+          - qdrantCollection
           - envFromSecrets
         ui:
           label: Details
@@ -46,13 +46,13 @@ variables:
       help: Default model name for benchmark runs (e.g. private-ai-supervisor-agent).
       validation: required
 
-  - slug: qdrantUrl
-    path: "nh-ai-benchmark.env.QDRANT_URL"
+  - slug: qdrantCollection
+    path: "nh-ai-benchmark.env.QDRANT_COLLECTION"
     forms: [default]
     ui:
       type: text
-      label: Qdrant URL
-      help: URL of the Qdrant instance. Defaults to the one deployed by private-ai-rag.
+      label: Qdrant Collection
+      help: Qdrant Collection name
       validation: optional
 
   - slug: envFromSecrets

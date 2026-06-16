@@ -39,7 +39,7 @@ nh-ai-benchmark:
     PIPELINES_BASE_URL: ""
     MCP_BASE_URL: ""
     QDRANT_URL: ""
-    QDRANT_COLLECTION: "docs"
+    QDRANT_COLLECTION: ""
     # Populated via form variables in config.yaml
     OPEN_WEBUI_UID: ""
     DEFAULT_MODEL: ""
