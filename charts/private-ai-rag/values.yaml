@@ -210,8 +210,7 @@ postgresql:
           CREATE DATABASE "juicefs" WITH OWNER postgres;
 rag:
   allowedExtensions: "pdf,docx,xlsx,pptx,txt,json,md,csv,html"
-  custom:
-    {}
+  custom: {}
     # logo: # user provided
     # bgImageAuth: # user provided
     # bgMovieAuth: # user provided
@@ -303,7 +302,6 @@ nh-rag-api:
     timeoutSeconds: 15
   worker:
     enabled: false
-
 
 redis:
   image:
@@ -555,7 +553,7 @@ nh-data-ingestion:
   embedWorker:
     celery:
       concurrency: "6"
-      queues: "embedding_queue, embedding_maintenance_queue"
+      queues: "embedding_queue,embedding_maintenance_queue"
     resources:
       requests:
         cpu: 50m
@@ -570,7 +568,7 @@ nh-data-ingestion:
       OPEN_WEBUI_URL: "http://open-webui"
       QDRANT_TIMEOUT: "180"
   qdrant:
-    url: # system provided 
+    url: # system provided
     collection: # user provided
 
 # Pipeline provisioning configuration
@@ -590,37 +588,37 @@ pipelinesProvisioning:
       enabled: true
 
 heartbeatMonitoring:
-  enabled: false  # Disabled by default
-  schedule: "* * * * *"  # Every minute
-  
+  enabled: false # Disabled by default
+  schedule: "* * * * *" # Every minute
+
   image:
     repository: curlimages/curl
     tag: "8.5.0"
-  
+
   # Health check settings
-  timeout: 10  # seconds for health check
-  retries: 3   # number of retry attempts
-  retryDelay: 5  # seconds between retries
-  insecureSkipVerify: false  # Set to true to ignore SSL certificate validation for all service health checks
-  
+  timeout: 10 # seconds for health check
+  retries: 3 # number of retry attempts
+  retryDelay: 5 # seconds between retries
+  insecureSkipVerify: false # Set to true to ignore SSL certificate validation for all service health checks
+
   # Built-in services (URLs auto-resolved from release name)
   builtInServices:
     openWebui:
       enabled: true
       healthPath: "/health"
-      heartbeatUrl: ""  # UptimeRobot heartbeat URL
+      heartbeatUrl: "" # UptimeRobot heartbeat URL
     dataService:
       enabled: true
       healthPath: "/health"
-      heartbeatUrl: ""  # UptimeRobot heartbeat URL
-  
+      heartbeatUrl: "" # UptimeRobot heartbeat URL
+
   # Additional services to monitor
   services: []
   # - name: my-custom-service
   #   url: "http://my-service:8080"
   #   healthPath: "/health"
   #   heartbeatUrl: "https://heartbeat.uptimerobot.com/xxx"
-  
+
   # Schedule on GPU-tainted nodes by default
   tolerations:
     - key: "nvidia.com/gpu"
