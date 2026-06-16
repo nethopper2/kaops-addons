@@ -52,7 +52,7 @@ variables:
     ui:
       type: text
       label: Qdrant Collection
-      help:  Qdrant Collection name
+      help: Qdrant Collection name
       validation: optional
 
   - slug: envFromSecrets
