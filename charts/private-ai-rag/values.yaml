@@ -70,7 +70,7 @@ open-webui:
       memory: 1536Mi
   image:
     repository: nethopper/kaops-open-webui
-    tag: "v1.112.1-slim"
+    tag: "v1.113.0-slim"
     pullPolicy: IfNotPresent
   ollama:
     fullnameOverride: "open-webui-ollama"
@@ -274,7 +274,7 @@ nh-rag-api:
       cpu: 1000m
       memory: 3Gi
   image:
-    tag: "v1.112.2"
+    tag: "v1.113.0"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -414,7 +414,7 @@ nh-pai-data-service:
       cpu: 500m
       memory: 1Gi
   image:
-    tag: "v1.112.0"
+    tag: "v1.113.0"
   ingress:
     enabled: true
     annotations:
@@ -481,7 +481,7 @@ nh-mcp-server:
       cpu: 200m
       memory: 512Mi
   image:
-    tag: "v1.112.1"
+    tag: "v1.113.0"
   startupProbe:
     httpGet:
       path: /health
@@ -519,7 +519,7 @@ nh-data-ingestion:
         cpu: 250m
         memory: 512Mi
     image:
-      tag: "v1.112.0"
+      tag: "v1.113.0"
   flower:
     resources:
       requests:
@@ -529,7 +529,7 @@ nh-data-ingestion:
         cpu: 200m
         memory: 512Mi
     image:
-      tag: "v1.112.0"
+      tag: "v1.113.0"
   scheduler:
     resources:
       requests:
@@ -539,7 +539,7 @@ nh-data-ingestion:
         cpu: 200m
         memory: 256Mi
     image:
-      tag: "v1.112.0"
+      tag: "v1.113.0"
   worker:
     resources:
       requests:
@@ -549,7 +549,7 @@ nh-data-ingestion:
         cpu: 500m
         memory: 3Gi
     image:
-      tag: "v1.112.0"
+      tag: "v1.113.0"
   embedWorker:
     celery:
       concurrency: "6"
@@ -562,7 +562,7 @@ nh-data-ingestion:
         cpu: 1000m
         memory: 2Gi
     image:
-      tag: "v1.112.0"
+      tag: "v1.113.0"
     env:
       LLAMAINDEX_OLLAMA_BASE_URL: "http://open-webui-ollama:11434"
       OPEN_WEBUI_URL: "http://open-webui"
