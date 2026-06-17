@@ -6,21 +6,12 @@ nh-ai-benchmark:
 
   ingress:
     enabled: true
-    className: "nginx"
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    hosts:
-      - host: "" # system provided
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - hosts:
-          - "" # system provided
-        secretName: nh-ai-benchmark-api-tls
 
   ui:
     enabled: true
@@ -29,21 +20,12 @@ nh-ai-benchmark:
     benchApiHost: "" # system provided
     ingress:
       enabled: true
-      className: "nginx"
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
+        kubernetes.io/ingress.class: nginx
         kubernetes.io/tls-acme: "true"
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      hosts:
-        - host: "" # system provided
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "" # system provided
-          secretName: nh-ai-benchmark-ui-tls
 
   # -- List of Kubernetes secret names to mount via envFrom.
   # Each secret's keys are injected as env var names, values as env var values.
