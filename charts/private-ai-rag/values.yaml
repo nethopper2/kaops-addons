@@ -519,7 +519,7 @@ nh-data-ingestion:
         cpu: 250m
         memory: 512Mi
     image:
-      tag: "v1.113.0"
+      tag: "v1.113.1"
   flower:
     resources:
       requests:
