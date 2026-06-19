@@ -69,15 +69,6 @@ system:
   # UI nginx upstream — must match the API service name derived from the release name
   - path: "nh-ai-benchmark.ui.benchApiHost"
     value: "${system.cluster.name}-nh-ai-benchmark"
-  # Ingress hosts
-  - path: "nh-ai-benchmark.ingress.hosts[0].host"
-    value: "bench-api.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "nh-ai-benchmark.ingress.tls[0].hosts[0]"
-    value: "bench-api.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "nh-ai-benchmark.ui.ingress.hosts[0].host"
-    value: "bench.${system.cluster.name}.${system.hubCluster.ingressHostname}"
-  - path: "nh-ai-benchmark.ui.ingress.tls[0].hosts[0]"
-    value: "bench.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   # OpenWebUI (standalone service, no cluster-name prefix)
   - path: "nh-ai-benchmark.env.OI_BASE_URL"
     value: "http://open-webui.nh-addons.svc.cluster.local"
