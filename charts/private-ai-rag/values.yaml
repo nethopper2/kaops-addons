@@ -135,7 +135,7 @@ open-webui:
     - name: BYPASS_EMBEDDING_AND_RETRIEVAL
       value: "true"
     - name: BYPASS_MODEL_ACCESS_CONTROL
-      value: "true"
+      value: "false"
     - name: USER_PERMISSIONS_WORKSPACE_KNOWLEDGE_ACCESS
       value: "true"
     - name: USER_PERMISSIONS_CHAT_CONTROLS
