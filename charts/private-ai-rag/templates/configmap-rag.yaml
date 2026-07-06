@@ -66,3 +66,18 @@ data:
   EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: {{ .Values.rag.embeddings.autoReembedOnConfigChange | quote }}
   BEDROCK_EMBEDDINGS_MODEL: {{ .Values.rag.embeddings.bedrock.model | quote }}
   BEDROCK_EMBEDDINGS_REGION: {{ .Values.rag.embeddings.bedrock.region | quote }}
+  {{- with (index .Values "nh-rag-api").memory }}
+  MEMORY_BACKEND: {{ .backend | quote }}
+  MEMORY_INJECT_K: {{ .injectK | quote }}
+  MEMORY_TOP_K: {{ .topK | quote }}
+  MEMORY_QDRANT_COLLECTION: {{ .qdrantCollection | quote }}
+  MEMORY_SUMMARY_TURN_THRESHOLD: {{ .summaryTurnThreshold | quote }}
+  MEMORY_MAX_INPUT_CHARS: {{ .maxInputChars | quote }}
+  MEMORY_MAX_RECORD_CHARS: {{ .maxRecordChars | quote }}
+  MEMORY_MAX_RECORDS_PER_TURN: {{ .maxRecordsPerTurn | quote }}
+  MEMORY_FORGET_THRESHOLD: {{ .forgetThreshold | quote }}
+  MEMORY_FORGET_CAP: {{ .forgetCap | quote }}
+  {{- if .extractionModelId }}
+  MEMORY_EXTRACTION_MODEL_ID: {{ .extractionModelId | quote }}
+  {{- end }}
+  {{- end }}

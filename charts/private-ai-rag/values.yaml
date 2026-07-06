@@ -280,6 +280,20 @@ nh-rag-api:
     QDRANT_URL: # system provided
     BEDROCK_MODEL_ID: us.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
+  # Long-term conversational memory (facts / preferences / summaries).
+  # backend: null | selfhosted | agentcore  (selfhosted = in-boundary: Postgres + Qdrant + Bedrock)
+  memory:
+    backend: selfhosted
+    injectK: 15               # max memories injected into the prompt per turn
+    topK: 5                   # Qdrant fetch-window floor
+    qdrantCollection: memory
+    summaryTurnThreshold: 20  # session turns between summaries
+    maxInputChars: 8000       # cap on text fed to the extractor (anti book-paste)
+    maxRecordChars: 1000      # cap per stored memory
+    maxRecordsPerTurn: 10     # cap on facts+prefs created per turn
+    forgetThreshold: 0.6      # min similarity for forget-by-query
+    forgetCap: 5              # max deletions per forget
+    extractionModelId: ""     # optional cheaper model; empty = use the main model
   metrics:
     enabled: true
     serviceMonitor:
