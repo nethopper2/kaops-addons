@@ -280,6 +280,7 @@ nh-rag-api:
     QDRANT_URL: # system provided
     BEDROCK_MODEL_ID: us.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
+    REDIS_URL: # system provided (Celery broker for the memory worker; see config.yaml)
   # Long-term conversational memory (facts / preferences / summaries).
   # backend: null | selfhosted | agentcore  (selfhosted = in-boundary: Postgres + Qdrant + Bedrock)
   memory:
@@ -316,6 +317,32 @@ nh-rag-api:
     timeoutSeconds: 15
   worker:
     enabled: false
+    replicaCount: 1                      # embedded beat (-B) requires a single replica
+    image:
+      repository: nethopper/nh-rag-api   # REUSE the api image, not nh-rag-worker
+      tag: ""                            # CI bumps this alongside nh-rag-api.image.tag
+    command:
+      - celery
+      - -A
+      - worker.celery_app
+      - worker
+      - -B
+      - -Q
+      - memory_queue
+      - --concurrency=2
+      - --loglevel=info
+      - --hostname=memory-worker@%h
+    livenessProbe:
+      enabled: false
+    readinessProbe:
+      enabled: false
+    resources:
+      requests:
+        cpu: 50m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 2Gi
 
 redis:
   image:

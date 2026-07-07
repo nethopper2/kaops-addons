@@ -276,6 +276,8 @@ system:
     value: "https://chat.${system.cluster.name}.${system.hubCluster.ingressHostname}|https://oauth.${system.cluster.name}.${system.hubCluster.ingressHostname}"
   - path: "nh-rag-api.env.QDRANT_URL"
     value: "http://${system.cluster.name}-private-ai-rag-qdrant.nh-addons.svc.cluster.local:6333"
+  - path: "nh-rag-api.env.REDIS_URL"
+    value: "redis://${system.cluster.name}-private-ai-rag-redis-master.nh-addons.svc.cluster.local:6379/1"
   - path: "juicefs-s3-gateway.secret.config.metaurl"
     value: "postgres://postgres@${system.cluster.name}-private-ai-rag-postgresql.nh-addons.svc.cluster.local:5432/juicefs"
   - path: "nh-pai-data-service.config.juiceFsUrl"
