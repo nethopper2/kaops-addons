@@ -316,7 +316,7 @@ nh-rag-api:
     periodSeconds: 30
     timeoutSeconds: 15
   worker:
-    enabled: false
+    enabled: true
     replicaCount: 1                      # embedded beat (-B) requires a single replica
     image:
       repository: nethopper/nh-rag-api   # REUSE the api image, not nh-rag-worker
