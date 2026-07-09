@@ -320,7 +320,7 @@ nh-rag-api:
     replicaCount: 1                      # embedded beat (-B) requires a single replica
     image:
       repository: nethopper/nh-rag-api   # REUSE the api image, not nh-rag-worker
-      tag: ""                            # CI bumps this alongside nh-rag-api.image.tag
+      tag: "v1.115.0"                    # CI bumps this alongside nh-rag-api.image.tag
     command:
       - celery
       - -A
