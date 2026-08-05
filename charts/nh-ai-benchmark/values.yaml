@@ -2,7 +2,7 @@ nh-ai-benchmark:
   enabled: true
 
   image:
-    tag: "v1.115.0"
+    tag: "v1.117.0"
     pullPolicy: IfNotPresent
 
   ingress:
@@ -17,7 +17,7 @@ nh-ai-benchmark:
   ui:
     enabled: true
     image:
-      tag: "v1.115.0"
+      tag: "v1.117.0"
       pullPolicy: IfNotPresent
     benchApiHost: "" # system provided
     ingress:
