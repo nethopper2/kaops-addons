@@ -47,7 +47,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
   - name: juicefs-s3-gateway
-    version: 0.2.2
+    version: 0.2.3
     repository: https://nethopper2.github.io/helm-charts/
     condition: juicefs-s3-gateway.enabled
   - name: nh-pai-data-service
