@@ -1,0 +1,243 @@
+{{/*
+  cronjob-db-backup-v2.yaml — replacement for cronjob-db-backup.yaml.
+
+  Turned on by backups.v2.enabled, which is separate from v1's backups.enabled — so
+  both can run at once while you compare them. v1 writes to <bucket>/postgres/,
+  v2 to <bucket>/postgres-v2/. Both on = two full dumps per schedule, so switch v1
+  off once you trust v2. To switch v1 off, delete its template: setting
+  backups.enabled=false only removes the CronJob if ArgoCD pruning is on, otherwise
+  it stays in the cluster and keeps running.
+
+  What changed vs v1, and why:
+
+  1. Staged in two containers instead of one script.
+     - initContainer `dump`   : postgres:17-alpine  (has pg_dumpall, gzip, grep)
+     - container     `upload` : rclone/rclone       (~tens of MiB, speaks GCS + S3)
+     initContainers run to completion before regular containers start, so the
+     upload can only run if dump+verify exited 0. No marker files, no `&& \`
+     chains, no `set -o pipefail` (which dash does not support anyway).
+
+  2. No tooling installed at runtime. v1 ran `apk add aws-cli` / `apt-get install
+     postgresql-client-17` from apt.postgresql.org on EVERY execution, putting an
+     external repo in the critical path of backups. Both images ship what they need.
+
+  3. One code path for both clouds. rclone speaks GCS (service-account JSON) and
+     S3 (IRSA or keys) natively, so backups.type only selects env vars, not a
+     second copy of the whole script. Fixes therefore only need writing once.
+
+  4. Integrity is verified BEFORE upload. pg_dumpall's final line is
+     `-- PostgreSQL database cluster dump complete`; without it the dump is
+     truncated. v1 could not detect this: in a pipeline the shell reports only the
+     LAST command's status, so a pg_dumpall that died partway still let
+     gzip+upload succeed and the job exited 0 reporting success.
+
+  5. concurrencyPolicy: Forbid — v1 defaulted to Allow, so a dump slower than the
+     schedule would overlap with itself.
+*/}}
+{{/* nil-safe: `.Values.backups.v2.enabled` would error with "nil pointer evaluating
+     interface {}.enabled" if the v2 key is absent from values.yaml. Reading a missing
+     key off an existing map yields nil harmlessly; it is dereferencing that nil which
+     fails. So coerce to a dict first, then gate. */}}
+{{- $b := .Values.backups | default dict }}
+{{- $v2 := $b.v2 | default dict }}
+{{/*
+  Value resolution: `backups.*` is the shared base (type, buckets, region, credential
+  refs, serviceAccountName — these MUST match v1 or you are backing up something else).
+  `backups.v2.*` overrides only what should differ per job version.
+
+  `$v2.x | default $b.x` is safe for strings and maps, but NOT for booleans or numbers:
+  `default` treats false/0/"" as empty, so `false | default true` yields TRUE. For the
+  same reason do not reach for sprig `merge` here — it uses mergo, which overwrites
+  zero-valued keys from the source. `enabled` is therefore read from $v2 only, never
+  defaulted. Same care needed for any future boolean.
+*/}}
+{{- if $v2.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "private-ai.fullname" . }}-pg-backup-v2
+  labels:
+    {{- include "private-ai.labels" . | nindent 4 }}
+spec:
+  # `enabled` controls whether the object exists at all; `suspend` keeps an existing
+  # CronJob from firing on schedule while still allowing manual runs via
+  #   kubectl create job --from=cronjob/<name>
+  # Safe to use `default` on this boolean only because the fallback IS the zero value.
+  suspend: {{ $v2.suspend | default false }}
+  schedule: {{ $v2.schedule | default $b.schedule | quote }}
+  {{- with $v2.timeZone }}
+  timeZone: {{ . | quote }}
+  {{- end }}
+  # v1 defaults to Allow, so a dump slower than the schedule overlaps with itself
+  concurrencyPolicy: {{ $v2.concurrencyPolicy | default "Forbid" }}
+  # Required alongside Forbid: a schedule that cannot start is counted as "missed", and
+  # after 100 missed schedules the CronJob controller STOPS SCHEDULING ALTOGETHER and
+  # only logs about it. This bounds how far back it will try to catch up.
+  startingDeadlineSeconds: {{ $v2.startingDeadlineSeconds | default 3600 }}
+  successfulJobsHistoryLimit: {{ $v2.successfulJobsHistoryLimit | default 3 }}
+  failedJobsHistoryLimit: {{ $v2.failedJobsHistoryLimit | default 3 }}
+  jobTemplate:
+    spec:
+      # Each retry is a COMPLETE re-dump, so keep this low.
+      backoffLimit: {{ $v2.backoffLimit | default 2 }}
+      # A pod that has Succeeded/Failed reserves no CPU/memory/ephemeral-storage, but its
+      # emptyDir CONTENTS stay on the node until the pod object is deleted. Retained
+      # history therefore holds real bytes (~89 MiB per dump), not the sizeLimit. TTL
+      # deletes the Job and its pods so that space is reclaimed; it also caps how long
+      # logs stay available, so trade it off against the history limits below.
+      ttlSecondsAfterFinished: {{ $v2.ttlSecondsAfterFinished | default 86400 }}
+      # bound a runaway dump; mphr's takes hours, so keep this generous
+      activeDeadlineSeconds: {{ $v2.activeDeadlineSeconds | default 21600 }}
+      template:
+        spec:
+          restartPolicy: OnFailure
+          {{- if and (eq $b.type "s3") $b.serviceAccountName }}
+          serviceAccountName: {{ $b.serviceAccountName }}
+          {{- end }}
+          volumes:
+            - name: work
+              emptyDir:
+                # Only the COMPRESSED dump is staged; verification decompresses through
+                # a pipe and never writes it out. champagne/prod is ~89 MiB gzipped.
+                # Check yours before lowering this:
+                #   gsutil ls -l 'gs://<bucket>/postgres/**/all_dbs.sql.gz' | sort -k2 | tail -5
+                sizeLimit: {{ $v2.workDirSize | default "4Gi" }}
+
+          initContainers:
+            # ---------- stage 1: dump + verify -------------------------------
+            - name: dump
+              image: {{ $v2.dumpImage | default "postgres:17-alpine" }}
+              imagePullPolicy: {{ $v2.imagePullPolicy | default "IfNotPresent" }}
+              env:
+                - name: PGHOST
+                  value: {{ .Values.rag.postgresHost }}
+                - name: PGPORT
+                  value: "5432"
+                - name: PGUSER
+                  value: {{ .Values.global.postgresql.auth.username }}
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.global.postgresql.auth.existingSecret }}
+                      key: {{ .Values.global.postgresql.auth.secretKeys.adminPasswordKey }}
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  date +%Y%m%d_%H%M%S > /work/TS
+                  echo "Dumping all databases…"
+                  pg_dumpall --host="$PGHOST" --port="$PGPORT" --username="$PGUSER" \
+                    | gzip > /work/all_dbs.sql.gz
+                  # pg_dumpall's trailer is the only reliable proof the dump ran to
+                  # completion. Absent => truncated => fail before anything is stored.
+                  echo "Verifying dump integrity…"
+                  if ! gzip -dc /work/all_dbs.sql.gz | tail -5 \
+                       | grep -q 'PostgreSQL database cluster dump complete'; then
+                    echo "FATAL: no pg_dumpall trailer - dump is truncated, aborting."
+                    exit 1
+                  fi
+                  echo "OK: $(wc -c < /work/all_dbs.sql.gz) bytes, trailer present."
+              volumeMounts:
+                - name: work
+                  mountPath: /work
+              resources:
+                {{- if $v2.dumpResources }}
+                {{- toYaml $v2.dumpResources | nindent 16 }}
+                {{- else }}
+                # Without an ephemeral-storage request the scheduler does not know this
+                # pod needs staging space and can place it on a node with none; the dump
+                # then breaches the emptyDir sizeLimit and kubelet evicts it mid-run.
+                # NOTE: setting dumpResources REPLACES this - include ephemeral-storage.
+                requests:
+                  ephemeral-storage: {{ $v2.workDirSize | default "4Gi" }}
+                {{- end }}
+
+          containers:
+            # ---------- stage 2: upload --------------------------------------
+            - name: upload
+              image: {{ $v2.rcloneImage | default "rclone/rclone:v1.74-stable" }}
+              # Pinned to a minor series, not ":latest". ":latest" would (a) let a future
+              # rclone change behaviour under a backup job with nobody deciding to
+              # upgrade, and (b) force imagePullPolicy=Always, putting a registry
+              # round-trip in the backup path every run - v1's per-run apt-get defect.
+              # `vX.Y-stable` is still MUTABLE (it moves with 1.74.x patches), which is
+              # usually what you want for security fixes, but combined with
+              # IfNotPresent it means nodes can hold different patch versions. Use a
+              # digest (rclone/rclone@sha256:...) if you need strict reproducibility.
+              # List tags with: crane ls rclone/rclone | grep stable
+              imagePullPolicy: {{ $v2.imagePullPolicy | default "IfNotPresent" }}
+              env:
+                # rclone is configured purely from RCLONE_CONFIG_* env vars below; point
+                # it at /dev/null so it does not look for (or try to create) a config
+                # file under $HOME, which may not exist or be writable in this image.
+                - name: RCLONE_CONFIG
+                  value: /dev/null
+                - name: BACKUP_BUCKET
+                  value: {{ if eq $b.type "s3" }}{{ $b.s3BucketName }}{{ else }}{{ $b.gcsBucketName }}{{ end }}
+                - name: BACKUP_PREFIX
+                  value: {{ $v2.pathPrefix | default "postgres-v2" | quote }}
+                {{- if eq $b.type "s3" }}
+                - name: RCLONE_CONFIG_DEST_TYPE
+                  value: s3
+                - name: RCLONE_CONFIG_DEST_PROVIDER
+                  value: AWS
+                - name: RCLONE_CONFIG_DEST_REGION
+                  value: {{ $b.s3Region | quote }}
+                {{- if $b.serviceAccountName }}
+                # IRSA: let rclone pick up the projected web-identity token
+                - name: RCLONE_CONFIG_DEST_ENV_AUTH
+                  value: "true"
+                {{- else }}
+                - name: RCLONE_CONFIG_DEST_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $b.s3AccessKeySecretRef }}
+                      key: AWS_ACCESS_KEY_ID
+                - name: RCLONE_CONFIG_DEST_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $b.s3AccessKeySecretRef }}
+                      key: AWS_SECRET_ACCESS_KEY
+                {{- end }}
+                {{- else }}
+                - name: RCLONE_CONFIG_DEST_TYPE
+                  value: google cloud storage
+                # The SA key is passed to rclone as JSON *content*, not a file path, so
+                # no credentials volume and no separate "materialise the key" stage are
+                # needed. Decoded inline below; never written to disk.
+                - name: GOOGLE_APPLICATION_CREDENTIALS_BASE64
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $b.googleApplicationCredentialsSecretRef | default .Values.global.googleApplicationCredentialsSecretRef }}
+                      key: GOOGLE_APPLICATION_CREDENTIALS_BASE64
+                {{- end }}
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  {{- if ne $b.type "s3" }}
+                  # busybox base64 is present in the rclone (alpine) image
+                  RCLONE_CONFIG_DEST_SERVICE_ACCOUNT_CREDENTIALS=$(
+                    printf '%s' "$GOOGLE_APPLICATION_CREDENTIALS_BASE64" | base64 -d
+                  )
+                  export RCLONE_CONFIG_DEST_SERVICE_ACCOUNT_CREDENTIALS
+                  unset GOOGLE_APPLICATION_CREDENTIALS_BASE64
+                  # v1 swallowed a decode failure with `|| echo "Continue..."`, which only
+                  # deferred it to a confusing gcloud auth error several steps later.
+                  if [ -z "$RCLONE_CONFIG_DEST_SERVICE_ACCOUNT_CREDENTIALS" ]; then
+                    echo "FATAL: decoded GCP credentials are empty."
+                    exit 1
+                  fi
+                  {{- end }}
+                  TS=$(cat /work/TS)
+                  DEST="DEST:${BACKUP_BUCKET}/${BACKUP_PREFIX}/${TS}/all_dbs.sql.gz"
+                  echo "Uploading $(wc -c < /work/all_dbs.sql.gz) bytes -> ${DEST}"
+                  rclone copyto --checksum /work/all_dbs.sql.gz "$DEST"
+                  echo "Upload complete: ${DEST}"
+              volumeMounts:
+                - name: work
+                  mountPath: /work
+                  readOnly: true
+              resources:
+                {{- toYaml ($v2.uploadResources | default dict) | nindent 16 }}
+{{- end }}

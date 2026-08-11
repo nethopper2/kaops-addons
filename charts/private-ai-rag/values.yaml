@@ -264,6 +264,29 @@ backups:
   # serviceAccountName: # user provided (for IRSA/service account based authentication instead of access keys)
   type: gcs # Options: gcs, s3
 
+  # -- v2 backup CronJob. Rationale and mechanics: templates/cronjob-db-backup-v2.yaml
+  # Shares type/buckets/region/credentials from above; only job mechanics go here.
+  # Enabling v2 while v1 is enabled runs two full dumps per schedule (see template).
+  # v2:
+  #   enabled: false                     # false = no CronJob object at all
+  #   suspend: false                     # true = object exists but never fires; manual runs still work
+  #   schedule: "0 4,12,20 * * *"        # default: backups.schedule. "*/8+4" is NOT valid cron
+  #   timeZone: Europe/Warsaw            # default: UTC
+  #   concurrencyPolicy: Forbid          # Allow | Forbid | Replace
+  #   pathPrefix: postgres-v2            # <bucket>/<pathPrefix>/<timestamp>/all_dbs.sql.gz
+  #   startingDeadlineSeconds: 3600      # required with Forbid; see template
+  #   backoffLimit: 2                    # each retry is a full re-dump
+  #   activeDeadlineSeconds: 21600
+  #   ttlSecondsAfterFinished: 86400     # finished pods keep their emptyDir bytes until deleted
+  #   successfulJobsHistoryLimit: 3
+  #   failedJobsHistoryLimit: 3
+  #   workDirSize: 4Gi                   # stages the gzipped dump only (~89 MiB on champagne/prod)
+  #   dumpImage: postgres:17-alpine      # client major must be >= server major
+  #   rcloneImage: rclone/rclone:1.75.0  # keep pinned; never ":latest" in a backup path
+  #   imagePullPolicy: IfNotPresent
+  #   dumpResources: {}                  # replaces the default ephemeral-storage request
+  #   uploadResources: {}
+
 nh-rag-api:
   enabled: false
   resources:
