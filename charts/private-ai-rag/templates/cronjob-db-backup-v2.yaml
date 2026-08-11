@@ -59,6 +59,11 @@ metadata:
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
 spec:
+  # `enabled` controls whether the object exists at all; `suspend` keeps an existing
+  # CronJob from firing on schedule while still allowing manual runs via
+  #   kubectl create job --from=cronjob/<name>
+  # Safe to use `default` on this boolean only because the fallback IS the zero value.
+  suspend: {{ $v2.suspend | default false }}
   schedule: {{ $v2.schedule | default $b.schedule | quote }}
   {{- with $v2.timeZone }}
   timeZone: {{ . | quote }}
