@@ -539,10 +539,12 @@ nh-mcp-server:
   enabled: true
   resources:
     requests:
-      cpu: 10m
+      cpu: 100m
       memory: 192Mi
     limits:
-      cpu: 200m
+      # 200m caused hard CPU throttling during document-heavy tool calls,
+      # starving /health until the liveness probe SIGKILLed the pod mid-request.
+      cpu: "1"
       memory: 512Mi
   image:
     tag: "v1.117.0"
@@ -559,15 +561,15 @@ nh-mcp-server:
       port: 8010
     initialDelaySeconds: 30
     periodSeconds: 10
-    timeoutSeconds: 3
-    failureThreshold: 3
+    timeoutSeconds: 10
+    failureThreshold: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8010
     initialDelaySeconds: 15
     periodSeconds: 10
-    timeoutSeconds: 3
+    timeoutSeconds: 5
     failureThreshold: 3
 
 nh-data-ingestion:
