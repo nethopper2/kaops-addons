@@ -137,6 +137,15 @@ spec:
                     exit 1
                   fi
                   echo "OK: $(wc -c < /work/all_dbs.sql.gz) bytes, trailer present."
+                  # Report our own peak RSS. Once this pod exits the cgroup is destroyed and
+                  # the peak is UNRECOVERABLE - no Kubernetes or node API retains it, and a
+                  # 30s Prometheus scrape badly undersamples a ~60s container (it reported
+                  # 2.5 MiB for a stage measured at 104.8 MiB). Logging it here makes the
+                  # number permanent, survives pod deletion, and needs no external polling.
+                  echo "PEAK_MEM_BYTES=$(cat /sys/fs/cgroup/memory.peak 2>/dev/null \
+                    || cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes 2>/dev/null \
+                    || echo unknown)"
+                  echo "WORKDIR_BYTES=$(du -sb /work 2>/dev/null | awk '{print $1}')"
               volumeMounts:
                 - name: work
                   mountPath: /work
@@ -202,6 +211,15 @@ spec:
                 {{- else }}
                 - name: RCLONE_CONFIG_DEST_TYPE
                   value: google cloud storage
+                # REQUIRED for buckets with Uniform bucket-level access (UBLA), which is
+                # the default for new GCS buckets. rclone otherwise sets a predefined
+                # per-object ACL on upload and UBLA rejects it:
+                #   googleapi: Error 400: Cannot insert legacy ACL for an object when
+                #   uniform bucket-level access is enabled
+                # gsutil (v1) does not set object ACLs, which is why v1 never hit this.
+                # Harmless on non-UBLA buckets: objects just inherit bucket defaults.
+                - name: RCLONE_CONFIG_DEST_BUCKET_POLICY_ONLY
+                  value: "true"
                 # The SA key is passed to rclone as JSON *content*, not a file path, so
                 # no credentials volume and no separate "materialise the key" stage are
                 # needed. Decoded inline below; never written to disk.
