@@ -282,7 +282,11 @@ backups:
   #   failedJobsHistoryLimit: 3
   #   workDirSize: 4Gi                   # stages the gzipped dump only (~89 MiB on champagne/prod)
   #   dumpImage: postgres:17-alpine      # client major must be >= server major
-  #   rcloneImage: rclone/rclone:1.75.0  # keep pinned; never ":latest" in a backup path
+  #   rcloneImage: rclone/rclone:v1.74-stable  # must match the template default; rclone
+  #                                      # publishes vX.Y-stable, NOT bare semver like
+  #                                      # 1.75.0 - that tag does not exist. Keep pinned;
+  #                                      # never ":latest" in a backup path.
+  #                                      # Verify with: crane ls rclone/rclone | grep stable
   #   imagePullPolicy: IfNotPresent
   #   dumpResources: {}                  # replaces the default ephemeral-storage request
   #   uploadResources: {}
