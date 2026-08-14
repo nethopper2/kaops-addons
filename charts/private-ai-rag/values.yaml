@@ -70,7 +70,7 @@ open-webui:
       memory: 1536Mi
   image:
     repository: nethopper/kaops-open-webui
-    tag: "v1.117.0-slim"
+    tag: "v1.117.1-slim"
     pullPolicy: IfNotPresent
   ollama:
     fullnameOverride: "open-webui-ollama"
@@ -301,7 +301,7 @@ nh-rag-api:
       cpu: 1000m
       memory: 3Gi
   image:
-    tag: "v1.117.1"
+    tag: "v1.117.2"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
