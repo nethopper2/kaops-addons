@@ -261,8 +261,28 @@ backups:
   # s3BucketName: # user provided
   # s3Region: # user provided (e.g., us-east-1)
   # s3AccessKeySecretRef: # user provided (secret name containing AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY) - not needed if using serviceAccountName
-  # serviceAccountName: # user provided (for IRSA/service account based authentication instead of access keys)
-  type: gcs # Options: gcs, s3
+  # serviceAccountName: # user provided (for IRSA/workload-identity auth instead of access keys)
+  # serviceAccount:      # optional: let this chart create that ServiceAccount
+  #   create: true
+  #   annotations:       # the cloud binding. NOT a secret — an identifier, safe in git.
+  #     azure.workload.identity/client-id: <terraform output -raw storage_workload_identity_client_id>
+  #     # AWS:  eks.amazonaws.com/role-arn: arn:aws:iam::<acct>:role/<role>
+  #     # GCP:  iam.gke.io/gcp-service-account: <sa>@<project>.iam.gserviceaccount.com
+  #   NOTE: creating the SA does NOT create the trust. The cloud side must register a
+  #   federated credential naming this exact namespace/service-account pair, or the
+  #   token exchange fails with a subject mismatch. On Azure that is Terraform's
+  #   storage_workload_identities.
+  # For Azure Blob backups (v2 CronJob only — v1 has no azureblob branch):
+  # azureContainerName: # user provided (the CONTAINER, e.g. backups — rclone addresses it exactly like a bucket)
+  # azureStorageAccount: # user provided (account NAME only, e.g. nhazuredev2data)
+  # azureStorageKeySecretRef: # user provided (secret holding the account key). Omit to use
+  #   workload identity instead, which also needs serviceAccountName set to an annotated SA.
+  # azureStorageKeySecretKey: AZURE_STORAGE_KEY # key within that secret
+  # azureClientId: # optional, only for workload identity with a user-assigned identity
+  #   NOTE: rclone wants the storage ACCOUNT KEY as a discrete value — it does not parse
+  #   AZURE_STORAGE_CONNECTION_STRING. Terraform's azure-storage module exposes the key
+  #   as its `primary_access_key` output.
+  type: gcs # Options: gcs, s3, azureblob
 
   # -- v2 backup CronJob. Rationale and mechanics: templates/cronjob-db-backup-v2.yaml
   # Shares type/buckets/region/credentials from above; only job mechanics go here.
@@ -280,6 +300,10 @@ backups:
   #   ttlSecondsAfterFinished: 86400     # finished pods keep their emptyDir bytes until deleted
   #   successfulJobsHistoryLimit: 3
   #   failedJobsHistoryLimit: 3
+  #   podLabels: {}                      # extra pod labels. azure.workload.identity/use="true"
+  #                                      # is added automatically for azureblob+identity;
+  #                                      # set it here explicitly to override.
+  #   podAnnotations: {}
   #   workDirSize: 4Gi                   # stages the gzipped dump only (~89 MiB on champagne/prod)
   #   dumpImage: postgres:17-alpine      # client major must be >= server major
   #   rcloneImage: rclone/rclone:v1.74-stable  # must match the template default; rclone
