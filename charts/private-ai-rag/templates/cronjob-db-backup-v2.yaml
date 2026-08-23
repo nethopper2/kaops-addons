@@ -21,9 +21,10 @@
      postgresql-client-17` from apt.postgresql.org on EVERY execution, putting an
      external repo in the critical path of backups. Both images ship what they need.
 
-  3. One code path for both clouds. rclone speaks GCS (service-account JSON) and
-     S3 (IRSA or keys) natively, so backups.type only selects env vars, not a
-     second copy of the whole script. Fixes therefore only need writing once.
+  3. One code path for every cloud. rclone speaks GCS (service-account JSON), S3
+     (IRSA or keys) and Azure Blob (account key or managed identity) natively, so
+     backups.type only selects env vars, not a second copy of the whole script.
+     Fixes therefore only need writing once.
 
   4. Integrity is verified BEFORE upload. pg_dumpall's final line is
      `-- PostgreSQL database cluster dump complete`; without it the dump is
@@ -40,6 +41,17 @@
      fails. So coerce to a dict first, then gate. */}}
 {{- $b := .Values.backups | default dict }}
 {{- $v2 := $b.v2 | default dict }}
+{{/*
+  Normalise the destination type ONCE. Every branch below compares against $type, not
+  $b.type, because the old code tested `ne $b.type "s3"` to mean "this is GCS" — which
+  silently became wrong the moment a third backend existed, sending azureblob down the
+  GCS credential path. An explicit default also preserves the historical behaviour that
+  an unset backups.type means GCS.
+*/}}
+{{- $type := $b.type | default "gcs" }}
+{{- if not (has $type (list "gcs" "s3" "azureblob")) }}
+{{- fail (printf "backups.type must be one of gcs, s3, azureblob — got %q" $type) }}
+{{- end }}
 {{/*
   Value resolution: `backups.*` is the shared base (type, buckets, region, credential
   refs, serviceAccountName — these MUST match v1 or you are backing up something else).
@@ -89,9 +101,48 @@ spec:
       # bound a runaway dump; mphr's takes hours, so keep this generous
       activeDeadlineSeconds: {{ $v2.activeDeadlineSeconds | default 21600 }}
       template:
+        {{/*
+          Pod labels. Two sources, and the user's always wins.
+
+          The azureblob + identity path REQUIRES azure.workload.identity/use="true":
+          that label is the sole trigger for the AKS mutating webhook, and without it
+          the pod gets no projected token and no AZURE_* env, so rclone's env_auth
+          finds nothing. The failure lands AFTER a successful dump, which reads like a
+          working backup that silently stores nothing — bad enough to be worth adding
+          automatically rather than documenting.
+
+          Added only when it is actually needed (azureblob AND no key secret), and only
+          when the user has not set the key themselves — hasKey, so an explicit
+          "false" is respected. No sprig `merge` here, for the reason given at the top
+          of this file: mergo's zero-value handling makes it a poor fit for anything
+          you actually care about.
+
+          The label is inert on EKS/GKE — no webhook there watches for it — so nothing
+          guards it by cloud.
+        */}}
+        {{- $podLabels := $v2.podLabels | default dict }}
+        {{- $wantWiLabel := and (eq $type "azureblob") (not $b.azureStorageKeySecretRef) (not (hasKey $podLabels "azure.workload.identity/use")) }}
+        {{- if or $podLabels $wantWiLabel $v2.podAnnotations }}
+        metadata:
+          {{- if or $podLabels $wantWiLabel }}
+          labels:
+            {{- if $wantWiLabel }}
+            azure.workload.identity/use: "true"
+            {{- end }}
+            {{- with $podLabels }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- with $v2.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
         spec:
           restartPolicy: OnFailure
-          {{- if and (eq $b.type "s3") $b.serviceAccountName }}
+          {{- if and (has $type (list "s3" "azureblob")) $b.serviceAccountName }}
+          {{/* s3 -> IRSA; azureblob -> workload identity. Both need the SA that
+               carries the federated-credential annotation. */}}
           serviceAccountName: {{ $b.serviceAccountName }}
           {{- end }}
           volumes:
@@ -182,10 +233,19 @@ spec:
                 - name: RCLONE_CONFIG
                   value: /dev/null
                 - name: BACKUP_BUCKET
-                  value: {{ if eq $b.type "s3" }}{{ $b.s3BucketName }}{{ else }}{{ $b.gcsBucketName }}{{ end }}
+                  {{- if eq $type "s3" }}
+                  value: {{ $b.s3BucketName | quote }}
+                  {{- else if eq $type "azureblob" }}
+                  {{/* rclone's azureblob backend addresses a CONTAINER exactly where the
+                       other backends address a bucket, so the DEST:<name>/<path> form in
+                       the upload step needs no change. */}}
+                  value: {{ $b.azureContainerName | quote }}
+                  {{- else }}
+                  value: {{ $b.gcsBucketName | quote }}
+                  {{- end }}
                 - name: BACKUP_PREFIX
                   value: {{ $v2.pathPrefix | default "postgres-v2" | quote }}
-                {{- if eq $b.type "s3" }}
+                {{- if eq $type "s3" }}
                 - name: RCLONE_CONFIG_DEST_TYPE
                   value: s3
                 - name: RCLONE_CONFIG_DEST_PROVIDER
@@ -207,6 +267,35 @@ spec:
                     secretKeyRef:
                       name: {{ $b.s3AccessKeySecretRef }}
                       key: AWS_SECRET_ACCESS_KEY
+                {{- end }}
+                {{- else if eq $type "azureblob" }}
+                - name: RCLONE_CONFIG_DEST_TYPE
+                  value: azureblob
+                - name: RCLONE_CONFIG_DEST_ACCOUNT
+                  value: {{ required "backups.azureStorageAccount is required when backups.type=azureblob" $b.azureStorageAccount | quote }}
+                {{- if $b.azureStorageKeySecretRef }}
+                {{/* Shared-key auth. The key is the STORAGE ACCOUNT KEY, not a
+                     connection string — rclone parses neither, it wants account and key
+                     as separate values. Terraform's azure-storage module already exposes
+                     it as the `primary_access_key` output. */}}
+                - name: RCLONE_CONFIG_DEST_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $b.azureStorageKeySecretRef }}
+                      key: {{ $b.azureStorageKeySecretKey | default "AZURE_STORAGE_KEY" }}
+                {{- else }}
+                {{/* No key given: fall back to Entra. env_auth lets rclone use the
+                     AZURE_CLIENT_ID / AZURE_TENANT_ID / AZURE_FEDERATED_TOKEN_FILE that
+                     the AKS workload-identity webhook injects, which needs
+                     backups.serviceAccountName to point at an annotated ServiceAccount.
+                     Prefer this over a key once federation is set up — it is the direct
+                     analogue of the s3 branch's IRSA path. */}}
+                - name: RCLONE_CONFIG_DEST_ENV_AUTH
+                  value: "true"
+                {{- with $b.azureClientId }}
+                - name: AZURE_CLIENT_ID
+                  value: {{ . | quote }}
+                {{- end }}
                 {{- end }}
                 {{- else }}
                 - name: RCLONE_CONFIG_DEST_TYPE
@@ -233,7 +322,7 @@ spec:
               args:
                 - |
                   set -eu
-                  {{- if ne $b.type "s3" }}
+                  {{- if eq $type "gcs" }}
                   # busybox base64 is present in the rclone (alpine) image
                   RCLONE_CONFIG_DEST_SERVICE_ACCOUNT_CREDENTIALS=$(
                     printf '%s' "$GOOGLE_APPLICATION_CREDENTIALS_BASE64" | base64 -d
