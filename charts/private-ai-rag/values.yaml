@@ -332,6 +332,13 @@ nh-rag-api:
     BEDROCK_MODEL_ID: us.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
     REDIS_URL: # system provided (Celery broker for the memory worker; see config.yaml)
+  # Web search stack, deployed by the private-ai-websearch subchart; the secret is
+  # rendered by templates/secrets.yaml and shared with that subchart.
+  websearch:
+    enabled: true
+    secretName: websearch-secrets
+    searxngUrl: http://private-ai-websearch-searxng:8080
+    crawl4aiUrl: http://private-ai-websearch-crawl4ai:11235
   # Long-term conversational memory (facts / preferences / summaries).
   # backend: null | selfhosted | agentcore  (selfhosted = in-boundary: Postgres + Qdrant + Bedrock)
   memory:
@@ -664,6 +671,14 @@ nh-data-ingestion:
   qdrant:
     url: # system provided
     collection: # user provided
+
+private-ai-websearch:
+  enabled: true
+  # Short stable service names (private-ai-websearch-searxng / -crawl4ai) instead of
+  # the release-prefixed ones, which flirt with the 63-char DNS limit.
+  fullnameOverride: private-ai-websearch
+  # Secret rendered by templates/secrets.yaml with SEARXNG_SECRET and CRAWL4AI_API_TOKEN.
+  secretName: websearch-secrets
 
 # Pipeline provisioning configuration
 # Pipeline .py files are copied from the private repo (nethopper2/nh-rag-embedding)
