@@ -1,0 +1,20 @@
+{{- if .Values.workspaceInfra.runtimeClasses.kataClh.enabled }}
+{{- /*
+Kata Containers (Cloud Hypervisor VMM) RuntimeClass for workspace sandboxes.
+Cluster-scoped. Prerequisite: kata-deploy DaemonSet on KVM-capable nodes
+(bare metal, or GKE Standard node pools with nested virtualization);
+kata-deploy registers the "kata-clh" containerd handler and labels nodes.
+*/}}
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: kata-clh
+handler: kata-clh
+overhead:
+  podFixed:
+    memory: "160Mi"
+    cpu: "250m"
+scheduling:
+  nodeSelector:
+    katacontainers.io/kata-runtime: "true"
+{{- end }}
