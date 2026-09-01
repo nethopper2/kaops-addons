@@ -335,7 +335,7 @@ nh-rag-api:
   # Web search stack, deployed by the private-ai-websearch subchart; the secret is
   # rendered by templates/secrets.yaml and shared with that subchart.
   websearch:
-    enabled: true
+    enabled: false
     secretName: websearch-secrets
     searxngUrl: http://private-ai-websearch-searxng:8080
     crawl4aiUrl: http://private-ai-websearch-crawl4ai:11235
@@ -673,7 +673,7 @@ nh-data-ingestion:
     collection: # user provided
 
 private-ai-websearch:
-  enabled: true
+  enabled: false
   # Short stable service names (private-ai-websearch-searxng / -crawl4ai) instead of
   # the release-prefixed ones, which flirt with the 63-char DNS limit.
   fullnameOverride: private-ai-websearch
