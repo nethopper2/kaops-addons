@@ -16,6 +16,20 @@ rag:
   postgresHost: # system provided
   ragApiUrl: # user provided
 
+# Cluster-level infra for workspace sandboxes (per-conversation isolated exec
+# environments; see nh-rag chart's workspaceSandbox values for the app side).
+# The agent-sandbox controller + CRDs (kubernetes-sigs/agent-sandbox) must be
+# installed separately — pin its release; it is NOT vendored in this chart.
+workspaceInfra:
+  runtimeClasses:
+    # Kata Containers (Cloud Hypervisor). Needs kata-deploy + KVM nodes.
+    kataClh:
+      enabled: false
+    # gVisor (runsc). On GKE use GKE Sandbox node pools instead (GKE creates
+    # the RuntimeClass itself) and keep this disabled.
+    gvisor:
+      enabled: false
+
 nh-rag-api:
   enabled: true
   resources:
@@ -93,6 +107,17 @@ nh-rag-api-v2:
     timeoutSeconds: 15
   worker:
     enabled: false
+  # Per-conversation workspace sandboxes (agent-sandbox CRs). Enable per
+  # cluster once the controller + a RuntimeClass are in place; tokenSecret
+  # comes from addon config / a pre-created Secret (existingSecret).
+  workspaceSandbox:
+    enabled: false
+    image:
+      repository: nethopper/nh-workspace-runtime
+      tag: "" # set by CI addon-config mutation, like image.tag above
+    runtimeClassName: "" # kata-clh | gvisor | "" (runc, dev only)
+    tokenSecret: ""
+    existingSecret: ""
 
 nh-mcp-server:
   enabled: true
