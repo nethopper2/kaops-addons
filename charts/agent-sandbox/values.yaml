@@ -1,6 +1,20 @@
-# The upstream manifest is vendored verbatim (templates/upstream-sandbox-*.yaml):
-# Namespace agent-sandbox-system, sandboxes.agents.x-k8s.io CRD, controller
-# Deployment + ClusterRole/Binding + Service. No values are templated on
-# purpose — upgrades stay a byte-for-byte swap of the upstream release file.
-# The CRD lives in templates/ (not crds/) so helm upgrades update it.
-{}
+# The upstream controller manifest is vendored verbatim
+# (templates/upstream-sandbox-*.yaml): Namespace agent-sandbox-system,
+# sandboxes.agents.x-k8s.io CRD, controller Deployment + ClusterRole/Binding +
+# Service. It is deliberately not templated — upgrades stay a byte-for-byte
+# swap of the upstream release file. The CRD lives in templates/ (not crds/)
+# so helm upgrades update it.
+
+# Optional cluster-scoped RuntimeClasses for sandbox isolation tiers. Enable
+# per cluster; the consuming chart (private-ai-rag / nh-intel) selects one via
+# its workspaceSandbox.runtimeClassName value.
+runtimeClasses:
+  # Kata Containers (Cloud Hypervisor VMM): microVM per pod, hardware (KVM)
+  # boundary. Needs kata-deploy on KVM-capable nodes (bare metal, or nested
+  # virtualization).
+  kataClh:
+    enabled: false
+  # gVisor (runsc): no KVM needed. On GKE enable GKE Sandbox on a node pool
+  # instead — GKE creates the "gvisor" RuntimeClass itself; keep this off there.
+  gvisor:
+    enabled: false

@@ -339,6 +339,17 @@ nh-rag-api:
     secretName: websearch-secrets
     searxngUrl: http://private-ai-websearch-searxng:8080
     crawl4aiUrl: http://private-ai-websearch-crawl4ai:11235
+  # Per-conversation workspace sandboxes (agent-sandbox CRs; isolated code
+  # execution for the workspace subagent). Prerequisites: the agent-sandbox
+  # addon installed on the cluster, plus a RuntimeClass for the chosen tier.
+  workspaceSandbox:
+    enabled: false
+    image:
+      repository: nethopper/nh-workspace-runtime
+      tag: "" # CI sets this alongside image.tag
+    runtimeClassName: "" # kata-clh | gvisor | "" (runc, dev only)
+    tokenSecret: ""
+    existingSecret: ""
   # Long-term conversational memory (facts / preferences / summaries).
   # backend: null | selfhosted | agentcore  (selfhosted = in-boundary: Postgres + Qdrant + Bedrock)
   memory:
