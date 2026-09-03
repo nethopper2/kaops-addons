@@ -1,0 +1,10 @@
+apiVersion: v2
+name: agent-sandbox
+description: >-
+  KAOPS addon installing the kubernetes-sigs/agent-sandbox controller and CRDs
+  (isolated per-conversation exec sandboxes for NH Intel's workspace subagent).
+  Vendored verbatim from the upstream release manifest; bump by replacing
+  templates/upstream-sandbox-<version>.yaml with the next release's sandbox.yaml.
+type: application
+version: 0.1.0
+appVersion: "v1.0.0"

@@ -18,8 +18,8 @@ rag:
 
 # Cluster-level infra for workspace sandboxes (per-conversation isolated exec
 # environments; see nh-rag chart's workspaceSandbox values for the app side).
-# The agent-sandbox controller + CRDs (kubernetes-sigs/agent-sandbox) must be
-# installed separately — pin its release; it is NOT vendored in this chart.
+# The agent-sandbox controller + CRDs (kubernetes-sigs/agent-sandbox, v1.0.0 GA)
+# install via the separate `agent-sandbox` addon chart in this repo.
 workspaceInfra:
   runtimeClasses:
     # Kata Containers (Cloud Hypervisor). Needs kata-deploy + KVM nodes.

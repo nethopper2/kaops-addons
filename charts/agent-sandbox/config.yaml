@@ -1,0 +1,22 @@
+metadata:
+  slug: agent-sandbox
+  name: Agent Sandbox
+  description: Isolated sandbox controller (kubernetes-sigs/agent-sandbox) for NH Intel workspace code execution.
+  categories: [Artificial Intelligence]
+  logoUrlDark: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-dark.png"
+  logoUrlLight: "https://nh-addons.s3.us-east-1.amazonaws.com/private-ai/logo-light.png"
+  detailUrl: "https://addons.kaops.net/agent-sandbox/"
+  externalUrl: "https://agent-sandbox.sigs.k8s.io"
+  isProduction: true
+  isStaging: true
+  useSafeDelete: true
+  serverSideDiff: true
+  installTargets:
+    clusterMessage: Install on clusters running NH Intel with workspace sandboxes enabled.
+
+forms:
+  - slug: default
+    label: Configuration
+    steps: []
+
+variables: []

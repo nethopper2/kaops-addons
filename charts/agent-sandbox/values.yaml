@@ -1,0 +1,6 @@
+# The upstream manifest is vendored verbatim (templates/upstream-sandbox-*.yaml):
+# Namespace agent-sandbox-system, sandboxes.agents.x-k8s.io CRD, controller
+# Deployment + ClusterRole/Binding + Service. No values are templated on
+# purpose — upgrades stay a byte-for-byte swap of the upstream release file.
+# The CRD lives in templates/ (not crds/) so helm upgrades update it.
+{}
