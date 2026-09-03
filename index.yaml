@@ -32,6 +32,19 @@ entries:
   agent-sandbox:
   - apiVersion: v2
     appVersion: v1.0.0
+    created: "2026-09-03T08:57:17.187335186Z"
+    description: KAOPS addon installing the kubernetes-sigs/agent-sandbox controller
+      and CRDs (isolated per-conversation exec sandboxes for NH Intel's workspace
+      subagent). Vendored verbatim from the upstream release manifest; bump by replacing
+      templates/upstream-sandbox-<version>.yaml with the next release's sandbox.yaml.
+    digest: d54e87cb74b3f6a25e1c1745eb056dcc8be7c93c9f63aed33a70dc4b0b530696
+    name: agent-sandbox
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/agent-sandbox-0.1.1/agent-sandbox-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: v1.0.0
     created: "2026-09-03T07:35:49.782617073Z"
     description: KAOPS addon installing the kubernetes-sigs/agent-sandbox controller
       and CRDs (isolated per-conversation exec sandboxes for NH Intel's workspace
@@ -8550,6 +8563,58 @@ entries:
     - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-oidc-0.1.9/private-ai-oidc-0.1.9.tgz
     version: 0.1.9
   private-ai-rag:
+  - apiVersion: v2
+    appVersion: v1.117.2
+    created: "2026-09-03T08:57:17.451582079Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 12.10.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.17
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    - condition: juicefs-s3-gateway.enabled
+      name: juicefs-s3-gateway
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.4.0
+    - condition: nh-pai-data-service.enabled
+      name: nh-pai-data-service
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.22
+    - condition: nh-mcp-server.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.5.0
+    - condition: nh-data-ingestion.enabled
+      name: nh-data-ingestion
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 2.0.7
+    - condition: private-ai-websearch.enabled
+      name: private-ai-websearch
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.0
+    description: KAOPS addon to install private-ai
+    digest: 12396bc1621e643bbcaeb0b8760f713248c6d82b743913f6d2e202c5626b82c0
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-1.117.13/private-ai-rag-1.117.13.tgz
+    version: 1.117.13
   - apiVersion: v2
     appVersion: v1.117.2
     created: "2026-09-01T10:38:07.146573297Z"
@@ -29211,4 +29276,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-09-03T07:35:49.93638815Z"
+generated: "2026-09-03T08:57:17.453308856Z"
