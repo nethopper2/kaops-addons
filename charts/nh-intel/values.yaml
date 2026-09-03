@@ -118,6 +118,8 @@ nh-rag-api-v2:
     runtimeClassName: "" # kata-clh | gvisor | "" (runc, dev only)
     tokenSecret: ""
     existingSecret: ""
+    perUserCap: 4       # max live sandboxes per user; oldest recycled
+    # ttlSeconds: 1800  # idle lifetime (subchart default)
 
 nh-mcp-server:
   enabled: true
