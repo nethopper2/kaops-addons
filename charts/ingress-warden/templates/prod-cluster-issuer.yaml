@@ -9,7 +9,7 @@ spec:
     solvers: 
     - http01:
         ingress:
-          class: nginx
+          ingressClassName: nginx
     privateKeySecretRef:
       name: letsencrypt-prod
     server: https://acme-v02.api.letsencrypt.org/directory
