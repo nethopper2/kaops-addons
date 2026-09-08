@@ -125,22 +125,56 @@ nh-mcp-server:
   enabled: true
   resources:
     requests:
-      cpu: 10m
-      memory: 192Mi
+      cpu: 50m
+      memory: 384Mi
     limits:
-      cpu: 200m
-      memory: 512Mi
+      cpu: 500m
+      memory: 1Gi
   image:
     tag: "v1.106.1"
+  # Server can take well over 30s to boot (CPU-throttled starts); the subchart's
+  # default probes (no initial delay, 1s timeout) kill it mid-startup.
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8010
+    initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 5
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8010
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
 
 nh-mcp-server-v2:
   enabled: true
   resources:
     requests:
-      cpu: 10m
-      memory: 192Mi
+      cpu: 50m
+      memory: 384Mi
     limits:
-      cpu: 200m
-      memory: 512Mi
+      cpu: 500m
+      memory: 1Gi
   image:
     tag: "v1.106.1"
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8010
+    initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 5
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8010
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
