@@ -61,11 +61,32 @@ data:
   USER_PERMISSIONS_NOTES_ALLOW_PUBLIC_SHARING: {{ .Values.global.userPermissionsNotesAllowPublicSharing | quote }}
   ENABLE_CALENDAR: {{ .Values.global.enableCalendar | quote }}
   ENABLE_AUTOMATIONS: {{ .Values.global.enableAutomations | quote }}
+  {{- with .Values.rag.llm }}
+  LLM_PROVIDER: {{ .provider | default "bedrock" | quote }}
+  {{- if .modelId }}
+  LLM_MODEL_ID: {{ .modelId | quote }}
+  {{- end }}
+  {{- if .modelFamily }}
+  LLM_MODEL_FAMILY: {{ .modelFamily | quote }}
+  {{- end }}
+  {{- if .vertex.project }}
+  GOOGLE_CLOUD_PROJECT: {{ .vertex.project | quote }}
+  GOOGLE_CLOUD_LOCATION: {{ .vertex.location | default "us-central1" | quote }}
+  {{- end }}
+  {{- if .azure.endpoint }}
+  AZURE_OPENAI_ENDPOINT: {{ .azure.endpoint | quote }}
+  AZURE_OPENAI_API_VERSION: {{ .azure.apiVersion | default "2024-10-21" | quote }}
+  {{- end }}
+  {{- end }}
   EMBEDDINGS_PROVIDER: {{ .Values.rag.embeddings.provider | quote }}
   EMBEDDINGS_DIMENSION: {{ .Values.rag.embeddings.dimension | quote }}
   EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: {{ .Values.rag.embeddings.autoReembedOnConfigChange | quote }}
   BEDROCK_EMBEDDINGS_MODEL: {{ .Values.rag.embeddings.bedrock.model | quote }}
   BEDROCK_EMBEDDINGS_REGION: {{ .Values.rag.embeddings.bedrock.region | quote }}
+  VERTEX_EMBEDDINGS_MODEL: {{ .Values.rag.embeddings.vertex.model | default "text-embedding-004" | quote }}
+  {{- if .Values.rag.embeddings.azure.deployment }}
+  AZURE_EMBEDDINGS_DEPLOYMENT: {{ .Values.rag.embeddings.azure.deployment | quote }}
+  {{- end }}
   {{- with (index .Values "nh-rag-api").memory }}
   MEMORY_BACKEND: {{ .backend | quote }}
   MEMORY_INJECT_K: {{ .injectK | quote }}
