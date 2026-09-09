@@ -5,8 +5,9 @@ global:
   enableSSO: false
   extraEnvVarsCM: shared-configmap-rag
   extraEnvVarsSecret: shared-secrets-rag
-  googleApplicationCredentialsSecretRef: # user provided
-  awsOpenAIKeySecretRef: # user provided
+  googleApplicationCredentialsSecretRef: # user provided (GCS sync + Vertex AI)
+  awsOpenAIKeySecretRef: # user provided (Bedrock)
+  azureOpenAIKeySecretRef: # user provided (Azure OpenAI / AI Foundry; key AZURE_OPENAI_API_KEY)
   sendgridSecretRef: "sendgrid-secret"
   postgresql:
     auth:
@@ -223,13 +224,30 @@ rag:
   gcsBucketName: # user provided
   googleApiScopes: # system provided
   postgresHost: # system provided
+  # Cloud AI provider for the agent LLM (nh-rag-api). One per install.
+  # Rendered into shared-configmap-rag as LLM_PROVIDER / LLM_MODEL_ID / LLM_MODEL_FAMILY.
+  # Contract: nh-rag-embedding docs/llm-providers.md
+  llm:
+    provider: "bedrock"   # bedrock | vertex | azure
+    modelId: ""           # provider-native model ID; empty → nh-rag-api.env.BEDROCK_MODEL_ID
+    modelFamily: ""       # claude | gpt | gemini | default (set for opaque Azure deployment names)
+    vertex:
+      project: ""         # GOOGLE_CLOUD_PROJECT (also used by vertex embeddings)
+      location: "us-central1"
+    azure:
+      endpoint: ""        # AZURE_OPENAI_ENDPOINT (also used by azure embeddings)
+      apiVersion: "2024-10-21"
   embeddings:
-    provider: "ollama"
-    dimension: 768
+    provider: "ollama"    # ollama | bedrock | vertex | azure (shared by nh-rag-api + nh-data-ingestion)
+    dimension: 768        # 768 nomic / 1024 titan-v2 / 768 text-embedding-004 / 1536 text-embedding-3-small
     autoReembedOnConfigChange: false
     bedrock:
       model: "amazon.titan-embed-text-v2:0"
       region: "us-east-1"
+    vertex:
+      model: "text-embedding-004"
+    azure:
+      deployment: ""      # AZURE_EMBEDDINGS_DEPLOYMENT
 
 initdb:
   enabled: false

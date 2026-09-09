@@ -26,7 +26,9 @@ forms:
           - dataIngestionEnabled
           - gpuEnabled
           - modelsToPull
+          - llmProvider
           - awsOpenAIKeySecretRef
+          - azureOpenAIKeySecretRef
           - additionalHosts
         ui:
           label: Details
@@ -107,7 +109,23 @@ variables:
       label: Data Ingestion Credentials Secret Reference
       id: dataIngestionCredentialsRef
       help: Sealed Secret Data Ingestion Credentials Reference
-  # aws bedrock variables start
+  # cloud AI provider variables start
+  - slug: llmProvider
+    path: "rag.llm.provider"
+    forms: [default]
+    ui:
+      type: select
+      label: AI Provider
+      id: llmProvider
+      options:
+        - label: AWS Bedrock
+          value: bedrock
+        - label: GCP Vertex AI
+          value: vertex
+        - label: Azure OpenAI / AI Foundry
+          value: azure
+      value: bedrock
+      help: Cloud provider hosting the agent LLM. Model IDs, embeddings provider and Vertex/Azure endpoints are set in rag.llm / rag.embeddings values.
   - slug: awsOpenAIKeySecretRef
     path: "global.awsOpenAIKeySecretRef"
     forms: [default]
@@ -116,7 +134,15 @@ variables:
       label: AWS OpenAI Key (Bedrock)
       help:  Amazon Bedrock API key.
       validation: optional
-  # aws bedrock variables end
+  - slug: azureOpenAIKeySecretRef
+    path: "global.azureOpenAIKeySecretRef"
+    forms: [default]
+    ui:
+      type: secret
+      label: Azure OpenAI API Key
+      help: Secret carrying AZURE_OPENAI_API_KEY for the Azure OpenAI / AI Foundry resource.
+      validation: optional
+  # cloud AI provider variables end
   # data ingestion variables end
   - slug: gDriveGoogleApplicationsCredentialsSecretRef
     path: "global.googleApplicationCredentialsSecretRef"

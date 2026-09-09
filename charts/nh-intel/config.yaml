@@ -21,6 +21,8 @@ forms:
       - slug: details
         variableSlugs:
           - awsOpenAIKeySecretRef
+          - azureOpenAIKeySecretRef
+          - googleApplicationCredentialsSecretRef
         ui:
           label: Details
 
@@ -31,7 +33,23 @@ variables:
     ui:
       type: secret
       label: AWS OpenAI Key (Bedrock)
-      help: Amazon Bedrock API key.
+      help: Amazon Bedrock API key. Required when the AI provider is AWS Bedrock (default).
+      validation: optional
+  - slug: azureOpenAIKeySecretRef
+    path: "global.azureOpenAIKeySecretRef"
+    forms: [default]
+    ui:
+      type: secret
+      label: Azure OpenAI API Key
+      help: Secret carrying AZURE_OPENAI_API_KEY. Required when LLM_PROVIDER / EMBEDDINGS_PROVIDER is azure.
+      validation: optional
+  - slug: googleApplicationCredentialsSecretRef
+    path: "global.googleApplicationCredentialsSecretRef"
+    forms: [default]
+    ui:
+      type: secret
+      label: Google Application Credentials (Vertex AI)
+      help: Secret carrying base64 service-account JSON (GOOGLE_APPLICATION_CREDENTIALS_BASE64). Optional on GKE with workload identity.
       validation: optional
 
 system:

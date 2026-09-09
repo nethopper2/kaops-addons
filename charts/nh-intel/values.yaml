@@ -44,8 +44,31 @@ nh-rag-api:
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+    # --- Cloud AI provider (one per install). Default = Bedrock; the LLM_*
+    # keys are optional and, when unset, render the historical Bedrock env.
+    # Contract: nh-rag-embedding docs/llm-providers.md
+    # LLM_PROVIDER: bedrock            # bedrock | vertex | azure
+    # LLM_MODEL_ID: ""                 # empty → BEDROCK_MODEL_ID
     BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
+    # Vertex example:
+    #   LLM_PROVIDER: vertex
+    #   LLM_MODEL_ID: gemini-2.5-pro
+    #   GOOGLE_CLOUD_PROJECT: my-project
+    #   GOOGLE_CLOUD_LOCATION: europe-west4
+    #   EMBEDDINGS_PROVIDER: vertex
+    #   VERTEX_EMBEDDINGS_MODEL: text-embedding-004
+    #   EMBEDDINGS_DIMENSION: "768"
+    #   (+ global.googleApplicationCredentialsSecretRef, or GKE workload identity)
+    # Azure example:
+    #   LLM_PROVIDER: azure
+    #   LLM_MODEL_ID: gpt-4o-prod      # deployment name
+    #   LLM_MODEL_FAMILY: gpt
+    #   AZURE_OPENAI_ENDPOINT: https://my-resource.openai.azure.com
+    #   EMBEDDINGS_PROVIDER: azure
+    #   AZURE_EMBEDDINGS_DEPLOYMENT: embed-3-small
+    #   EMBEDDINGS_DIMENSION: "1536"
+    #   (+ global.azureOpenAIKeySecretRef)
     EMBEDDINGS_PROVIDER: bedrock
     EMBEDDINGS_DIMENSION: "1024"
     EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: "true"
@@ -83,8 +106,31 @@ nh-rag-api-v2:
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
+    # --- Cloud AI provider (one per install). Default = Bedrock; the LLM_*
+    # keys are optional and, when unset, render the historical Bedrock env.
+    # Contract: nh-rag-embedding docs/llm-providers.md
+    # LLM_PROVIDER: bedrock            # bedrock | vertex | azure
+    # LLM_MODEL_ID: ""                 # empty → BEDROCK_MODEL_ID
     BEDROCK_MODEL_ID: global.anthropic.claude-sonnet-4-6
     BEDROCK_MODEL_PROVIDER: anthropic
+    # Vertex example:
+    #   LLM_PROVIDER: vertex
+    #   LLM_MODEL_ID: gemini-2.5-pro
+    #   GOOGLE_CLOUD_PROJECT: my-project
+    #   GOOGLE_CLOUD_LOCATION: europe-west4
+    #   EMBEDDINGS_PROVIDER: vertex
+    #   VERTEX_EMBEDDINGS_MODEL: text-embedding-004
+    #   EMBEDDINGS_DIMENSION: "768"
+    #   (+ global.googleApplicationCredentialsSecretRef, or GKE workload identity)
+    # Azure example:
+    #   LLM_PROVIDER: azure
+    #   LLM_MODEL_ID: gpt-4o-prod      # deployment name
+    #   LLM_MODEL_FAMILY: gpt
+    #   AZURE_OPENAI_ENDPOINT: https://my-resource.openai.azure.com
+    #   EMBEDDINGS_PROVIDER: azure
+    #   AZURE_EMBEDDINGS_DEPLOYMENT: embed-3-small
+    #   EMBEDDINGS_DIMENSION: "1536"
+    #   (+ global.azureOpenAIKeySecretRef)
     EMBEDDINGS_PROVIDER: bedrock
     EMBEDDINGS_DIMENSION: "1024"
     EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: "true"
