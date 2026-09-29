@@ -16,5 +16,48 @@ runtimeClasses:
     enabled: false
   # gVisor (runsc): no KVM needed. On GKE enable GKE Sandbox on a node pool
   # instead — GKE creates the "gvisor" RuntimeClass itself; keep this off there.
+  # On EKS / AKS enable it together with gvisorInstaller below.
   gvisor:
     enabled: false
+    # Pins sandbox pods to the node pool that carries runsc. Intel's Sandbox pod
+    # spec has no nodeSelector/tolerations of its own, so this block is what
+    # keeps sandboxes off the regular pools. Must match the pool's label + taint.
+    # nethopper.io/gvisor-ready=true is set per node by gvisorInstaller once
+    # containerd lists runsc; a fresh node has no such label and gets no sandbox.
+    scheduling:
+      nodeSelector:
+        nethopper.io/sandbox: gvisor
+        nethopper.io/gvisor-ready: "true"
+      tolerations:
+        - key: nethopper.io/sandbox
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
+
+# Installs gVisor (runsc + containerd shim) on the sandbox node pool of clusters
+# without managed gVisor (EKS, AKS, on-prem). Never enable on GKE.
+#
+# Contract with the node pool (terraform / cloud CLI):
+#   label  nethopper.io/sandbox=gvisor              -> installer + RuntimeClass scheduling target
+#   taint  nethopper.io/sandbox=gvisor:NoSchedule   -> only sandbox pods land on the pool
+# The installer itself adds label nethopper.io/gvisor-ready=true per node after
+# verifying containerd lists runsc; the gvisor RuntimeClass requires it. New
+# nodes (autoscale, AMI / node-image rotation) join without that label, get the
+# installer first, then accept sandboxes. No manual step, no pool taint to lift
+# (AKS's node webhook refuses to delete pool-defined taints via the k8s API).
+gvisorInstaller:
+  enabled: false
+  # gVisor release id (https://storage.googleapis.com/gvisor/releases/release/).
+  # Pin it; "latest" also works. Bumping it re-installs node by node.
+  release: "20260921.0"
+  image: alpine/k8s:1.31.1   # bash + curl + kubectl
+  nodeSelector:
+    nethopper.io/sandbox: gvisor
+  readyLabelKey: nethopper.io/gvisor-ready   # must match runtimeClasses.gvisor.scheduling.nodeSelector
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
