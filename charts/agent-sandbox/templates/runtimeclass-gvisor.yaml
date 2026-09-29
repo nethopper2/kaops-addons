@@ -1,14 +1,23 @@
 {{- if .Values.runtimeClasses.gvisor.enabled }}
 {{- /*
-gVisor RuntimeClass for workspace sandboxes — fallback tier for clusters
-without KVM access. Cluster-scoped. Prerequisite: runsc installed and
-registered in containerd on the target node pool.
+gVisor RuntimeClass for workspace sandboxes on clusters where WE install runsc
+(EKS, AKS, on-prem) — see gvisorInstaller below. Cluster-scoped.
 NOTE on GKE: enable GKE Sandbox on a node pool instead — GKE creates the
-"gvisor" RuntimeClass itself; leave this disabled there.
+"gvisor" RuntimeClass (with its own scheduling block) itself; keep this off.
+
+`scheduling` is what pins sandbox pods to the sandbox node pool: Intel's
+Sandbox pod spec carries only runtimeClassName=gvisor, no nodeSelector or
+tolerations of its own. Kubernetes merges these into the pod at admission.
 */}}
 apiVersion: node.k8s.io/v1
 kind: RuntimeClass
 metadata:
   name: gvisor
+  labels:
+    {{- include "agent-sandbox.labels" . | nindent 4 }}
 handler: runsc
+{{- with .Values.runtimeClasses.gvisor.scheduling }}
+scheduling:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
 {{- end }}

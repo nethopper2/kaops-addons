@@ -16,5 +16,44 @@ runtimeClasses:
     enabled: false
   # gVisor (runsc): no KVM needed. On GKE enable GKE Sandbox on a node pool
   # instead — GKE creates the "gvisor" RuntimeClass itself; keep this off there.
+  # On EKS / AKS enable it together with gvisorInstaller below.
   gvisor:
     enabled: false
+    # Pins sandbox pods to the node pool that carries runsc. Intel's Sandbox pod
+    # spec has no nodeSelector/tolerations of its own, so this block is what
+    # keeps sandboxes off the regular pools. Must match the pool's label + taint.
+    scheduling:
+      nodeSelector:
+        nethopper.io/sandbox: gvisor
+      tolerations:
+        - key: nethopper.io/sandbox
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
+
+# Installs gVisor (runsc + containerd shim) on the sandbox node pool of clusters
+# without managed gVisor (EKS, AKS, on-prem). Never enable on GKE.
+#
+# Contract with the node pool (terraform / cloud CLI):
+#   label  nethopper.io/sandbox=gvisor                  -> installer + RuntimeClass scheduling target
+#   taint  nethopper.io/sandbox=gvisor:NoSchedule       -> only sandbox pods land on the pool
+#   taint  nethopper.io/gvisor-ready=false:NoSchedule   -> startup taint; the installer removes it
+#                                                          per node once runsc is registered
+# New nodes (autoscale, AMI / node-image rotation) join with the startup taint,
+# get the installer first, then accept sandboxes. No manual step.
+gvisorInstaller:
+  enabled: false
+  # gVisor release id (https://storage.googleapis.com/gvisor/releases/release/).
+  # Pin it; "latest" also works. Bumping it re-installs node by node.
+  release: "20260921.0"
+  image: alpine/k8s:1.31.1   # bash + curl + kubectl
+  nodeSelector:
+    nethopper.io/sandbox: gvisor
+  startupTaintKey: nethopper.io/gvisor-ready
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi

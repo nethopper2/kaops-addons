@@ -1,0 +1,209 @@
+{{- if .Values.gvisorInstaller.enabled }}
+{{- /*
+gVisor installer DaemonSet for EKS / AKS (never GKE — GKE Sandbox ships runsc
+inside COS and the node rootfs is read-only there).
+
+What it does on every node matching gvisorInstaller.nodeSelector:
+  1. downloads the gVisor release tarball (sha512 verified) and unpacks
+     runsc, containerd-shim-runsc-v1 and gvisor-bin/ into /usr/local/bin on the host,
+  2. appends the "runsc" runtime to /etc/containerd/config.toml (idempotent,
+     handles config version 2 and 3), writes /etc/containerd/runsc.toml,
+  3. restarts containerd once (running pods survive: shims keep running),
+  4. removes the startup taint <startupTaintKey> so sandbox pods can land only
+     after runsc is ready, labels the node nethopper.io/gvisor-release=<release>,
+  5. sleeps forever (pod restart => script re-runs, all steps are no-ops).
+
+Survives node rotation: a new node joins with the startup taint (set on the
+node pool), the DaemonSet schedules there first, installs, removes the taint.
+Upgrade gVisor: bump gvisorInstaller.release -> rolling re-install, one node at a time.
+Releases: https://storage.googleapis.com/gvisor/releases/release/<release>/<arch>/gvisor.tar.bz2
+*/}}
+{{- $ns := .Release.Namespace }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gvisor-installer
+  namespace: {{ $ns }}
+  labels:
+    {{- include "agent-sandbox.labels" . | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: gvisor-installer
+  labels:
+    {{- include "agent-sandbox.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gvisor-installer
+  labels:
+    {{- include "agent-sandbox.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gvisor-installer
+subjects:
+  - kind: ServiceAccount
+    name: gvisor-installer
+    namespace: {{ $ns }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gvisor-installer
+  namespace: {{ $ns }}
+  labels:
+    {{- include "agent-sandbox.labels" . | nindent 4 }}
+data:
+  install.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    HOST=/host
+    RELEASE="${GVISOR_RELEASE:-latest}"
+    ARCH="$(uname -m)"                      # x86_64 | aarch64
+    BASE="https://storage.googleapis.com/gvisor/releases/release/${RELEASE}/${ARCH}"
+    BIN_DIR="${HOST}/usr/local/bin"
+    CFG="${HOST}/etc/containerd/config.toml"
+    RUNSC_CFG="${HOST}/etc/containerd/runsc.toml"
+    STAMP="${BIN_DIR}/.runsc-release"
+    log() { echo "[gvisor-installer] $(date -u +%H:%M:%S) $*"; }
+    host() { nsenter --target 1 --mount --uts --ipc --net --pid -- "$@"; }
+
+    # 1. binaries -----------------------------------------------------------
+    installed="$(cat "${STAMP}" 2>/dev/null || true)"
+    if [[ "${installed}" == "${RELEASE}" && "${RELEASE}" != "latest" && -x "${BIN_DIR}/runsc" ]]; then
+      log "runsc ${RELEASE} already installed"
+    else
+      tmp="$(mktemp -d)"; cd "${tmp}"
+      curl -fsSL -o gvisor.tar.bz2        "${BASE}/gvisor.tar.bz2"
+      curl -fsSL -o gvisor.tar.bz2.sha512 "${BASE}/gvisor.tar.bz2.sha512"
+      sha512sum -c gvisor.tar.bz2.sha512
+      mkdir -p "${BIN_DIR}"
+      tar -xjf gvisor.tar.bz2 -C "${BIN_DIR}"       # -> runsc, containerd-shim-runsc-v1, gvisor-bin/
+      chmod 0755 "${BIN_DIR}/runsc" "${BIN_DIR}/containerd-shim-runsc-v1" "${BIN_DIR}"/gvisor-bin/*
+      echo "${RELEASE}" > "${STAMP}"
+      log "installed: $("${BIN_DIR}/runsc" --version 2>/dev/null | head -1 || echo runsc)"
+    fi
+
+    # 2. containerd config --------------------------------------------------
+    [[ -f "${CFG}" ]] || { log "no ${CFG} - creating minimal"; printf 'version = 2\n' > "${CFG}"; }
+    cat > "${RUNSC_CFG}" <<'TOML'
+    [runsc_config]
+      platform = "systrap"
+    TOML
+    restart=0
+    if grep -q 'runtimes\.runsc\]' "${CFG}"; then
+      log "containerd already knows runtime runsc"
+    else
+      cfg_ver="$(sed -n 's/^version *= *\([0-9]*\).*/\1/p' "${CFG}" | head -1)"
+      if [[ -z "${cfg_ver}" ]]; then
+        # no version line: containerd 2.x defaults to config v3, 1.x to v1/v2
+        major="$(host containerd --version 2>/dev/null | grep -oE '[ v]([0-9]+)\.' | head -1 | tr -dc '0-9' || echo 1)"
+        [[ "${major:-1}" -ge 2 ]] && cfg_ver=3 || cfg_ver=2
+      fi
+      if [[ "${cfg_ver}" == "3" ]]; then
+        plugin='io.containerd.cri.v1.runtime'
+      else
+        plugin='io.containerd.grpc.v1.cri'
+      fi
+      log "appending runsc runtime to ${CFG} (config version ${cfg_ver}, plugin ${plugin})"
+      cat >> "${CFG}" <<EOT
+
+    # --- gVisor runtime (managed by nethopper gvisor-installer DaemonSet) ---
+    [plugins."${plugin}".containerd.runtimes.runsc]
+      runtime_type = "io.containerd.runsc.v1"
+    [plugins."${plugin}".containerd.runtimes.runsc.options]
+      TypeUrl = "io.containerd.runsc.v1.options"
+      ConfigPath = "/etc/containerd/runsc.toml"
+    EOT
+      restart=1
+    fi
+
+    # 3. restart containerd once ---------------------------------------------
+    if [[ "${restart}" == "1" ]]; then
+      log "restarting containerd"
+      host systemctl restart containerd
+      sleep 3
+      host systemctl is-active containerd >/dev/null || { log "containerd failed to start - check config"; exit 1; }
+    fi
+
+    # 4. startup taint / label ------------------------------------------------
+    if kubectl taint nodes "${NODE_NAME}" "${STARTUP_TAINT_KEY}-" >/dev/null 2>&1; then
+      log "removed startup taint ${STARTUP_TAINT_KEY} from ${NODE_NAME}"
+    else
+      log "startup taint already absent on ${NODE_NAME}"
+    fi
+    kubectl label nodes "${NODE_NAME}" "nethopper.io/gvisor-release=${RELEASE}" --overwrite >/dev/null
+    log "done - node ${NODE_NAME} ready for runtimeClassName=gvisor"
+
+    # 5. keep the pod alive (DaemonSet semantics) ----------------------------
+    while true; do sleep 3600; done
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: gvisor-installer
+  namespace: {{ $ns }}
+  labels:
+    app: gvisor-installer
+    {{- include "agent-sandbox.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: gvisor-installer
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: gvisor-installer
+      annotations:
+        # roll the DaemonSet (re-run the installer) when its settings change
+        checksum/config: {{ .Values.gvisorInstaller | toYaml | sha256sum | trunc 16 }}
+    spec:
+      serviceAccountName: gvisor-installer
+      priorityClassName: system-node-critical
+      hostPID: true
+      nodeSelector:
+        {{- toYaml .Values.gvisorInstaller.nodeSelector | nindent 8 }}
+      tolerations:
+        - operator: Exists          # must run before the startup taint is lifted
+      containers:
+        - name: installer
+          image: {{ .Values.gvisorInstaller.image }}
+          command: ["/bin/bash", "/scripts/install.sh"]
+          env:
+            - name: GVISOR_RELEASE
+              value: {{ .Values.gvisorInstaller.release | quote }}
+            - name: STARTUP_TAINT_KEY
+              value: {{ .Values.gvisorInstaller.startupTaintKey | quote }}
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: host
+              mountPath: /host
+            - name: scripts
+              mountPath: /scripts
+          resources:
+            {{- toYaml .Values.gvisorInstaller.resources | nindent 12 }}
+      volumes:
+        - name: host
+          hostPath:
+            path: /
+        - name: scripts
+          configMap:
+            name: gvisor-installer
+            defaultMode: 0755
+{{- end }}
