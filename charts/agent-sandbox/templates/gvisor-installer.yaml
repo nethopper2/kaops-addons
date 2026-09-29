@@ -14,7 +14,15 @@ What it does on every node matching gvisorInstaller.nodeSelector:
      <readyLabelKey>=true (+ nethopper.io/gvisor-release=<release>). The gvisor
      RuntimeClass requires that label in its scheduling.nodeSelector, so sandbox
      pods can land only after runsc is ready. On start the label is cleared first.
-  5. watchdog loop: re-checks every 5 min, drops the label if runsc disappears.
+  5. watchdog loop: re-checks every 5 min; if runsc disappears it drops the label
+     and exits, so the DaemonSet restarts the pod and step 1-4 re-install.
+
+"runsc loaded" means the RUNNING containerd lists it (crictl info), not just that
+the config file has it: a failed restart followed by a pod restart would otherwise
+open the node with runsc appended but never loaded. If containerd doesn't come
+back after the edit, the backup is restored and a marker
+(/etc/containerd/.gvisor-install-failed) stops further attempts, so containerd
+isn't restarted in a crash loop; the node stays closed until someone looks.
 
 Why a label and not a startup taint: AKS's node validating webhook refuses to
 delete any taint defined on the node pool, so an installer cannot lift it.
@@ -86,7 +94,16 @@ data:
     STAMP="${BIN_DIR}/.runsc-release"
     log()  { echo "[gvisor-installer] $(date -u +%H:%M:%S) $*"; }
     host() { nsenter --target 1 --mount --uts --ipc --net --pid -- "$@"; }
-    runsc_registered() { host containerd config dump 2>/dev/null | grep -q 'runtimes\.runsc\]'; }
+    FAILED="${HOST}/etc/containerd/.gvisor-install-failed"
+    # runsc is usable only if the RUNNING containerd has loaded it. crictl asks the daemon (AKS: /usr/bin/crictl +
+    # /etc/crictl.yaml; runtimes show as "runsc": {). Without crictl, fall back to parsing the config.
+    runsc_registered() {
+      if host sh -c 'command -v crictl' >/dev/null 2>&1; then
+        host crictl info 2>/dev/null | grep -q '"runsc"'
+      else
+        host containerd config dump 2>/dev/null | grep -q 'runtimes\.runsc\]'
+      fi
+    }
     set_ready()   { kubectl label nodes "${NODE_NAME}" "${READY_LABEL_KEY}=true" --overwrite >/dev/null; }
     unset_ready() { kubectl label nodes "${NODE_NAME}" "${READY_LABEL_KEY}-" >/dev/null 2>&1 || true; }
 
@@ -94,6 +111,12 @@ data:
     #    DaemonSet restart, when a stale "true" may still be on the Node object)
     unset_ready
     log "node ${NODE_NAME}: ${READY_LABEL_KEY} cleared, installing gVisor ${RELEASE}"
+    if [[ -f "${FAILED}" ]]; then
+      # a previous run broke containerd and rolled back: don't retry in a loop (each retry restarts containerd).
+      # Retry = delete the marker on the node (or reimage it), then restart this pod.
+      log "found ${FAILED#${HOST}} - a previous install broke containerd and was rolled back; not retrying, node stays closed"
+      while true; do sleep 3600; done
+    fi
 
     # 1. binaries -------------------------------------------------------------------
     installed="$(cat "${STAMP}" 2>/dev/null || true)"
@@ -150,14 +173,16 @@ data:
       restart=1
     fi
 
-    # 3. restart containerd once ----------------------------------------------------------
-    if [[ "${restart}" == "1" ]]; then
+    # 3. restart containerd if the config changed OR the running daemon hasn't loaded runsc yet ----------
+    if [[ "${restart}" == "1" ]] || ! runsc_registered; then
       log "restarting containerd"
       host systemctl restart containerd
-      sleep 3
+      sleep 5
       if ! host systemctl is-active containerd >/dev/null; then
-        log "containerd failed to start - restoring ${CFG}.pre-gvisor"
-        cp "${CFG}.pre-gvisor" "${CFG}"; host systemctl restart containerd || true
+        log "containerd failed to start - restoring ${CFG}.pre-gvisor and stopping (marker ${FAILED#${HOST}})"
+        [[ -f "${CFG}.pre-gvisor" ]] && cp "${CFG}.pre-gvisor" "${CFG}"
+        host systemctl restart containerd || true
+        date -u > "${FAILED}"
         exit 1
       fi
     fi
@@ -177,7 +202,8 @@ data:
       if runsc_registered; then
         set_ready
       else
-        unset_ready; log "runsc missing from containerd config - ${READY_LABEL_KEY} removed"
+        unset_ready; log "runsc no longer loaded in containerd - ${READY_LABEL_KEY} removed, restarting to re-install"
+        exit 1
       fi
     done
 ---
@@ -203,7 +229,8 @@ spec:
         app: gvisor-installer
       annotations:
         # roll the DaemonSet (re-run the installer) when its settings change
-        checksum/config: {{ .Values.gvisorInstaller | toYaml | sha256sum | trunc 16 }}
+        # values + chart version: install.sh lives in this template, so a chart bump must re-roll too
+        checksum/config: {{ printf "%s\n%s" .Chart.Version (.Values.gvisorInstaller | toYaml) | sha256sum | trunc 16 }}
     spec:
       serviceAccountName: gvisor-installer
       priorityClassName: system-node-critical
