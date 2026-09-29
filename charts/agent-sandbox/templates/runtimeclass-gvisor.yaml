@@ -1,7 +1,7 @@
 {{- if .Values.runtimeClasses.gvisor.enabled }}
 {{- /*
 gVisor RuntimeClass for workspace sandboxes on clusters where WE install runsc
-(EKS, AKS, on-prem) — see gvisorInstaller below. Cluster-scoped.
+(EKS, AKS, on-prem) — see gvisorInstaller. Cluster-scoped.
 NOTE on GKE: enable GKE Sandbox on a node pool instead — GKE creates the
 "gvisor" RuntimeClass (with its own scheduling block) itself; keep this off.
 
