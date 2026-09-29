@@ -32,6 +32,19 @@ entries:
   agent-sandbox:
   - apiVersion: v2
     appVersion: v1.0.0
+    created: "2026-09-29T13:12:56.6936517Z"
+    description: KAOPS addon installing the kubernetes-sigs/agent-sandbox controller
+      and CRDs (isolated per-conversation exec sandboxes for NH Intel's workspace
+      subagent). Vendored verbatim from the upstream release manifest; bump by replacing
+      templates/upstream-sandbox-<version>.yaml with the next release's sandbox.yaml.
+    digest: a2126f5d0e898d12c68c6cc5574a99453b4ec620c531adceb9c893f2e34b9f7e
+    name: agent-sandbox
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/agent-sandbox-0.1.2/agent-sandbox-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: v1.0.0
     created: "2026-09-03T08:57:17.187335186Z"
     description: KAOPS addon installing the kubernetes-sigs/agent-sandbox controller
       and CRDs (isolated per-conversation exec sandboxes for NH Intel's workspace
@@ -29578,4 +29591,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-09-25T12:56:33.837973369Z"
+generated: "2026-09-29T13:12:56.694934694Z"
