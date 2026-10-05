@@ -1,0 +1,15 @@
+{{- /*
+KAOPS's Argo app targets nh-addons; everything of ours goes to this namespace instead.
+Created if missing; never deleted or pruned by Argo (Delete=false, Prune=false), so removing or
+reinstalling the addon keeps the namespace and the Grafana Cloud Secret in it (a KAOPS sealed secret,
+synced by another Argo app that fails while the namespace is missing).
+*/ -}}
+{{- if .Values.createNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ index .Values "kube-prometheus-stack" "namespaceOverride" }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+{{- end }}

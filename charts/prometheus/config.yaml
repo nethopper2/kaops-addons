@@ -1,0 +1,27 @@
+# KAOPS addon descriptor, read by nh-backend / the KAOPS UI. Only metadata.slug is required by the
+# backend (it is also the Argo Application name, the chart name and so the Helm release name).
+# forms / variables are left empty on purpose: configuration is plain Helm values (values.yaml).
+metadata:
+  slug: prometheus
+  name: Prometheus (Grafana Cloud)
+  description: Our own Prometheus next to the KAOPS one. Scrapes the same ServiceMonitors, keeps an allowlist of metrics, remote-writes to Grafana Cloud.
+  categories: [Monitoring]
+  isProduction: false
+  isStaging: false
+  useSafeDelete: true
+  serverSideDiff: true
+  installTargets:
+    clusterMessage: Needs KAOPS's observability-edge (its CRDs and ServiceMonitors) on the cluster.
+
+forms:
+  - slug: default
+    label: Configuration
+    steps: []
+
+variables: []
+
+# The one per-cluster value: the cluster name, filled in by KAOPS on install (no form).
+# The path goes straight to the subchart's values; its keys have no dots (KAOPS dotted-key bug).
+system:
+  - path: kube-prometheus-stack.prometheus.prometheusSpec.externalLabels.cluster
+    value: '${system.cluster.name}'
