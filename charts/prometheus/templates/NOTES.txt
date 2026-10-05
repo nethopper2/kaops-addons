@@ -1,0 +1,3 @@
+New Prometheus in namespace {{ index .Values "kube-prometheus-stack" "namespaceOverride" }}.
+Remote write needs Secret grafana-cloud-metrics (keys: username, password) in that namespace;
+without it the operator won't create the Prometheus pod.

@@ -1,0 +1,253 @@
+# prometheus addon — the "new Prometheus". Design and reasoning:
+# notes/infra-219-send-metrics-from-our-envs-to-grafana-cloud/04-new-prometheus-design.md
+#
+# Plain Helm values for the kube-prometheus-stack subchart. KAOPS fills in only the cluster name
+# (config.yaml "system"); everything else is here.
+
+# Create the namespace from this chart (true under KAOPS/Argo). false for a manual `helm install`
+# into a namespace that already exists (Helm refuses to take over objects it didn't create).
+createNamespace: true
+
+kube-prometheus-stack:
+  namespaceOverride: prometheus
+
+  # Two lists, joined into regexes by the chart (both fields go through Helm's tpl):
+  # - metricsAllowlist: kept by the "allowlist" scrape class, i.e. scraped AND stored in this Prometheus
+  #   (local debugging, KEDA). Everything else is dropped before storage.
+  # - remoteWriteAllowlist: the subset sent to Grafana Cloud (what we pay for). Must be a subset of
+  #   metricsAllowlist (nothing else exists locally).
+  # Plain lists so they can be overridden per cluster (helm -f / KAOPS advanced config) without a
+  # chart release. Descriptions + tiers: notes/infra-219-send-metrics-from-our-envs-to-grafana-cloud/
+  # 07-metrics-reference.md. Default: tier 0 + tier 1 locally, tier 0 to Grafana Cloud.
+  metricsAllowlist:
+    - up
+    - kube_pod_info
+    - kube_pod_owner
+    - kube_pod_status_phase
+    - kube_pod_status_ready
+    - kube_pod_container_status_restarts_total
+    - kube_pod_container_status_waiting_reason
+    - kube_pod_container_status_last_terminated_reason
+    - kube_pod_container_resource_requests
+    - kube_pod_container_resource_limits
+    - kube_deployment_spec_replicas
+    - kube_deployment_status_replicas_available
+    - kube_statefulset_replicas
+    - kube_statefulset_status_replicas_ready
+    - kube_daemonset_status_desired_number_scheduled
+    - kube_daemonset_status_number_ready
+    - kube_job_status_failed
+    - kube_node_info
+    - kube_node_status_condition
+    - kube_node_status_allocatable
+    - kube_node_spec_unschedulable
+    - kube_persistentvolumeclaim_status_phase
+    - kube_namespace_status_phase
+    - container_cpu_usage_seconds_total
+    - container_cpu_cfs_periods_total
+    - container_cpu_cfs_throttled_periods_total
+    - container_memory_working_set_bytes
+    - container_network_receive_bytes_total
+    - container_network_transmit_bytes_total
+    - kubelet_volume_stats_available_bytes
+    - kubelet_volume_stats_capacity_bytes
+    - node_cpu_seconds_total
+    - node_memory_MemAvailable_bytes
+    - node_memory_MemTotal_bytes
+    - node_filesystem_avail_bytes
+    - node_filesystem_size_bytes
+    - node_load1
+    - node_disk_read_bytes_total
+    - node_disk_written_bytes_total
+    - node_network_receive_bytes_total
+    - node_network_transmit_bytes_total
+    - node_network_receive_errs_total
+    - node_network_transmit_errs_total
+    - node_nf_conntrack_entries
+    - node_nf_conntrack_entries_limit
+    - node_filefd_allocated
+    - node_filefd_maximum
+    - node_filesystem_files
+    - node_filesystem_files_free
+    - node_load5
+    - node_load15
+    - node_boot_time_seconds
+    - machine_cpu_cores
+    - machine_memory_bytes
+    - kubelet_volume_stats_used_bytes
+    - kubelet_volume_stats_inodes
+    - kubelet_volume_stats_inodes_used
+    - kube_pod_container_status_last_terminated_exitcode
+    - kube_persistentvolumeclaim_info
+  remoteWriteAllowlist:
+    - up
+    - kube_pod_info
+    - kube_pod_owner
+    - kube_pod_status_phase
+    - kube_pod_status_ready
+    - kube_pod_container_status_restarts_total
+    - kube_pod_container_status_waiting_reason
+    - kube_pod_container_status_last_terminated_reason
+    - kube_pod_container_resource_requests
+    - kube_pod_container_resource_limits
+    - kube_deployment_spec_replicas
+    - kube_deployment_status_replicas_available
+    - kube_statefulset_replicas
+    - kube_statefulset_status_replicas_ready
+    - kube_daemonset_status_desired_number_scheduled
+    - kube_daemonset_status_number_ready
+    - kube_job_status_failed
+    - kube_node_info
+    - kube_node_status_condition
+    - kube_node_status_allocatable
+    - kube_node_spec_unschedulable
+    - kube_persistentvolumeclaim_status_phase
+    - kube_namespace_status_phase
+    - container_cpu_usage_seconds_total
+    - container_cpu_cfs_periods_total
+    - container_cpu_cfs_throttled_periods_total
+    - container_memory_working_set_bytes
+    - container_network_receive_bytes_total
+    - container_network_transmit_bytes_total
+    - kubelet_volume_stats_available_bytes
+    - kubelet_volume_stats_capacity_bytes
+    - node_cpu_seconds_total
+    - node_memory_MemAvailable_bytes
+    - node_memory_MemTotal_bytes
+    - node_filesystem_avail_bytes
+    - node_filesystem_size_bytes
+    - node_load1
+
+  # CRDs come from KAOPS's observability-edge release (operator v0.76.1). Never install ours.
+  crds:
+    enabled: false
+
+  # Components of the chart we don't deploy: KAOPS's release already runs them (kube-state-metrics,
+  # node-exporter, the kubelet / API server / control-plane ServiceMonitors), or we don't want them
+  # here (alerting rules, Alertmanager, Grafana, Thanos Ruler, Windows exporter).
+  defaultRules:
+    create: false
+  windowsMonitoring:
+    enabled: false
+  alertmanager:
+    enabled: false
+  grafana:
+    enabled: false
+  thanosRuler:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false        # scrape KAOPS's kube-state-metrics
+  nodeExporter:
+    enabled: false        # scrape KAOPS's node-exporter (:9101, hostNetwork)
+  kubeApiServer:
+    enabled: false
+  kubelet:
+    enabled: false        # KAOPS's kubelet ServiceMonitor + its kube-system kubelet Service
+  kubeControllerManager:
+    enabled: false
+  coreDns:
+    enabled: false
+  kubeDns:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeProxy:
+    enabled: false
+
+  prometheusOperator:
+    # No cluster-wide admission webhooks (KAOPS's operator has its own) ⇒ no webhook TLS either.
+    admissionWebhooks:
+      enabled: false
+    tls:
+      enabled: false
+    # KAOPS's operator already maintains kube-system/<cluster>-observability-e-kubelet.
+    kubeletService:
+      enabled: false
+    serviceMonitor:
+      selfMonitor: false
+    # Only reconcile Prometheus / Alertmanager / ThanosRuler objects in our namespace.
+    # KAOPS's operator runs with the same flags set to "default" (checked 2026-09-30, azure-dev2).
+    # ServiceMonitors / PodMonitors are still read from all namespaces.
+    prometheusInstanceNamespaces: [prometheus]
+    alertmanagerInstanceNamespaces: [prometheus]
+    alertmanagerConfigNamespaces: [prometheus]
+    thanosRulerInstanceNamespaces: [prometheus]
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+
+  prometheus:
+    serviceMonitor:
+      selfMonitor: false
+    prometheusSpec:
+      replicas: 1                     # HA (2 + anti-affinity + PDB) later
+      scrapeInterval: 60s             # 1 sample/min per series = what Grafana Cloud bills
+      evaluationInterval: 60s
+      retention: 1d                   # long-term lives in Grafana Cloud
+      retentionSize: 1GB
+      storageSpec:                    # no PVs: emptyDir, capped
+        emptyDir:
+          sizeLimit: 2Gi
+      resources:                      # old Prometheus: ~9 KiB/series; tier 0 ≈ 3–4k series
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
+
+      # Added to every series sent to Grafana Cloud: how clusters are told apart there.
+      # cluster: set by KAOPS on install (config.yaml "system").
+      externalLabels:
+        cluster: ""
+      # Grafana Cloud HA dedup expects cluster + __replica__; harmless with 1 replica, ready for 2.
+      replicaExternalLabelName: __replica__
+      prometheusExternalLabelNameClear: true
+
+      # Every ServiceMonitor / PodMonitor in the cluster, whatever its labels. The chart's default
+      # selector is release=<this release>; `matchLabels: null` removes it, leaving an empty selector
+      # = select all. Safe because the "allowlist" scrape class below keeps only metricsAllowlist anyway, and
+      # it doesn't depend on KAOPS's per-cluster release name (<cluster>-observability-edge).
+      serviceMonitorSelector:
+        matchLabels: null
+      serviceMonitorNamespaceSelector: {}
+      podMonitorSelector:
+        matchLabels: null
+      podMonitorNamespaceSelector: {}
+
+      # Applies to every monitor above (none names a class). Needs operator >= v0.75 (we have v0.76.1).
+      scrapeClasses:
+        - name: allowlist
+          default: true
+          # Target level: don't even fetch the API server (40–65% of today's series, control plane).
+          relabelings:
+            - sourceLabels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name]
+              regex: default;kubernetes
+              action: drop
+          # Sample level: keep only metricsAllowlist (top of this file).
+          metricRelabelings:
+            - sourceLabels: [__name__]
+              regex: '{{ join "|" .Values.metricsAllowlist }}'
+              action: keep
+
+      # One Grafana Cloud stack for all clusters ⇒ same URL everywhere.
+      # Secret grafana-cloud-metrics in namespace prometheus: username = Grafana Cloud Prometheus
+      # instance ID, password = access policy token with metrics:write. Created by hand for now.
+      remoteWrite:
+        - url: https://prometheus-prod-56-prod-us-east-2.grafana.net/api/prom/push
+          # Send only remoteWriteAllowlist; the rest of metricsAllowlist stays local.
+          writeRelabelConfigs:
+            - sourceLabels: [__name__]
+              regex: '{{ join "|" .Values.remoteWriteAllowlist }}'
+              action: keep
+          basicAuth:
+            username:
+              name: grafana-cloud-metrics
+              key: username
+            password:
+              name: grafana-cloud-metrics
+              key: password
