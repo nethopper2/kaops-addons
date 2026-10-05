@@ -29508,6 +29508,23 @@ entries:
   prometheus:
   - apiVersion: v2
     appVersion: v0.76.1
+    created: "2026-10-05T10:32:24.86221065Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 63.1.0
+    description: 'KAOPS addon: our own Prometheus ("new Prometheus") next to KAOPS''s
+      observability-edge one. Scrapes the same ServiceMonitors / PodMonitors, keeps
+      only an allowlist of metrics (tier 0), remote-writes to Grafana Cloud. Notes:
+      notes/infra-219-send-metrics-from-our-envs-to-grafana-cloud'
+    digest: e7c3346725f0073b028b493c813e5df5d429b522a5fe0d3d713866e692eb3b1d
+    name: prometheus
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/prometheus-0.1.1/prometheus-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: v0.76.1
     created: "2026-10-05T10:01:22.462951273Z"
     dependencies:
     - name: kube-prometheus-stack
@@ -29609,4 +29626,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-10-05T10:01:22.465468601Z"
+generated: "2026-10-05T10:32:24.863449591Z"
