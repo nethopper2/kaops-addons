@@ -5,7 +5,7 @@ description: >-
   Scrapes the same ServiceMonitors / PodMonitors, keeps only an allowlist of metrics (tier 0),
   remote-writes to Grafana Cloud. Notes: notes/infra-219-send-metrics-from-our-envs-to-grafana-cloud
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "v0.76.1"
 
 dependencies:

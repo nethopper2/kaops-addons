@@ -6,7 +6,7 @@ metadata:
   name: Prometheus (Grafana Cloud)
   description: Our own Prometheus next to the KAOPS one. Scrapes the same ServiceMonitors, keeps an allowlist of metrics, remote-writes to Grafana Cloud.
   categories: [Monitoring]
-  isProduction: false
+  isProduction: true
   isStaging: false
   useSafeDelete: true
   serverSideDiff: true
