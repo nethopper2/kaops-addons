@@ -29505,6 +29505,24 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-0.1.84/private-ai-rag-0.1.84.tgz
     version: 0.1.84
+  prometheus:
+  - apiVersion: v2
+    appVersion: v0.76.1
+    created: "2026-10-05T10:01:22.462951273Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 63.1.0
+    description: 'KAOPS addon: our own Prometheus ("new Prometheus") next to KAOPS''s
+      observability-edge one. Scrapes the same ServiceMonitors / PodMonitors, keeps
+      only an allowlist of metrics (tier 0), remote-writes to Grafana Cloud. Notes:
+      notes/infra-219-send-metrics-from-our-envs-to-grafana-cloud'
+    digest: 837fd2b329d2f78616ac3791d34066e88bbd410e3cf066343a5292384aea9ea8
+    name: prometheus
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/prometheus-0.1.0/prometheus-0.1.0.tgz
+    version: 0.1.0
   singleSO:
   - apiVersion: v2
     appVersion: 0.5.16
@@ -29591,4 +29609,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-09-29T13:12:56.694934694Z"
+generated: "2026-10-05T10:01:22.465468601Z"
