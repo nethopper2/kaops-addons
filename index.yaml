@@ -4178,6 +4178,21 @@ entries:
     version: 0.1.0
   nh-ai-benchmark:
   - apiVersion: v2
+    appVersion: v1.120.0
+    created: "2026-10-07T13:53:07.691721884Z"
+    dependencies:
+    - condition: nh-ai-benchmark.enabled
+      name: nh-ai-benchmark
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.2.3
+    description: KAOPS addon to install NH AI Benchmark (API + UI)
+    digest: 748233831e24dce9bddfa7412f0b5f520bb1a916128ae09afedfb374e8a72209
+    name: nh-ai-benchmark
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/nh-ai-benchmark-1.120.0/nh-ai-benchmark-1.120.0.tgz
+    version: 1.120.0
+  - apiVersion: v2
     appVersion: v1.117.2
     created: "2026-08-14T19:08:25.972032663Z"
     dependencies:
@@ -29678,4 +29693,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-10-06T10:57:24.868364991Z"
+generated: "2026-10-07T13:53:07.693169558Z"
