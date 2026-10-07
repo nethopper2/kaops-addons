@@ -11,6 +11,13 @@ createNamespace: true
 kube-prometheus-stack:
   namespaceOverride: prometheus
 
+  # Same object names on every cluster: prometheus-operator, Prometheus "prometheus", pod
+  # prometheus-prometheus-0. Without these, names derive from the Helm release, which KAOPS
+  # sets to "<cluster>-prometheus" (Argo app name), truncated to 26 chars
+  # (ai-nh-stage-prometheus-kub-operator).
+  fullnameOverride: prometheus
+  cleanPrometheusOperatorObjectNames: true
+
   # Two lists, joined into regexes by the chart (both fields go through Helm's tpl):
   # - metricsAllowlist: kept by the "allowlist" scrape class, i.e. scraped AND stored in this Prometheus
   #   (local debugging, KEDA). Everything else is dropped before storage.
@@ -18,7 +25,8 @@ kube-prometheus-stack:
   #   metricsAllowlist (nothing else exists locally).
   # Plain lists so they can be overridden per cluster (helm -f / KAOPS advanced config) without a
   # chart release. Descriptions + tiers: notes/infra-219-send-metrics-from-our-envs-to-grafana-cloud/
-  # 07-metrics-reference.md. Default: tier 0 + tier 1 locally, tier 0 to Grafana Cloud.
+  # 07-metrics-reference.md. Default since 0.1.2: tier 1 (+ node_uname_info, kube_namespace_created,
+  # which feed dashboard drop-downs) both locally and to Grafana Cloud.
   metricsAllowlist:
     - up
     - kube_pod_info
@@ -79,6 +87,9 @@ kube-prometheus-stack:
     - kubelet_volume_stats_inodes_used
     - kube_pod_container_status_last_terminated_exitcode
     - kube_persistentvolumeclaim_info
+    # drop-down sources for imported dashboards (one series per node / per namespace)
+    - node_uname_info
+    - kube_namespace_created
   remoteWriteAllowlist:
     - up
     - kube_pod_info
@@ -117,6 +128,31 @@ kube-prometheus-stack:
     - node_filesystem_avail_bytes
     - node_filesystem_size_bytes
     - node_load1
+    - node_disk_read_bytes_total
+    - node_disk_written_bytes_total
+    - node_network_receive_bytes_total
+    - node_network_transmit_bytes_total
+    - node_network_receive_errs_total
+    - node_network_transmit_errs_total
+    - node_nf_conntrack_entries
+    - node_nf_conntrack_entries_limit
+    - node_filefd_allocated
+    - node_filefd_maximum
+    - node_filesystem_files
+    - node_filesystem_files_free
+    - node_load5
+    - node_load15
+    - node_boot_time_seconds
+    - machine_cpu_cores
+    - machine_memory_bytes
+    - kubelet_volume_stats_used_bytes
+    - kubelet_volume_stats_inodes
+    - kubelet_volume_stats_inodes_used
+    - kube_pod_container_status_last_terminated_exitcode
+    - kube_persistentvolumeclaim_info
+    # drop-down sources for imported dashboards (one series per node / per namespace)
+    - node_uname_info
+    - kube_namespace_created
 
   # CRDs come from KAOPS's observability-edge release (operator v0.76.1). Never install ours.
   crds:
