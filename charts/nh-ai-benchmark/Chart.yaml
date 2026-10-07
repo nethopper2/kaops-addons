@@ -2,8 +2,8 @@ apiVersion: v2
 name: nh-ai-benchmark
 description: KAOPS addon to install NH AI Benchmark (API + UI)
 type: application
-version: 1.117.2
-appVersion: "v1.117.2"
+version: 1.120.0
+appVersion: "v1.120.0"
 
 dependencies:
   - name: nh-ai-benchmark
