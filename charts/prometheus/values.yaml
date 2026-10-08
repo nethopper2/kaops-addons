@@ -90,6 +90,22 @@ kube-prometheus-stack:
     # drop-down sources for imported dashboards (one series per node / per namespace)
     - node_uname_info
     - kube_namespace_created
+    # Application metrics for the Intel / MCP dashboards (Grafana users/mateuszs "Intel & MCP").
+    # Entries are regex fragments (the list is joined with "|"). Exposed by: nh-rag-api
+    # (prometheus-fastapi-instrumentator + intel_*), nh-mcp-server (mcp_*), redis-exporter
+    # check-single-keys (redis_key_size, queue depths), Qdrant /metrics (collections_*, memory_*).
+    - http_requests_total
+    - http_requests_inprogress
+    - http_request_duration_seconds_(bucket|count|sum)
+    - http_request_duration_highr_seconds_(bucket|count|sum)
+    - intel_.*
+    - mcp_.*
+    - redis_key_size
+    - collections_total
+    - collections_vector_total
+    - collection_hardware_metric_cpu
+    - memory_resident_bytes
+    - app_status_recovery_mode
   remoteWriteAllowlist:
     - up
     - kube_pod_info
@@ -153,6 +169,22 @@ kube-prometheus-stack:
     # drop-down sources for imported dashboards (one series per node / per namespace)
     - node_uname_info
     - kube_namespace_created
+    # Application metrics for the Intel / MCP dashboards (Grafana users/mateuszs "Intel & MCP").
+    # Entries are regex fragments (the list is joined with "|"). Exposed by: nh-rag-api
+    # (prometheus-fastapi-instrumentator + intel_*), nh-mcp-server (mcp_*), redis-exporter
+    # check-single-keys (redis_key_size, queue depths), Qdrant /metrics (collections_*, memory_*).
+    - http_requests_total
+    - http_requests_inprogress
+    - http_request_duration_seconds_(bucket|count|sum)
+    - http_request_duration_highr_seconds_(bucket|count|sum)
+    - intel_.*
+    - mcp_.*
+    - redis_key_size
+    - collections_total
+    - collections_vector_total
+    - collection_hardware_metric_cpu
+    - memory_resident_bytes
+    - app_status_recovery_mode
 
   # CRDs come from KAOPS's observability-edge release (operator v0.76.1). Never install ours.
   crds:
@@ -266,6 +298,11 @@ kube-prometheus-stack:
               action: drop
           # Sample level: keep only metricsAllowlist (top of this file).
           metricRelabelings:
+            # Python client libraries emit a *_created companion series per counter/histogram
+            # (creation timestamp): no dashboard uses them, they just cost series.
+            - sourceLabels: [__name__]
+              regex: '.*_created'
+              action: drop
             - sourceLabels: [__name__]
               regex: '{{ join "|" .Values.metricsAllowlist }}'
               action: keep
