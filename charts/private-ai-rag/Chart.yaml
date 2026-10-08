@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.120.1
+version: 1.120.2
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -55,7 +55,7 @@ dependencies:
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-pai-data-service.enabled
   - name: nh-mcp-server
-    version: 0.5.0
+    version: 0.5.1
     repository: https://nethopper2.github.io/helm-charts/
     condition: nh-mcp-server.enabled
   - name: nh-data-ingestion
