@@ -30,7 +30,8 @@ kube-prometheus-stack:
   # one metric with a one-line override (e.g. metrics.pg_stat_database_blks_hit: send) and still gets
   # later chart defaults. Descriptions + tiers: notes/infra-219-send-metrics-from-our-envs-to-grafana-cloud/
   # 07-metrics-reference.md. Default: tier 1 (+ node_uname_info, kube_namespace_created for dashboard
-  # drop-downs, + container_memory_rss); container usage only for our namespaces (option A, 2026-10-09).
+  # drop-downs) + container_memory_rss + the app / node metrics added in 0.1.3 (below); container usage
+  # only for our namespaces (option A, 2026-10-09).
   metrics:
     # pod / workload state (kube-state-metrics; `namespace` = the object's): also for provider namespaces —
     # a broken CNI, CoreDNS or CSI pod breaks our apps too, and the alerts need these
@@ -232,12 +233,17 @@ kube-prometheus-stack:
       storageSpec:                    # no PVs: emptyDir, capped
         emptyDir:
           sizeLimit: 2Gi
-      resources:                      # old Prometheus: ~9 KiB/series; tier 0 ≈ 3–4k series
+      resources:                      # measured 2026-10-08 (tier 1, ~3.6k series): RSS 165–186 MiB, CPU < 20m
         requests:
           cpu: 100m
           memory: 256Mi
         limits:
           memory: 512Mi
+      # Sets GOMEMLIMIT to 90 % of the container's memory limit (a feature flag in Prometheus 2.x — ours is
+      # v2.54.1 — on by default in 3.0): the Go GC works harder near the limit instead of letting the heap
+      # overshoot. Doesn't help if the live data itself (head series, a WAL replay) needs more.
+      enableFeatures:
+        - auto-gomemlimit
 
       # Added to every series sent to Grafana Cloud: how clusters are told apart there.
       # cluster: set by KAOPS on install (config.yaml "system").
@@ -249,8 +255,9 @@ kube-prometheus-stack:
 
       # Every ServiceMonitor / PodMonitor in the cluster, whatever its labels. The chart's default
       # selector is release=<this release>; `matchLabels: null` removes it, leaving an empty selector
-      # = select all. Safe because the "allowlist" scrape class below keeps only what `metrics` lists anyway, and
-      # it doesn't depend on KAOPS's per-cluster release name (<cluster>-observability-edge).
+      # = select all. Safe because the default scrape class below (still named "allowlist") keeps only what
+      # `metrics` lists anyway, and it doesn't depend on KAOPS's per-cluster release name
+      # (<cluster>-observability-edge).
       serviceMonitorSelector:
         matchLabels: null
       serviceMonitorNamespaceSelector: {}
