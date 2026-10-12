@@ -643,7 +643,7 @@ nh-data-ingestion:
         cpu: 200m
         memory: 512Mi
     image:
-      tag: "v1.121.0"
+      tag: "v1.121.1"
   scheduler:
     resources:
       requests:
@@ -653,7 +653,7 @@ nh-data-ingestion:
         cpu: 200m
         memory: 256Mi
     image:
-      tag: "v1.121.0"
+      tag: "v1.121.1"
   worker:
     resources:
       requests:
@@ -663,7 +663,7 @@ nh-data-ingestion:
         cpu: 500m
         memory: 3Gi
     image:
-      tag: "v1.121.0"
+      tag: "v1.121.1"
   embedWorker:
     celery:
       concurrency: "6"
@@ -676,7 +676,7 @@ nh-data-ingestion:
         cpu: 1000m
         memory: 2Gi
     image:
-      tag: "v1.121.0"
+      tag: "v1.121.1"
     env:
       LLAMAINDEX_OLLAMA_BASE_URL: "http://open-webui-ollama:11434"
       OPEN_WEBUI_URL: "http://open-webui"
