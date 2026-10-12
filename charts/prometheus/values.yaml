@@ -153,6 +153,28 @@ kube-prometheus-stack:
     nginx_ingress_controller_requests: send
     nginx_ingress_controller_request_duration_seconds_count: send
     nginx_ingress_controller_request_duration_seconds_sum: send
+    # --- Intel / MCP application metrics (Grafana users/mateuszs "Intel & MCP") ---
+    # Exposed by nh-rag-api (prometheus-fastapi-instrumentator + nethopper2/nh-rag-embedding#435) and
+    # nh-mcp-server (nethopper2/nh-mcp-server#228, needs the private-ai-rag nh-mcp-server.metrics flags).
+    # Keys are regex fragments like the rest of this map; character classes instead of ".*" because KAOPS
+    # cannot override keys containing dots.
+    http_requests_total: send
+    http_requests_inprogress: send
+    http_request_duration_seconds_bucket: send
+    http_request_duration_seconds_count: send
+    http_request_duration_seconds_sum: send
+    http_request_duration_highr_seconds_bucket: send
+    http_request_duration_highr_seconds_count: send
+    http_request_duration_highr_seconds_sum: send
+    intel_[a-z_]+: send                               # LLM tokens / latency / errors, tools, phases, TTFT, memory
+    mcp_[a-z_]+: send                                 # tool calls / latency / upstream errors by connector
+    # redis-exporter check-single-keys (core-stack 0.1.5): Celery / BullMQ queue depths
+    redis_key_size: send
+    # qdrant: collection count, per-collection CPU (memory collection), resident memory, recovery flag
+    collections_total: send
+    collection_hardware_metric_cpu: send
+    memory_resident_bytes: send
+    app_status_recovery_mode: send
 
   # Namespaces run by the cloud provider (GKE / AKS / EKS add-ons): a regex, so new ones (gke-managed-*)
   # are covered without editing. Everything else — and series without a namespace label — counts as ours.
@@ -277,6 +299,11 @@ kube-prometheus-stack:
           # Sample level: keep what `metrics` (top of this file) doesn't drop, then drop the keep-ours
           # ones from providerNamespaces.
           metricRelabelings:
+            # Python client libraries emit a *_created companion series per counter / histogram
+            # (creation timestamp): nothing uses them, they only cost series.
+            - sourceLabels: [__name__]
+              regex: '.*_created'
+              action: drop
             - sourceLabels: [__name__]
               regex: '{{- $l := list }}{{- range $k, $v := .Values.metrics }}{{- if has (toString $v) (list "send" "send-ours" "keep" "keep-ours") }}{{- $l = append $l $k }}{{- end }}{{- end }}{{- if $l }}{{ $l | sortAlpha | join "|" }}{{- else }}__none__{{- end }}'
               action: keep
