@@ -70,7 +70,7 @@ open-webui:
       memory: 1536Mi
   image:
     repository: nethopper/kaops-open-webui
-    tag: "v1.121.0-slim"
+    tag: "v1.121.2-slim"
     pullPolicy: IfNotPresent
   ollama:
     fullnameOverride: "open-webui-ollama"
@@ -633,7 +633,7 @@ nh-data-ingestion:
         cpu: 250m
         memory: 512Mi
     image:
-      tag: "v1.121.0"
+      tag: "v1.121.1"
   flower:
     resources:
       requests:
