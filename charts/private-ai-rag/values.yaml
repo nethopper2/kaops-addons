@@ -585,6 +585,14 @@ nh-pai-data-service:
 
 nh-mcp-server:
   enabled: true
+  # Prometheus /metrics (mcp_tool_calls_total, mcp_tool_duration_seconds, ...) scraped by the KAOPS
+  # prometheus addon into Grafana Cloud. Needs an nh-mcp-server image with /metrics (nh-mcp-server#228,
+  # i.e. a release after v1.121.0); on an older image the target answers 404 -> up==0 -> "Scrape
+  # target down" alert.
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
   resources:
     requests:
       cpu: 100m
