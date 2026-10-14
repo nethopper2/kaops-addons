@@ -10,6 +10,11 @@ redis-ha:
       enabled: true
       labels:
         release: # system provided
+    # Queue depths as redis_key_size{key}: Celery queues (nh-data-ingestion + Intel memory worker)
+    # are plain Redis lists named after the queue, "unacked" is the in-flight hash; BullMQ
+    # (nh-pai-data-service) keeps its lists under bull:<queue>:*. Rendered as --check-single-keys=...
+    extraArgs:
+      check-single-keys: "sync_queue,priority_queue,token_queue,auto_sync_queue,embedding_queue,embedding_maintenance_queue,memory_queue,unacked,bull:document-generation:wait,bull:document-generation:active,bull:document-generation:failed"
   persistentVolume:
     # -- Configures persistence on Redis nodes
     enabled: true
