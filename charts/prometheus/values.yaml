@@ -42,22 +42,29 @@ kube-prometheus-stack:
     kube_pod_status_ready: send
     kube_pod_container_status_restarts_total: send
     kube_pod_container_status_waiting_reason: send
+    kube_pod_init_container_status_waiting_reason: send   # 0.1.5: init containers stuck (CrashLoop / config errors)
     kube_pod_container_status_last_terminated_reason: send
     kube_pod_container_status_last_terminated_exitcode: send
     kube_pod_container_resource_requests: send
     kube_pod_container_resource_limits: send
     kube_deployment_spec_replicas: send
     kube_deployment_status_replicas_available: send
+    kube_deployment_metadata_generation: send        # 0.1.5: generation > observed, or updated < desired = rollout stuck
+    kube_deployment_status_observed_generation: send
+    kube_deployment_status_replicas_updated: send
     kube_statefulset_replicas: send
     kube_statefulset_status_replicas_ready: send
     kube_daemonset_status_desired_number_scheduled: send
     kube_daemonset_status_number_ready: send
     kube_job_status_failed: send
+    kube_job_status_active: send                     # 0.1.5: with start_time = a Job running far too long (hung backup)
+    kube_job_status_start_time: send
     kube_node_info: send
     kube_node_status_condition: send
     kube_node_status_allocatable: send
     kube_node_spec_unschedulable: send
     kube_persistentvolumeclaim_status_phase: send
+    kube_persistentvolume_status_phase: send         # 0.1.5: Released / Failed PVs = orphaned disks still billed
     kube_persistentvolumeclaim_info: send
     kube_namespace_status_phase: send
     kube_namespace_created: send
@@ -111,6 +118,32 @@ kube-prometheus-stack:
     node_pressure_io_waiting_seconds_total: send
     node_timex_sync_status: send                     # clock drift breaks TLS / tokens / JWTs
     node_timex_offset_seconds: send
+    # --- added 2026-10-26 (0.1.5): network health, cloud-agnostic (node-exporter netstat / sockstat,
+    # ~6 series per node). Would have shown azure-dev2's / windover's outbound (SNAT) port exhaustion
+    # without Azure Monitor: notes owui-to-o8-migration/15-azure-dev2-outbound-snat-exhaustion.md.
+    node_netstat_TcpExt_TCPSynRetrans: send          # connection attempts with no answer, retried (NAT ports, firewalls, dead hosts)
+    node_netstat_Tcp_ActiveOpens: send               # new outbound connections: churn per node, host-network processes too
+    node_netstat_Tcp_RetransSegs: send               # ÷ Tcp_OutSegs = share retransmitted (packet loss)
+    node_netstat_Tcp_OutSegs: send
+    node_sockstat_TCP_tw: send                       # sockets in TIME_WAIT: churn holding ports
+    node_sockstat_TCP_inuse: send
+    node_netstat_TcpExt_ListenOverflows: send        # accept queue full: a server on this node can't keep up
+    node_netstat_TcpExt_ListenDrops: send
+    node_filesystem_readonly: send                   # disk remounted read-only after I/O errors: writes fail, pods look fine
+    kubelet_evictions: send                          # pods evicted by the kubelet, by signal (memory / disk pressure)
+    # our own pipeline: samples Grafana Cloud refused (limits, 4xx) and how far remote write lags
+    # (needs prometheus.serviceMonitor.selfMonitor: true, below)
+    prometheus_remote_storage_samples_failed_total: send
+    prometheus_remote_storage_samples_retried_total: send
+    prometheus_remote_storage_highest_timestamp_in_seconds: send
+    prometheus_remote_storage_queue_highest_sent_timestamp_seconds: send
+    # HPA stuck at its maximum = needs more capacity (series only where HPAs exist)
+    kube_horizontalpodautoscaler_status_current_replicas: send
+    kube_horizontalpodautoscaler_spec_max_replicas: send
+    # --- added 2026-10-26 (0.1.5): disk reads behind page cache misses (qdrant sizing) ---
+    node_vmstat_pgmajfault: send                     # major page faults: re-reading evicted data from disk (qdrant)
+    node_disk_reads_completed_total: send            # read IOPS, against the disk's IOPS limit
+    container_memory_failures_total: keep            # page faults per container: local debugging only
     # CronJobs: "last success too long ago" (backups), also when they silently stop running
     kube_cronjob_status_last_successful_time: send
     kube_cronjob_status_last_schedule_time: send
@@ -124,6 +157,7 @@ kube-prometheus-stack:
     redis_connected_clients: send
     redis_evicted_keys_total: send
     redis_rejected_connections_total: send
+    redis_rdb_last_bgsave_status: send               # 0 = last background save failed (redis_save_failing alert)
     # qdrant (REST API per endpoint, collection size)
     rest_responses_total: send
     rest_responses_fail_total: send
@@ -149,10 +183,12 @@ kube-prometheus-stack:
     # cert-manager (ingress-warden `cert-manager.prometheus.servicemonitor`)
     certmanager_certificate_expiration_timestamp_seconds: send
     certmanager_certificate_ready_status: send
+    certmanager_certificate_renewal_timestamp_seconds: send   # when cert-manager will renew: "renewal overdue" alert
     # ingress-nginx (ingress-warden `ingress-nginx.controller.metrics`): request rate by status, latency avg
     nginx_ingress_controller_requests: send
     nginx_ingress_controller_request_duration_seconds_count: send
     nginx_ingress_controller_request_duration_seconds_sum: send
+    nginx_ingress_controller_ssl_expire_time_seconds: send   # certificate nginx actually serves, per host (also ones cert-manager doesn't manage)
     # --- Intel / MCP application metrics (Grafana users/mateuszs "Intel & MCP") ---
     # Exposed by nh-rag-api (prometheus-fastapi-instrumentator + nethopper2/nh-rag-embedding#435) and
     # nh-mcp-server (nethopper2/nh-mcp-server#228, needs the private-ai-rag nh-mcp-server.metrics flags).
@@ -245,7 +281,9 @@ kube-prometheus-stack:
 
   prometheus:
     serviceMonitor:
-      selfMonitor: false
+      # Scrape this Prometheus itself: only the prometheus_remote_storage_* series listed in `metrics`
+      # are kept (the allowlist scrape class applies), to see samples Grafana Cloud refused.
+      selfMonitor: true
     prometheusSpec:
       replicas: 1                     # HA (2 + anti-affinity + PDB) later
       scrapeInterval: 60s             # 1 sample/min per series = what Grafana Cloud bills
