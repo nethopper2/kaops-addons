@@ -137,6 +137,11 @@ kube-prometheus-stack:
     prometheus_remote_storage_samples_retried_total: send
     prometheus_remote_storage_highest_timestamp_in_seconds: send
     prometheus_remote_storage_queue_highest_sent_timestamp_seconds: send
+    # DNS (CoreDNS; AKS / EKS — GKE runs kube-dns without these): SERVFAIL rate says "it's DNS" and which
+    # kind (CoreDNS overloaded, upstream resolver throttling), latency
+    coredns_dns_responses_total: send
+    coredns_dns_request_duration_seconds_count: send
+    coredns_dns_request_duration_seconds_sum: send
     # HPA stuck at its maximum = needs more capacity (series only where HPAs exist)
     kube_horizontalpodautoscaler_status_current_replicas: send
     kube_horizontalpodautoscaler_spec_max_replicas: send
