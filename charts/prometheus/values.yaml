@@ -347,6 +347,15 @@ kube-prometheus-stack:
             - sourceLabels: [__name__]
               regex: '.*_created'
               action: drop
+            # node-exporter reports every mount (2026-10-27, ai-nh-dev: ~94 per node — pod volumes, secrets,
+            # tmpfs, overlay). Our alerts only use the node's real disks; PVs come from kubelet_volume_stats_*.
+            # Keep node_filesystem_* only for real filesystems outside the kubelet / container runtime dirs.
+            - sourceLabels: [__name__, fstype]
+              regex: 'node_filesystem_.+;(tmpfs|overlay|squashfs|nsfs|shm|devtmpfs|ramfs|cgroup2?|proc|sysfs|fuse.*|autofs|bpf|tracefs|debugfs)'
+              action: drop
+            - sourceLabels: [__name__, mountpoint]
+              regex: 'node_filesystem_.+;(/var/lib/kubelet/.+|/var/lib/containerd/.+|/run/.+|/var/lib/docker/.+)'
+              action: drop
             - sourceLabels: [__name__]
               regex: '{{- $l := list }}{{- range $k, $v := .Values.metrics }}{{- if has (toString $v) (list "send" "send-ours" "keep" "keep-ours") }}{{- $l = append $l $k }}{{- end }}{{- end }}{{- if $l }}{{ $l | sortAlpha | join "|" }}{{- else }}__none__{{- end }}'
               action: keep
