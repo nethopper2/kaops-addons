@@ -88,8 +88,6 @@ kube-prometheus-stack:
     node_memory_MemTotal_bytes: send
     node_filesystem_avail_bytes: send
     node_filesystem_size_bytes: send
-    node_filesystem_files: drop                     # 0.1.7: no alert uses node inodes (PVs: kubelet_volume_stats_inodes*)
-    node_filesystem_files_free: drop
     node_load1: send
     node_load5: send
     node_load15: send
@@ -129,7 +127,6 @@ kube-prometheus-stack:
     node_sockstat_TCP_inuse: send
     node_netstat_TcpExt_ListenOverflows: send        # accept queue full: a server on this node can't keep up
     node_netstat_TcpExt_ListenDrops: send
-    node_filesystem_readonly: drop                  # 0.1.7: one series per mount, GKE's / is read-only by design, no alert
     kubelet_evictions: send                          # pods evicted by the kubelet, by signal (memory / disk pressure)
     # our own pipeline: samples Grafana Cloud refused (limits, 4xx) and how far remote write lags
     # (needs prometheus.serviceMonitor.selfMonitor: true, below)
