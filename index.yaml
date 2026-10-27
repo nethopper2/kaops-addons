@@ -4390,6 +4390,36 @@ entries:
   nh-intel:
   - apiVersion: v2
     appVersion: v1.109.0
+    created: "2026-10-27T17:29:10.817395293Z"
+    dependencies:
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.19
+    - alias: nh-rag-api-v2
+      condition: nh-rag-api-v2.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.19
+    - condition: nh-mcp-server.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.5.0
+    - alias: nh-mcp-server-v2
+      condition: nh-mcp-server-v2.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.5.0
+    description: KAOPS addon to install NH Intel (RAG API + MCP Server)
+    digest: edae47ff3155dfc803fd480854ac3e2d91fbb2d6fedcf1932a950056136b0f97
+    name: nh-intel
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/nh-intel-0.1.12/nh-intel-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
+    appVersion: v1.109.0
     created: "2026-09-08T13:27:22.785674109Z"
     dependencies:
     - alias: nh-rag-api
@@ -8700,6 +8730,58 @@ entries:
     - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-oidc-0.1.9/private-ai-oidc-0.1.9.tgz
     version: 0.1.9
   private-ai-rag:
+  - apiVersion: v2
+    appVersion: v1.121.1
+    created: "2026-10-27T17:29:11.044206975Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 12.10.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.19
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    - condition: juicefs-s3-gateway.enabled
+      name: juicefs-s3-gateway
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.4.0
+    - condition: nh-pai-data-service.enabled
+      name: nh-pai-data-service
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.22
+    - condition: nh-mcp-server.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.5.1
+    - condition: nh-data-ingestion.enabled
+      name: nh-data-ingestion
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 2.0.7
+    - condition: private-ai-websearch.enabled
+      name: private-ai-websearch
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.0
+    description: KAOPS addon to install private-ai
+    digest: 3363586cb363dd1035ad78d3937d75dfdeb3c5139874fe9cf7415c14520c2c4d
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-1.122.1/private-ai-rag-1.122.1.tgz
+    version: 1.122.1
   - apiVersion: v2
     appVersion: v1.121.1
     created: "2026-10-21T22:17:27.216629826Z"
@@ -30127,4 +30209,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-10-27T02:16:28.826271299Z"
+generated: "2026-10-27T17:29:11.045209332Z"
