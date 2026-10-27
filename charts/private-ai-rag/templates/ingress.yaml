@@ -18,11 +18,17 @@ metadata:
     {{- if .Values.ingress.ignoreSSL }}
     nginx.ingress.kubernetes.io/proxy-ssl-verify: "off"
     {{- end }}
+    {{- /* Only proxy-buffer-size: the other three annotations this flag rendered were invalid
+           ("4256k"/"432k" typos; large-client-header-buffers has no annotation form) and
+           proxy-busy-buffers-size 256k > the real buffer pool made `nginx -t` fail, freezing
+           the controller on ingress-nginx 1.15 (notes infra-190 05, 2026-09-11). */}}
     {{- if .Values.ingress.increaseBuffersSize }}
     nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
-    nginx.ingress.kubernetes.io/proxy-buffers: "4256k"
-    nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "256k"
-    nginx.ingress.kubernetes.io/large-client-header-buffers: "432k"
+    {{- end }}
+    {{- /* Upload limit (nginx default 1m). A plain value, not an annotation, so it survives KAOPS's
+           dotted-key expansion (notes kaops-dotted-annotation-keys-break-charts). */}}
+    {{- with .Values.ingress.proxyBodySize }}
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ . | quote }}
     {{- end }}
 spec:
   {{- with .Values.ingress.class }}
@@ -80,9 +86,9 @@ metadata:
     {{- end }}
     {{- if $.Values.ingress.increaseBuffersSize }}
     nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
-    nginx.ingress.kubernetes.io/proxy-buffers: "4256k"
-    nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "256k"
-    nginx.ingress.kubernetes.io/large-client-header-buffers: "432k"
+    {{- end }}
+    {{- with $.Values.ingress.proxyBodySize }}
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ . | quote }}
     {{- end }}
 spec:
   {{- with $.Values.ingress.class }}
