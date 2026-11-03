@@ -55,6 +55,9 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/tls-acme: "true"
+    # Chat image attachments upload through Open WebUI's own /api/v1/files;
+    # the ingress-nginx default (1m) rejects phone photos with a 413 (INTEL-395).
+    nginx.ingress.kubernetes.io/proxy-body-size: 20m
   host:
   additionalHosts: []
   tls:
