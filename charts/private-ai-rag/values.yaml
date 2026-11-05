@@ -95,10 +95,16 @@ open-webui:
       type: ClusterIP
   pipelines:
     fullnameOverride: "open-webui-pipelines"
-    # The data volume is ReadWriteOnce: a rolling update starts the new pod before the old one
-    # releases the volume and hangs on a Multi-Attach error when it lands on another node.
+    # The data volume is ReadWriteOnce: the default rolling update starts the new pod before the
+    # old one releases the volume and hangs on a Multi-Attach error when it lands on another node.
+    # maxSurge 0 removes the old pod first. Not `type: Recreate`: Argo CD applies server-side, the
+    # live objects carry a defaulted rollingUpdate block nobody owns, and the API server rejects
+    # the switch ("rollingUpdate: Forbidden: may not be specified when strategy type is Recreate").
     strategy:
-      type: Recreate
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
     # The pipeline files reach the pod only through the init container below, which runs at pod
     # start. Without this annotation a release that changes only custom-pipelines-config leaves the
     # running pod on the old files. CI (release.yaml) sets the value at chart build.
