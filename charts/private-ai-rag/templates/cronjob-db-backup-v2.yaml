@@ -139,7 +139,11 @@ spec:
           {{- end }}
         {{- end }}
         spec:
-          restartPolicy: OnFailure
+          {{/* Never, not OnFailure: with OnFailure a Job that reaches backoffLimit deletes its
+               pod, so a failed backup leaves no logs to read. With Never each retry is a new
+               pod and failed pods stay (until ttlSecondsAfterFinished), logs included. Each
+               retry still re-dumps, as before. INFRA-176. */}}
+          restartPolicy: Never
           {{- if and (has $type (list "s3" "azureblob")) $b.serviceAccountName }}
           {{/* s3 -> IRSA; azureblob -> workload identity. Both need the SA that
                carries the federated-credential annotation. */}}
@@ -252,6 +256,15 @@ spec:
                   value: AWS
                 - name: RCLONE_CONFIG_DEST_REGION
                   value: {{ $b.s3Region | quote }}
+                # The bucket exists (Terraform, private-ai-infra modules/s3-buckets). Without this,
+                # rclone sends CreateBucket before the first upload, with no LocationConstraint,
+                # which any region but us-east-1 rejects:
+                #   CreateBucket ... IllegalLocationConstraintException: The unspecified location
+                #   constraint is incompatible for the region specific endpoint
+                # (biotrans-ai, us-east-2, 2026-11-09, INFRA-176). The IRSA role has no
+                # s3:CreateBucket either. v1 (aws s3 cp) never creates buckets.
+                - name: RCLONE_CONFIG_DEST_NO_CHECK_BUCKET
+                  value: "true"
                 {{- if $b.serviceAccountName }}
                 # IRSA: let rclone pick up the projected web-identity token
                 - name: RCLONE_CONFIG_DEST_ENV_AUTH
