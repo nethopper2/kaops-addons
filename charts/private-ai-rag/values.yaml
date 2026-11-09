@@ -282,10 +282,13 @@ backups:
   # serviceAccountName: # user provided (for IRSA/workload-identity auth instead of access keys)
   # serviceAccount:      # optional: let this chart create that ServiceAccount
   #   create: true
-  #   annotations:       # the cloud binding. NOT a secret — an identifier, safe in git.
-  #     azure.workload.identity/client-id: <terraform output -raw storage_workload_identity_client_id>
-  #     # AWS:  eks.amazonaws.com/role-arn: arn:aws:iam::<acct>:role/<role>
-  #     # GCP:  iam.gke.io/gcp-service-account: <sa>@<project>.iam.gserviceaccount.com
+  #   # The cloud binding. NOT a secret — an identifier, safe in git. Use these flat
+  #   # fields: KAOPS splits a dotted key like azure.workload.identity/client-id
+  #   # into nested maps, so an `annotations:` map with it does not survive KAOPS.
+  #   azureWorkloadIdentityClientId: <terraform output -raw storage_workload_identity_client_id>
+  #   # AWS:  awsRoleArn: arn:aws:iam::<acct>:role/<role>
+  #   # GCP:  gcpServiceAccount: <sa>@<project>.iam.gserviceaccount.com
+  #   annotations: {}      # any other annotations (nested maps are flattened back)
   #   NOTE: creating the SA does NOT create the trust. The cloud side must register a
   #   federated credential naming this exact namespace/service-account pair, or the
   #   token exchange fails with a subject mismatch. On Azure that is Terraform's
