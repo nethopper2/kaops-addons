@@ -68,6 +68,13 @@ nh-rag-api:
     timeoutSeconds: 15
   worker:
     enabled: false
+  # Web search stack, deployed by the private-ai-websearch subchart; the secret is
+  # rendered by templates/secrets.yaml and shared with that subchart.
+  websearch:
+    enabled: true
+    secretName: websearch-secrets
+    searxngUrl: http://private-ai-websearch-searxng:8080
+    crawl4aiUrl: http://private-ai-websearch-crawl4ai:11235
 
 nh-rag-api-v2:
   enabled: true
@@ -120,6 +127,13 @@ nh-rag-api-v2:
     existingSecret: ""
     perUserCap: 4       # max live sandboxes per user; oldest recycled
     # ttlSeconds: 1800  # idle lifetime (subchart default)
+  # Web search stack, deployed by the private-ai-websearch subchart; the secret is
+  # rendered by templates/secrets.yaml and shared with that subchart.
+  websearch:
+    enabled: true
+    secretName: websearch-secrets
+    searxngUrl: http://private-ai-websearch-searxng:8080
+    crawl4aiUrl: http://private-ai-websearch-crawl4ai:11235
 
 nh-mcp-server:
   enabled: true
