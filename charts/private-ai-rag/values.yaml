@@ -367,7 +367,7 @@ nh-rag-api:
     enabled: false
     image:
       repository: nethopper/nh-workspace-runtime
-      tag: "" # CI sets this alongside image.tag
+      tag: "v1.123.0" # bumped by the release PRs with the other release tags; image built by nh-rag-embedding CI on the same tag
     runtimeClassName: "" # kata-clh | gvisor | "" (runc, dev only)
     tokenSecret: ""
     existingSecret: ""
