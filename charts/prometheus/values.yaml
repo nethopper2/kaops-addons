@@ -41,6 +41,9 @@ kube-prometheus-stack:
     kube_pod_status_phase: send
     kube_pod_status_ready: send
     kube_pod_container_status_restarts_total: send
+    # which image (tag + digest) each container runs: "what version is deployed where", one series per
+    # container, new series per pod / restart (0.1.8, INFRA-237)
+    kube_pod_container_info: send-ours
     kube_pod_container_status_waiting_reason: send
     kube_pod_init_container_status_waiting_reason: send   # 0.1.5: init containers stuck (CrashLoop / config errors)
     kube_pod_container_status_last_terminated_reason: send
@@ -114,8 +117,6 @@ kube-prometheus-stack:
     node_pressure_cpu_waiting_seconds_total: send
     node_pressure_memory_waiting_seconds_total: send
     node_pressure_io_waiting_seconds_total: send
-    node_timex_sync_status: send                     # clock drift breaks TLS / tokens / JWTs
-    node_timex_offset_seconds: send
     # --- added 2026-10-26 (0.1.5): network health, cloud-agnostic (node-exporter netstat / sockstat,
     # ~6 series per node). Would have shown azure-dev2's / windover's outbound (SNAT) port exhaustion
     # without Azure Monitor: notes owui-to-o8-migration/15-azure-dev2-outbound-snat-exhaustion.md.
@@ -160,11 +161,20 @@ kube-prometheus-stack:
     redis_evicted_keys_total: send
     redis_rejected_connections_total: send
     redis_rdb_last_bgsave_status: send               # 0 = last background save failed (redis_save_failing alert)
-    # qdrant (REST API per endpoint, collection size)
+    # qdrant: average REST response time (showed arc's ENG-266 slowness, 121 s on 2026-11-09) and request count
+    # (rate > 0 = the endpoint's average is fresh, not left over from its last request), collection size.
+    # 0.1.8 dropped _fail_total (0 everywhere for 30 days, even through ENG-266) and _max_duration_seconds (max since
+    # qdrant started). https://github.com/nethopper2/notes/blob/main/infra-237-windover-juicefs-no-space-left/03-generic-inode-alert.md
     rest_responses_total: send
-    rest_responses_fail_total: send
     rest_responses_avg_duration_seconds: send
-    rest_responses_max_duration_seconds: send
+    # latency histogram (p95 per endpoint): shows the ~50 s search spikes the average hides (arc, mphr, ai-nethopper,
+    # pw, ~10 % of 5-min windows); ~850 series fleet-wide (0.1.8)
+    rest_responses_duration_seconds_bucket: send
+    rest_responses_duration_seconds_sum: send
+    rest_responses_duration_seconds_count: send
+    # qdrant, cheap (1 series per qdrant pod, 0.1.8): memory as qdrant's allocator sees it (vs the container's RSS);
+    # memory_resident_bytes is in the qdrant block below. No prefix: filter by job in queries ({job=~".*qdrant.*"}).
+    memory_allocated_bytes: send
     collections_vector_total: send
     # JuiceFS gateway: block-cache hit ratio, object-storage errors, filesystem usage, buffer
     juicefs_blockcache_hits: send
@@ -173,6 +183,13 @@ kube-prometheus-stack:
     juicefs_used_space: send
     juicefs_used_inodes: send
     juicefs_used_buffer_size_bytes: send
+    juicefs_total_inodes: send                       # the volume's inode limit: used / total alert (0.1.8, INFRA-237)
+    # average latency = rate(_sum) / rate(_count), without the histogram buckets (no recording rules here):
+    # object storage per method, metadata (Postgres) transactions
+    juicefs_object_request_durations_histogram_seconds_sum: send
+    juicefs_object_request_durations_histogram_seconds_count: send
+    juicefs_transaction_durations_histogram_seconds_sum: send
+    juicefs_transaction_durations_histogram_seconds_count: send
     # postgres-exporter (Bitnami `postgresql.metrics`)
     pg_up: send
     pg_settings_max_connections: send
