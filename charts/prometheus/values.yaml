@@ -172,9 +172,8 @@ kube-prometheus-stack:
     rest_responses_duration_seconds_bucket: send
     rest_responses_duration_seconds_sum: send
     rest_responses_duration_seconds_count: send
-    # qdrant, cheap (1 series per qdrant pod each, 0.1.8): memory as qdrant's allocator sees it (vs the container's
-    # RSS). Names have no prefix: filter by job in queries ({job=~".*qdrant.*"}).
-    memory_resident_bytes: send
+    # qdrant, cheap (1 series per qdrant pod, 0.1.8): memory as qdrant's allocator sees it (vs the container's RSS);
+    # memory_resident_bytes is in the qdrant block below. No prefix: filter by job in queries ({job=~".*qdrant.*"}).
     memory_allocated_bytes: send
     collections_vector_total: send
     # JuiceFS gateway: block-cache hit ratio, object-storage errors, filesystem usage, buffer
