@@ -167,6 +167,15 @@ kube-prometheus-stack:
     # qdrant started). https://github.com/nethopper2/notes/blob/main/infra-237-windover-juicefs-no-space-left/03-generic-inode-alert.md
     rest_responses_total: send
     rest_responses_avg_duration_seconds: send
+    # latency histogram (p95 per endpoint): shows the ~50 s search spikes the average hides (arc, mphr, ai-nethopper,
+    # pw, ~10 % of 5-min windows); ~850 series fleet-wide (0.1.8)
+    rest_responses_duration_seconds_bucket: send
+    rest_responses_duration_seconds_sum: send
+    rest_responses_duration_seconds_count: send
+    # qdrant, cheap (1 series per qdrant pod each, 0.1.8): memory as qdrant's allocator sees it (vs the container's
+    # RSS). Names have no prefix: filter by job in queries ({job=~".*qdrant.*"}).
+    memory_resident_bytes: send
+    memory_allocated_bytes: send
     collections_vector_total: send
     # JuiceFS gateway: block-cache hit ratio, object-storage errors, filesystem usage, buffer
     juicefs_blockcache_hits: send
