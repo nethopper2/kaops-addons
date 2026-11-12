@@ -147,6 +147,14 @@ kube-prometheus-stack:
     node_vmstat_pgmajfault: send                     # major page faults: re-reading evicted data from disk (qdrant)
     node_disk_reads_completed_total: send            # read IOPS, against the disk's IOPS limit
     container_memory_failures_total: keep            # page faults per container: local debugging only
+    # --- added 2026-11-13 (0.1.9): disk saturation and latency per node disk, ~136 series each fleet-wide (~$0.9/month
+    # each). Datastore volumes: arc's qdrant volume busy 93 % (p95), Azure OS disks 76-365 ms reads (p95).
+    # Container page faults stay `keep`: ~0 for Postgres / Redis / JuiceFS, and qdrant's don't track disk reads.
+    # https://github.com/nethopper2/notes/blob/main/infra-238-arc-slow-qdrant-searches/03-metrics-for-grafana-cloud.md
+    node_disk_io_time_seconds_total: send            # busy share: rate() near 1 = disk saturated
+    node_disk_read_time_seconds_total: send          # / reads completed = average read latency
+    node_disk_write_time_seconds_total: send         # / writes completed = average write latency
+    node_disk_writes_completed_total: send           # write IOPS, against the disk's IOPS limit
     # CronJobs: "last success too long ago" (backups), also when they silently stop running
     kube_cronjob_status_last_successful_time: send
     kube_cronjob_status_last_schedule_time: send
