@@ -24,3 +24,8 @@ cert-manager:
   crds:
     enabled: true
     keep: false
+  # AKS Admissions Enforcer adds namespaceSelector items to this webhook -> Argo OutOfSync forever; opt out.
+  # https://github.com/nethopper2/notes/blob/main/infra-236-duckdb-missing-and-ingress-warden-sync/03-ingress-warden-out-of-sync.md
+  webhook:
+    validatingWebhookConfigurationAnnotations:
+      admissions.enforcer/disabled: "true"
