@@ -35,7 +35,12 @@ dataIngestion:
 ingress:
   enabled: true
   ignoreSSL: false
+  # true: proxy_buffer_size 16k (large SSO response headers, e.g. oauth2-proxy cookies).
   increaseBuffersSize: false
+  # Max request body (uploads) on the Open WebUI Ingresses, e.g. "110m". Empty = nginx default (1m).
+  # Set per cluster in KAOPS as ingress.proxyBodySize: a dotted annotation key in
+  # ingress.annotations would be split by KAOPS.
+  proxyBodySize: ""
   class: nginx
   oauthProviderName:
   oauth2Proxy:
