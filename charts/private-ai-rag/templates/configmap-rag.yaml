@@ -71,7 +71,19 @@ data:
   EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: {{ .Values.rag.embeddings.autoReembedOnConfigChange | quote }}
   BEDROCK_EMBEDDINGS_MODEL: {{ .Values.rag.embeddings.bedrock.model | quote }}
   BEDROCK_EMBEDDINGS_REGION: {{ .Values.rag.embeddings.bedrock.region | quote }}
-  REACT_AGENT_ENABLED: {{ ((index .Values "nh-rag-api").deepEffort).enabled | default false | quote }}
+  {{- /*
+    Deep effort (INTEL-392). One switch for both sides so they cannot drift apart:
+    REACT_AGENT_ENABLED makes Intel route effort=deep to the Deep agent,
+    NH_DEEP_EFFORT_ENABLED makes Open WebUI offer Deep in the effort menu.
+    The Deep agent works in the workspace sandbox, so both stay "false" on a
+    cluster without workspaceSandbox.enabled, whatever deepEffort.enabled says.
+    `default` is not used on deepEffort.enabled: it would turn an explicit false into true.
+  */}}
+  {{- $ragApi := index .Values "nh-rag-api" }}
+  {{- $deepWanted := ne (toString ($ragApi.deepEffort).enabled) "false" }}
+  {{- $deepOn := and $deepWanted (eq (toString ($ragApi.workspaceSandbox).enabled) "true") }}
+  REACT_AGENT_ENABLED: {{ $deepOn | quote }}
+  NH_DEEP_EFFORT_ENABLED: {{ $deepOn | quote }}
   {{- with (index .Values "nh-rag-api").memory }}
   MEMORY_BACKEND: {{ .backend | quote }}
   MEMORY_INJECT_K: {{ .injectK | quote }}
