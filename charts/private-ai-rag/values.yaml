@@ -373,6 +373,15 @@ nh-rag-api:
     existingSecret: ""
     perUserCap: 4       # max live sandboxes per user; oldest recycled
     # ttlSeconds: 1800  # idle lifetime (subchart default)
+  # Deep effort (INTEL-392): a third effort level next to Fast and Thinking, run
+  # by the ReAct agent that works in the workspace sandbox. One switch for both
+  # sides, rendered into shared-configmap-rag: REACT_AGENT_ENABLED (Intel routes
+  # effort=deep to the Deep agent) and NH_DEEP_EFFORT_ENABLED (Open WebUI shows
+  # Deep in the effort menu). Takes effect only where workspaceSandbox.enabled
+  # is true; without a sandbox both stay "false". Set false to hide Deep on a
+  # cluster that has a sandbox.
+  deepEffort:
+    enabled: true
   # Long-term conversational memory (facts / preferences / summaries).
   # backend: null | selfhosted | agentcore  (selfhosted = in-boundary: Postgres + Qdrant + Bedrock)
   memory:
