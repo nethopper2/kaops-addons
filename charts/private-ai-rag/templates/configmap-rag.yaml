@@ -71,6 +71,7 @@ data:
   EMBEDDING_AUTO_REEMBED_ON_CONFIG_CHANGE: {{ .Values.rag.embeddings.autoReembedOnConfigChange | quote }}
   BEDROCK_EMBEDDINGS_MODEL: {{ .Values.rag.embeddings.bedrock.model | quote }}
   BEDROCK_EMBEDDINGS_REGION: {{ .Values.rag.embeddings.bedrock.region | quote }}
+  REACT_AGENT_ENABLED: {{ ((index .Values "nh-rag-api").deepEffort).enabled | default false | quote }}
   {{- with (index .Values "nh-rag-api").memory }}
   MEMORY_BACKEND: {{ .backend | quote }}
   MEMORY_INJECT_K: {{ .injectK | quote }}
