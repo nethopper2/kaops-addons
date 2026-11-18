@@ -8826,6 +8826,58 @@ entries:
     version: 0.1.9
   private-ai-rag:
   - apiVersion: v2
+    appVersion: v1.124.0
+    created: "2026-11-18T14:43:36.860873992Z"
+    dependencies:
+    - condition: open-webui.enabled
+      name: open-webui
+      repository: https://helm.openwebui.com/
+      version: 12.10.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.3
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.6
+    - alias: nh-rag-api
+      condition: nh-rag-api.enabled
+      name: nh-rag
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.20
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.2.3
+    - condition: juicefs-s3-gateway.enabled
+      name: juicefs-s3-gateway
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.4.0
+    - condition: nh-pai-data-service.enabled
+      name: nh-pai-data-service
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.22
+    - condition: nh-mcp-server.enabled
+      name: nh-mcp-server
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.5.1
+    - condition: nh-data-ingestion.enabled
+      name: nh-data-ingestion
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 2.0.7
+    - condition: private-ai-websearch.enabled
+      name: private-ai-websearch
+      repository: https://nethopper2.github.io/helm-charts/
+      version: 0.1.0
+    description: KAOPS addon to install private-ai
+    digest: 6c01a21076b66d58cf403270246688d27fa90a5250734606617ddb10b4c16264
+    name: private-ai-rag
+    type: application
+    urls:
+    - https://github.com/nethopper2/kaops-addons/releases/download/private-ai-rag-1.124.0/private-ai-rag-1.124.0.tgz
+    version: 1.124.0
+  - apiVersion: v2
     appVersion: v1.123.0
     created: "2026-11-16T15:40:57.297612732Z"
     dependencies:
@@ -30756,4 +30808,4 @@ entries:
     urls:
     - https://github.com/nethopper2/kaops-addons/releases/download/yahoo-webui-0.1.18/yahoo-webui-0.1.18.tgz
     version: 0.1.18
-generated: "2026-11-16T15:40:57.300817246Z"
+generated: "2026-11-18T14:43:36.861840167Z"
