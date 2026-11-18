@@ -55,6 +55,9 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/tls-acme: "true"
+    # Chat image attachments upload through Open WebUI's own /api/v1/files;
+    # the ingress-nginx default (1m) rejects phone photos with a 413 (INTEL-395).
+    nginx.ingress.kubernetes.io/proxy-body-size: 20m
   host:
   additionalHosts: []
   tls:
@@ -70,7 +73,7 @@ open-webui:
       memory: 1536Mi
   image:
     repository: nethopper/kaops-open-webui
-    tag: "v1.121.2-slim"
+    tag: "v1.123.0-slim"
     pullPolicy: IfNotPresent
   ollama:
     fullnameOverride: "open-webui-ollama"
@@ -92,6 +95,21 @@ open-webui:
       type: ClusterIP
   pipelines:
     fullnameOverride: "open-webui-pipelines"
+    # The data volume is ReadWriteOnce: the default rolling update starts the new pod before the
+    # old one releases the volume and hangs on a Multi-Attach error when it lands on another node.
+    # maxSurge 0 removes the old pod first. Not `type: Recreate`: Argo CD applies server-side, the
+    # live objects carry a defaulted rollingUpdate block nobody owns, and the API server rejects
+    # the switch ("rollingUpdate: Forbidden: may not be specified when strategy type is Recreate").
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+    # The pipeline files reach the pod only through the init container below, which runs at pod
+    # start. Without this annotation a release that changes only custom-pipelines-config leaves the
+    # running pod on the old files. CI (release.yaml) sets the value at chart build.
+    podAnnotations:
+      checksum/pipelines: ""
     resources:
       requests:
         cpu: 10m
@@ -264,10 +282,13 @@ backups:
   # serviceAccountName: # user provided (for IRSA/workload-identity auth instead of access keys)
   # serviceAccount:      # optional: let this chart create that ServiceAccount
   #   create: true
-  #   annotations:       # the cloud binding. NOT a secret — an identifier, safe in git.
-  #     azure.workload.identity/client-id: <terraform output -raw storage_workload_identity_client_id>
-  #     # AWS:  eks.amazonaws.com/role-arn: arn:aws:iam::<acct>:role/<role>
-  #     # GCP:  iam.gke.io/gcp-service-account: <sa>@<project>.iam.gserviceaccount.com
+  #   # The cloud binding. NOT a secret — an identifier, safe in git. Use these flat
+  #   # fields: KAOPS splits a dotted key like azure.workload.identity/client-id
+  #   # into nested maps, so an `annotations:` map with it does not survive KAOPS.
+  #   azureWorkloadIdentityClientId: <terraform output -raw storage_workload_identity_client_id>
+  #   # AWS:  awsRoleArn: arn:aws:iam::<acct>:role/<role>
+  #   # GCP:  gcpServiceAccount: <sa>@<project>.iam.gserviceaccount.com
+  #   annotations: {}      # any other annotations (nested maps are flattened back)
   #   NOTE: creating the SA does NOT create the trust. The cloud side must register a
   #   federated credential naming this exact namespace/service-account pair, or the
   #   token exchange fails with a subject mismatch. On Azure that is Terraform's
@@ -325,7 +346,7 @@ nh-rag-api:
       cpu: 1000m
       memory: 3Gi
   image:
-    tag: "v1.121.0"
+    tag: "v1.123.0"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -346,12 +367,21 @@ nh-rag-api:
     enabled: false
     image:
       repository: nethopper/nh-workspace-runtime
-      tag: "" # CI sets this alongside image.tag
+      tag: "v1.123.0" # bumped by the release PRs with the other release tags; image built by nh-rag-embedding CI on the same tag
     runtimeClassName: "" # kata-clh | gvisor | "" (runc, dev only)
     tokenSecret: ""
     existingSecret: ""
     perUserCap: 4       # max live sandboxes per user; oldest recycled
     # ttlSeconds: 1800  # idle lifetime (subchart default)
+  # Deep effort (INTEL-392): a third effort level next to Fast and Thinking, run
+  # by the ReAct agent that works in the workspace sandbox. One switch for both
+  # sides, rendered into shared-configmap-rag: REACT_AGENT_ENABLED (Intel routes
+  # effort=deep to the Deep agent) and NH_DEEP_EFFORT_ENABLED (Open WebUI shows
+  # Deep in the effort menu). Takes effect only where workspaceSandbox.enabled
+  # is true; without a sandbox both stay "false". Set false to hide Deep on a
+  # cluster that has a sandbox.
+  deepEffort:
+    enabled: true
   # Long-term conversational memory (facts / preferences / summaries).
   # backend: null | selfhosted | agentcore  (selfhosted = in-boundary: Postgres + Qdrant + Bedrock)
   memory:
@@ -391,7 +421,7 @@ nh-rag-api:
     replicaCount: 1                      # embedded beat (-B) requires a single replica
     image:
       repository: nethopper/nh-rag-api   # REUSE the api image, not nh-rag-worker
-      tag: "v1.121.0"                    # CI bumps this alongside nh-rag-api.image.tag
+      tag: "v1.123.0"                    # CI bumps this alongside nh-rag-api.image.tag
     command:
       - celery
       - -A
@@ -526,7 +556,7 @@ nh-pai-data-service:
       cpu: 500m
       memory: 1Gi
   image:
-    tag: "v1.121.0"
+    tag: "v1.123.0"
   ingress:
     enabled: true
     annotations:
@@ -603,7 +633,7 @@ nh-mcp-server:
       cpu: "1"
       memory: 512Mi
   image:
-    tag: "v1.121.0"
+    tag: "v1.123.0"
   startupProbe:
     httpGet:
       path: /health
@@ -641,7 +671,7 @@ nh-data-ingestion:
         cpu: 250m
         memory: 512Mi
     image:
-      tag: "v1.121.1"
+      tag: "v1.123.0"
   flower:
     resources:
       requests:
@@ -651,7 +681,7 @@ nh-data-ingestion:
         cpu: 200m
         memory: 512Mi
     image:
-      tag: "v1.121.1"
+      tag: "v1.123.0"
   scheduler:
     resources:
       requests:
@@ -661,7 +691,7 @@ nh-data-ingestion:
         cpu: 200m
         memory: 256Mi
     image:
-      tag: "v1.121.1"
+      tag: "v1.123.0"
   worker:
     resources:
       requests:
@@ -671,7 +701,7 @@ nh-data-ingestion:
         cpu: 500m
         memory: 3Gi
     image:
-      tag: "v1.121.1"
+      tag: "v1.123.0"
   embedWorker:
     celery:
       concurrency: "6"
@@ -684,7 +714,7 @@ nh-data-ingestion:
         cpu: 1000m
         memory: 2Gi
     image:
-      tag: "v1.121.1"
+      tag: "v1.123.0"
     env:
       LLAMAINDEX_OLLAMA_BASE_URL: "http://open-webui-ollama:11434"
       OPEN_WEBUI_URL: "http://open-webui"

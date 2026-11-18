@@ -65,6 +65,24 @@ jobs:
           echo "Copied pipelines:"
           ls -la charts/private-ai-rag/pipelines/*.py
 
+      # The pipelines pod copies its files from custom-pipelines-config only at start, so the pod
+      # template must change whenever the ConfigMap content does. Hash everything that goes into
+      # the ConfigMap and stamp it into the pod annotation before packaging.
+      - name: Stamp pipelines checksum into chart values
+        if: steps.chart-check.outputs.changed == 'true'
+        working-directory: charts/private-ai-rag
+        run: |
+          SUM=$( {
+            cat pipelines/*.py templates/configmap-pipelines.yaml
+            awk '/^pipelinesProvisioning:/{f=1; print; next} f && /^[^[:space:]#]/{f=0} f' values.yaml
+          } | sha256sum | cut -d' ' -f1 )
+          if ! grep -q 'checksum/pipelines: ""' values.yaml; then
+            echo "::error::checksum/pipelines placeholder not found in values.yaml"
+            exit 1
+          fi
+          sed -i "s|checksum/pipelines: \"\"|checksum/pipelines: \"$SUM\"|" values.yaml
+          echo "Pipelines checksum: $SUM"
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:

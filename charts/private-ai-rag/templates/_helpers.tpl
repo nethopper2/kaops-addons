@@ -83,3 +83,23 @@ Create docker image name
   {{- $name := regexReplaceAll "^.*/" $repo "" -}}
   {{- printf "%s:%s" $name $tag | quote -}}
 {{- end }}
+
+{{/*
+Flatten a nested map into dotted keys with string values, written into .out.
+Undoes KAOPS splitting dotted keys (e.g. annotation names) into nested maps.
+Call: include "private-ai.flattenInto" (dict "m" $map "prefix" "" "out" $result)
+Null values are dropped (an explicit null clears a key in KAOPS).
+*/}}
+{{- define "private-ai.flattenInto" -}}
+{{- $out := .out -}}
+{{- $prefix := .prefix -}}
+{{- range $k, $v := .m -}}
+{{- $key := $k -}}
+{{- if $prefix }}{{ $key = printf "%s.%s" $prefix $k }}{{ end -}}
+{{- if kindIs "map" $v -}}
+{{- include "private-ai.flattenInto" (dict "m" $v "prefix" $key "out" $out) -}}
+{{- else if not (kindIs "invalid" $v) -}}
+{{- $_ := set $out $key (toString $v) -}}
+{{- end -}}
+{{- end -}}
+{{- end }}

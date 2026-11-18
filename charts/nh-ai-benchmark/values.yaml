@@ -1,6 +1,11 @@
 nh-ai-benchmark:
   enabled: true
 
+  # /health shares its worker with slow requests: the default 1 s timeout (3 failures) restarted a busy API pod.
+  livenessProbe:
+    timeoutSeconds: 5
+    failureThreshold: 6
+
   image:
     tag: "v1.120.0"
     pullPolicy: IfNotPresent

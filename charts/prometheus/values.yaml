@@ -41,23 +41,33 @@ kube-prometheus-stack:
     kube_pod_status_phase: send
     kube_pod_status_ready: send
     kube_pod_container_status_restarts_total: send
+    # which image (tag + digest) each container runs: "what version is deployed where", one series per
+    # container, new series per pod / restart (0.1.8, INFRA-237)
+    kube_pod_container_info: send-ours
     kube_pod_container_status_waiting_reason: send
+    kube_pod_init_container_status_waiting_reason: send   # 0.1.5: init containers stuck (CrashLoop / config errors)
     kube_pod_container_status_last_terminated_reason: send
     kube_pod_container_status_last_terminated_exitcode: send
     kube_pod_container_resource_requests: send
     kube_pod_container_resource_limits: send
     kube_deployment_spec_replicas: send
     kube_deployment_status_replicas_available: send
+    kube_deployment_metadata_generation: send        # 0.1.5: generation > observed, or updated < desired = rollout stuck
+    kube_deployment_status_observed_generation: send
+    kube_deployment_status_replicas_updated: send
     kube_statefulset_replicas: send
     kube_statefulset_status_replicas_ready: send
     kube_daemonset_status_desired_number_scheduled: send
     kube_daemonset_status_number_ready: send
     kube_job_status_failed: send
+    kube_job_status_active: send                     # 0.1.5: with start_time = a Job running far too long (hung backup)
+    kube_job_status_start_time: send
     kube_node_info: send
     kube_node_status_condition: send
     kube_node_status_allocatable: send
     kube_node_spec_unschedulable: send
     kube_persistentvolumeclaim_status_phase: send
+    kube_persistentvolume_status_phase: send         # 0.1.5: Released / Failed PVs = orphaned disks still billed
     kube_persistentvolumeclaim_info: send
     kube_namespace_status_phase: send
     kube_namespace_created: send
@@ -81,8 +91,6 @@ kube-prometheus-stack:
     node_memory_MemTotal_bytes: send
     node_filesystem_avail_bytes: send
     node_filesystem_size_bytes: send
-    node_filesystem_files: send
-    node_filesystem_files_free: send
     node_load1: send
     node_load5: send
     node_load15: send
@@ -109,8 +117,44 @@ kube-prometheus-stack:
     node_pressure_cpu_waiting_seconds_total: send
     node_pressure_memory_waiting_seconds_total: send
     node_pressure_io_waiting_seconds_total: send
-    node_timex_sync_status: send                     # clock drift breaks TLS / tokens / JWTs
-    node_timex_offset_seconds: send
+    # --- added 2026-10-26 (0.1.5): network health, cloud-agnostic (node-exporter netstat / sockstat,
+    # ~6 series per node). Would have shown azure-dev2's / windover's outbound (SNAT) port exhaustion
+    # without Azure Monitor: notes owui-to-o8-migration/15-azure-dev2-outbound-snat-exhaustion.md.
+    node_netstat_TcpExt_TCPSynRetrans: send          # connection attempts with no answer, retried (NAT ports, firewalls, dead hosts)
+    node_netstat_Tcp_ActiveOpens: send               # new outbound connections: churn per node, host-network processes too
+    node_netstat_Tcp_RetransSegs: send               # ÷ Tcp_OutSegs = share retransmitted (packet loss)
+    node_netstat_Tcp_OutSegs: send
+    node_sockstat_TCP_tw: send                       # sockets in TIME_WAIT: churn holding ports
+    node_sockstat_TCP_inuse: send
+    node_netstat_TcpExt_ListenOverflows: send        # accept queue full: a server on this node can't keep up
+    node_netstat_TcpExt_ListenDrops: send
+    kubelet_evictions: send                          # pods evicted by the kubelet, by signal (memory / disk pressure)
+    # our own pipeline: samples Grafana Cloud refused (limits, 4xx) and how far remote write lags
+    # (needs prometheus.serviceMonitor.selfMonitor: true, below)
+    prometheus_remote_storage_samples_failed_total: send
+    prometheus_remote_storage_samples_retried_total: send
+    prometheus_remote_storage_highest_timestamp_in_seconds: send
+    prometheus_remote_storage_queue_highest_sent_timestamp_seconds: send
+    # DNS (CoreDNS; AKS / EKS — GKE runs kube-dns without these): SERVFAIL rate says "it's DNS" and which
+    # kind (CoreDNS overloaded, upstream resolver throttling), latency
+    coredns_dns_responses_total: send
+    coredns_dns_request_duration_seconds_count: send
+    coredns_dns_request_duration_seconds_sum: send
+    # HPA stuck at its maximum = needs more capacity (series only where HPAs exist)
+    kube_horizontalpodautoscaler_status_current_replicas: send
+    kube_horizontalpodautoscaler_spec_max_replicas: send
+    # --- added 2026-10-26 (0.1.5): disk reads behind page cache misses (qdrant sizing) ---
+    node_vmstat_pgmajfault: send                     # major page faults: re-reading evicted data from disk (qdrant)
+    node_disk_reads_completed_total: send            # read IOPS, against the disk's IOPS limit
+    container_memory_failures_total: keep            # page faults per container: local debugging only
+    # --- added 2026-11-13 (0.1.9): disk saturation and latency per node disk, ~136 series each fleet-wide (~$0.9/month
+    # each). Datastore volumes: arc's qdrant volume busy 93 % (p95), Azure OS disks 76-365 ms reads (p95).
+    # Container page faults stay `keep`: ~0 for Postgres / Redis / JuiceFS, and qdrant's don't track disk reads.
+    # https://github.com/nethopper2/notes/blob/main/infra-238-arc-slow-qdrant-searches/03-metrics-for-grafana-cloud.md
+    node_disk_io_time_seconds_total: send            # busy share: rate() near 1 = disk saturated
+    node_disk_read_time_seconds_total: send          # / reads completed = average read latency
+    node_disk_write_time_seconds_total: send         # / writes completed = average write latency
+    node_disk_writes_completed_total: send           # write IOPS, against the disk's IOPS limit
     # CronJobs: "last success too long ago" (backups), also when they silently stop running
     kube_cronjob_status_last_successful_time: send
     kube_cronjob_status_last_schedule_time: send
@@ -124,11 +168,21 @@ kube-prometheus-stack:
     redis_connected_clients: send
     redis_evicted_keys_total: send
     redis_rejected_connections_total: send
-    # qdrant (REST API per endpoint, collection size)
+    redis_rdb_last_bgsave_status: send               # 0 = last background save failed (redis_save_failing alert)
+    # qdrant: average REST response time (showed arc's ENG-266 slowness, 121 s on 2026-11-09) and request count
+    # (rate > 0 = the endpoint's average is fresh, not left over from its last request), collection size.
+    # 0.1.8 dropped _fail_total (0 everywhere for 30 days, even through ENG-266) and _max_duration_seconds (max since
+    # qdrant started). https://github.com/nethopper2/notes/blob/main/infra-237-windover-juicefs-no-space-left/03-generic-inode-alert.md
     rest_responses_total: send
-    rest_responses_fail_total: send
     rest_responses_avg_duration_seconds: send
-    rest_responses_max_duration_seconds: send
+    # latency histogram (p95 per endpoint): shows the ~50 s search spikes the average hides (arc, mphr, ai-nethopper,
+    # pw, ~10 % of 5-min windows); ~850 series fleet-wide (0.1.8)
+    rest_responses_duration_seconds_bucket: send
+    rest_responses_duration_seconds_sum: send
+    rest_responses_duration_seconds_count: send
+    # qdrant, cheap (1 series per qdrant pod, 0.1.8): memory as qdrant's allocator sees it (vs the container's RSS);
+    # memory_resident_bytes is in the qdrant block below. No prefix: filter by job in queries ({job=~".*qdrant.*"}).
+    memory_allocated_bytes: send
     collections_vector_total: send
     # JuiceFS gateway: block-cache hit ratio, object-storage errors, filesystem usage, buffer
     juicefs_blockcache_hits: send
@@ -137,6 +191,13 @@ kube-prometheus-stack:
     juicefs_used_space: send
     juicefs_used_inodes: send
     juicefs_used_buffer_size_bytes: send
+    juicefs_total_inodes: send                       # the volume's inode limit: used / total alert (0.1.8, INFRA-237)
+    # average latency = rate(_sum) / rate(_count), without the histogram buckets (no recording rules here):
+    # object storage per method, metadata (Postgres) transactions
+    juicefs_object_request_durations_histogram_seconds_sum: send
+    juicefs_object_request_durations_histogram_seconds_count: send
+    juicefs_transaction_durations_histogram_seconds_sum: send
+    juicefs_transaction_durations_histogram_seconds_count: send
     # postgres-exporter (Bitnami `postgresql.metrics`)
     pg_up: send
     pg_settings_max_connections: send
@@ -149,10 +210,12 @@ kube-prometheus-stack:
     # cert-manager (ingress-warden `cert-manager.prometheus.servicemonitor`)
     certmanager_certificate_expiration_timestamp_seconds: send
     certmanager_certificate_ready_status: send
+    certmanager_certificate_renewal_timestamp_seconds: send   # when cert-manager will renew: "renewal overdue" alert
     # ingress-nginx (ingress-warden `ingress-nginx.controller.metrics`): request rate by status, latency avg
     nginx_ingress_controller_requests: send
     nginx_ingress_controller_request_duration_seconds_count: send
     nginx_ingress_controller_request_duration_seconds_sum: send
+    nginx_ingress_controller_ssl_expire_time_seconds: send   # certificate nginx actually serves, per host (also ones cert-manager doesn't manage)
     # --- Intel / MCP application metrics (Grafana users/mateuszs "Intel & MCP") ---
     # Exposed by nh-rag-api (prometheus-fastapi-instrumentator + nethopper2/nh-rag-embedding#435) and
     # nh-mcp-server (nethopper2/nh-mcp-server#228, needs the private-ai-rag nh-mcp-server.metrics flags).
@@ -245,7 +308,9 @@ kube-prometheus-stack:
 
   prometheus:
     serviceMonitor:
-      selfMonitor: false
+      # Scrape this Prometheus itself: only the prometheus_remote_storage_* series listed in `metrics`
+      # are kept (the allowlist scrape class applies), to see samples Grafana Cloud refused.
+      selfMonitor: true
     prometheusSpec:
       replicas: 1                     # HA (2 + anti-affinity + PDB) later
       scrapeInterval: 60s             # 1 sample/min per series = what Grafana Cloud bills
@@ -303,6 +368,15 @@ kube-prometheus-stack:
             # (creation timestamp): nothing uses them, they only cost series.
             - sourceLabels: [__name__]
               regex: '.*_created'
+              action: drop
+            # node-exporter reports every mount (2026-10-27, ai-nh-dev: ~94 per node — pod volumes, secrets,
+            # tmpfs, overlay). Our alerts only use the node's real disks; PVs come from kubelet_volume_stats_*.
+            # Keep node_filesystem_* only for real filesystems outside the kubelet / container runtime dirs.
+            - sourceLabels: [__name__, fstype]
+              regex: 'node_filesystem_.+;(tmpfs|overlay|squashfs|nsfs|shm|devtmpfs|ramfs|cgroup2?|proc|sysfs|fuse.*|autofs|bpf|tracefs|debugfs)'
+              action: drop
+            - sourceLabels: [__name__, mountpoint]
+              regex: 'node_filesystem_.+;(/var/lib/kubelet/.+|/var/lib/containerd/.+|/run/.+|/var/lib/docker/.+)'
               action: drop
             - sourceLabels: [__name__]
               regex: '{{- $l := list }}{{- range $k, $v := .Values.metrics }}{{- if has (toString $v) (list "send" "send-ours" "keep" "keep-ours") }}{{- $l = append $l $k }}{{- end }}{{- end }}{{- if $l }}{{ $l | sortAlpha | join "|" }}{{- else }}__none__{{- end }}'
