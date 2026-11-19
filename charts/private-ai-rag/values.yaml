@@ -738,6 +738,13 @@ pipelinesProvisioning:
       enabled: false
     private-ai-supervisor-pipeline:
       enabled: true
+    # Tombstone, not a real pipeline: this was the supervisor file name before the rename to
+    # private-ai-supervisor-pipeline (nh-rag-embedding #301, 2026-06-04). Volumes provisioned
+    # before that still hold the old file. It registers the same model id
+    # (private-ai-supervisor-agent) and, depending on load order, replaces the current pipeline
+    # with the June code. The init container only deletes files listed here as disabled.
+    private-supervisor-pipeline:
+      enabled: false
 
 heartbeatMonitoring:
   enabled: false # Disabled by default
