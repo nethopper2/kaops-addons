@@ -73,7 +73,7 @@ open-webui:
       memory: 1536Mi
   image:
     repository: nethopper/kaops-open-webui
-    tag: "v1.124.0-slim"
+    tag: "v1.125.0-slim"
     pullPolicy: IfNotPresent
   ollama:
     fullnameOverride: "open-webui-ollama"
@@ -346,7 +346,7 @@ nh-rag-api:
       cpu: 1000m
       memory: 3Gi
   image:
-    tag: "v1.124.1"
+    tag: "v1.125.0"
   env:
     LLAMAINDEX_OLLAMA_BASE_URL: http://open-webui-ollama:11434
     QDRANT_URL: # system provided
@@ -367,7 +367,7 @@ nh-rag-api:
     enabled: false
     image:
       repository: nethopper/nh-workspace-runtime
-      tag: "v1.124.1" # bumped by the release PRs with the other release tags; image built by nh-rag-embedding CI on the same tag
+      tag: "v1.125.0" # bumped by the release PRs with the other release tags; image built by nh-rag-embedding CI on the same tag
     runtimeClassName: "" # kata-clh | gvisor | "" (runc, dev only)
     tokenSecret: ""
     existingSecret: ""
@@ -421,7 +421,7 @@ nh-rag-api:
     replicaCount: 1                      # embedded beat (-B) requires a single replica
     image:
       repository: nethopper/nh-rag-api   # REUSE the api image, not nh-rag-worker
-      tag: "v1.124.1"                    # CI bumps this alongside nh-rag-api.image.tag
+      tag: "v1.125.0"                    # CI bumps this alongside nh-rag-api.image.tag
     command:
       - celery
       - -A
@@ -556,7 +556,7 @@ nh-pai-data-service:
       cpu: 500m
       memory: 1Gi
   image:
-    tag: "v1.124.0"
+    tag: "v1.125.0"
   ingress:
     enabled: true
     annotations:
@@ -625,7 +625,7 @@ nh-mcp-server:
       cpu: "1"
       memory: 512Mi
   image:
-    tag: "v1.124.0"
+    tag: "v1.125.0"
   startupProbe:
     httpGet:
       path: /health
@@ -663,7 +663,7 @@ nh-data-ingestion:
         cpu: 250m
         memory: 512Mi
     image:
-      tag: "v1.124.0"
+      tag: "v1.125.0"
   flower:
     resources:
       requests:
@@ -673,7 +673,7 @@ nh-data-ingestion:
         cpu: 200m
         memory: 512Mi
     image:
-      tag: "v1.124.0"
+      tag: "v1.125.0"
   scheduler:
     resources:
       requests:
@@ -683,7 +683,7 @@ nh-data-ingestion:
         cpu: 200m
         memory: 256Mi
     image:
-      tag: "v1.124.0"
+      tag: "v1.125.0"
   worker:
     resources:
       requests:
@@ -693,7 +693,7 @@ nh-data-ingestion:
         cpu: 500m
         memory: 3Gi
     image:
-      tag: "v1.124.0"
+      tag: "v1.125.0"
   embedWorker:
     celery:
       concurrency: "6"
@@ -706,7 +706,7 @@ nh-data-ingestion:
         cpu: 1000m
         memory: 2Gi
     image:
-      tag: "v1.124.0"
+      tag: "v1.125.0"
     env:
       LLAMAINDEX_OLLAMA_BASE_URL: "http://open-webui-ollama:11434"
       OPEN_WEBUI_URL: "http://open-webui"
